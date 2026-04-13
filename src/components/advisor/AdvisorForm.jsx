@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronLeft, CheckCircle2, TrendingUp, Users, Target, Calendar } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -37,6 +38,7 @@ const plans = [
 ];
 
 const AdvisorForm = () => {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({});
   const [isFinished, setIsFinished] = useState(false);
@@ -87,7 +89,10 @@ const AdvisorForm = () => {
                   </li>)}
                 </ul>
               </div>
-              <button className={`mt-8 py-3 rounded-xl font-bold w-full transition-all ${plan.text ? 'bg-white text-emerald-700' : 'bg-emerald-600 text-white'}`}>
+              <button 
+                onClick={() => navigate('/plans')}
+                className={`mt-8 py-3 rounded-xl font-bold w-full transition-all ${plan.text ? 'bg-white text-emerald-700' : 'bg-emerald-600 text-white'}`}
+              >
                 Apply Now
               </button>
             </motion.div>
