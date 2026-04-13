@@ -10,9 +10,9 @@ const Footer = () => {
           <div className="space-y-6">
             <Link to="/" className="flex items-center space-x-2">
               <div className="bg-emerald-600 p-2 rounded-xl">
-                <Shield className="w-6 h-6 text-white" />
+                <Shield className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-white">Policy Consultant</span>
+              <span className="text-lg font-bold text-white">Policy Consultant</span>
             </Link>
             <p className="text-sm leading-relaxed">
               Empowering you to make smart insurance decisions with AI-driven insights and personalized solutions.

@@ -25,13 +25,13 @@ const Hero = () => {
               <span className="text-emerald-700 text-sm font-semibold uppercase tracking-wider">Trusted by 2M+ Users</span>
             </div>
             
-            <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 leading-tight">
+            <h1 className="text-3xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
               Smart Insurance <br />
               <span className="text-emerald-600">Decisions</span> Made <br />
               <span className="underline decoration-emerald-500/30">Simple</span>
             </h1>
             
-            <p className="text-xl text-slate-600 max-w-lg leading-relaxed">
+            <p className="text-lg text-slate-600 max-w-lg leading-relaxed">
               Get personalized AI-driven advice to find the perfect policy for you, your family, or your business in minutes.
             </p>
             

@@ -29,24 +29,24 @@ const QuoteEngine = () => {
   };
 
   return (
-    <div className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col md:flex-row min-h-[500px]">
+    <div className="bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden flex flex-col md:flex-row min-h-[450px]">
       {/* Sidebar Tabs */}
-      <div className="w-full md:w-1/3 bg-slate-50 p-6 space-y-4 border-r border-slate-100">
-        <h3 className="text-xl font-bold text-slate-900 mb-8 p-2">Insurance Types</h3>
+      <div className="w-full md:w-1/3 bg-slate-50 p-5 space-y-3 border-r border-slate-100">
+        <h3 className="text-lg font-bold text-slate-900 mb-6 p-2">Insurance Types</h3>
         {insuranceTypes.map((type) => (
           <button
             key={type.id}
             onClick={() => {setActiveTab(type.id); setQuote(null);}}
-            className={`w-full p-4 rounded-2xl flex items-center space-x-4 transition-all duration-300 ${
+            className={`w-full p-3 rounded-xl flex items-center space-x-3 transition-all duration-300 ${
               activeTab === type.id 
                 ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 scale-105' 
                 : 'bg-transparent text-slate-500 hover:bg-white hover:text-emerald-600'
             }`}
           >
-            <div className={`p-2 rounded-xl ${activeTab === type.id ? 'bg-white/20' : 'bg-slate-200'}`}>
+            <div className={`p-1.5 rounded-lg ${activeTab === type.id ? 'bg-white/20' : 'bg-slate-200'}`}>
               {type.icon}
             </div>
-            <span className="font-bold">{type.label} Insurance</span>
+            <span className="font-bold text-sm">{type.label} Insurance</span>
           </button>
         ))}
       </div>
@@ -63,9 +63,9 @@ const QuoteEngine = () => {
               className="space-y-8"
               onSubmit={handleGetQuote}
             >
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold text-slate-900 capitalize">{activeTab} Insurance Quote</h2>
-                <p className="text-slate-500">Provide a few details to get your personalized estimate.</p>
+              <div className="space-y-1">
+                <h2 className="text-xl font-bold text-slate-900 capitalize">{activeTab} Insurance Quote</h2>
+                <p className="text-slate-500 text-sm">Provide a few details to get your personalized estimate.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -109,12 +109,12 @@ const QuoteEngine = () => {
               animate={{ opacity: 1, scale: 1 }}
               className="h-full flex flex-col justify-center items-center text-center space-y-8"
             >
-              <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
-                <Calculator className="w-10 h-10" />
+              <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
+                <Calculator className="w-8 h-8" />
               </div>
-              <div className="space-y-2">
-                <h3 className="text-4xl font-bold text-slate-900">Your Estimated Quote</h3>
-                <p className="text-slate-500 italic">This is an instant estimate based on current market rates.</p>
+              <div className="space-y-1">
+                <h3 className="text-2xl font-bold text-slate-900">Your Estimated Quote</h3>
+                <p className="text-slate-500 text-xs italic">This is an instant estimate based on current market rates.</p>
               </div>
 
               <div className="bg-slate-50 p-8 rounded-3xl border border-slate-100 w-full max-w-sm">

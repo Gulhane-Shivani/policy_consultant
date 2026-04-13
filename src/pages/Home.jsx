@@ -11,9 +11,9 @@ const Home = () => {
       
       {/* Smart Advisor Section */}
       <section className="container mx-auto px-6">
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl lg:text-5xl font-bold text-slate-900">Get Personalized Advice</h2>
-          <p className="text-slate-500 max-w-2xl mx-auto text-lg">
+        <div className="text-center mb-10 space-y-3">
+          <h2 className="text-2xl lg:text-3xl font-bold text-slate-900">Get Personalized Advice</h2>
+          <p className="text-slate-500 max-w-2xl mx-auto text-base">
             Our AI-powered advisor analyzes your profile to suggest the best coverage options for your specific situation.
           </p>
         </div>
@@ -23,9 +23,9 @@ const Home = () => {
       {/* Quote Engine Section */}
       <section className="bg-slate-50 py-32">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16 space-y-4">
-            <h2 className="text-4xl lg:text-5xl font-bold text-slate-900">Instant Quote Estimator</h2>
-            <p className="text-slate-500 max-w-2xl mx-auto text-lg">
+          <div className="text-center mb-10 space-y-3">
+            <h2 className="text-2xl lg:text-3xl font-bold text-slate-900">Instant Quote Estimator</h2>
+            <p className="text-slate-500 max-w-2xl mx-auto text-base">
               Get a rough estimate of your premiums across various insurance types in seconds.
             </p>
           </div>
@@ -36,37 +36,37 @@ const Home = () => {
       {/* Why Choose Us */}
       <section className="container mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-             <div className="space-y-8">
-                <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 leading-tight">
+             <div className="space-y-6">
+                <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 leading-tight">
                   Why millions trust <br />
                   <span className="text-emerald-600">Policy Consultant</span>
                 </h2>
                 <div className="space-y-6">
-                   <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center shrink-0">
-                         <span className="text-emerald-600 font-bold text-xl">01</span>
+                   <div className="flex items-start space-x-3">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+                         <span className="text-emerald-600 font-bold text-lg">01</span>
                       </div>
                       <div>
-                         <h3 className="text-xl font-bold">Unbiased Recommendations</h3>
-                         <p className="text-slate-500">We work for you, not the insurance companies. Our AI ensures objective advice.</p>
+                         <h3 className="text-lg font-bold">Unbiased Recommendations</h3>
+                         <p className="text-slate-500 text-sm">We work for you, not the insurance companies. Our AI ensures objective advice.</p>
                       </div>
                    </div>
-                   <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center shrink-0">
-                         <span className="text-emerald-600 font-bold text-xl">02</span>
+                   <div className="flex items-start space-x-3">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+                         <span className="text-emerald-600 font-bold text-lg">02</span>
                       </div>
                       <div>
-                         <h3 className="text-xl font-bold">Best Price Guarantee</h3>
-                         <p className="text-slate-500">We compare 100+ policies to find you the most competitive rates available.</p>
+                         <h3 className="text-lg font-bold">Best Price Guarantee</h3>
+                         <p className="text-slate-500 text-sm">We compare 100+ policies to find you the most competitive rates available.</p>
                       </div>
                    </div>
-                   <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center shrink-0">
-                         <span className="text-emerald-600 font-bold text-xl">03</span>
+                   <div className="flex items-start space-x-3">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+                         <span className="text-emerald-600 font-bold text-lg">03</span>
                       </div>
                       <div>
-                         <h3 className="text-xl font-bold">Paperless Experience</h3>
-                         <p className="text-slate-500">Buy and manage policies completely online. No more messy paperwork.</p>
+                         <h3 className="text-lg font-bold">Paperless Experience</h3>
+                         <p className="text-slate-500 text-sm">Buy and manage policies completely online. No more messy paperwork.</p>
                       </div>
                    </div>
                 </div>

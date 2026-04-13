@@ -57,14 +57,14 @@ const AdvisorForm = () => {
 
   if (isFinished) {
     return (
-      <div className="max-w-4xl mx-auto p-8 glass rounded-3xl text-center space-y-12">
+      <div className="max-w-4xl mx-auto p-6 glass rounded-2xl text-center space-y-10">
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="flex justify-center">
-          <CheckCircle2 className="w-20 h-20 text-emerald-600" />
+          <CheckCircle2 className="w-16 h-16 text-emerald-600" />
         </motion.div>
         
-        <div className="space-y-4">
-          <h2 className="text-3xl font-bold">Recommended Plans for You</h2>
-          <p className="text-slate-600 text-lg">Based on your profile, we recommend these top-rated policies.</p>
+        <div className="space-y-3">
+          <h2 className="text-xl font-bold">Recommended Plans for You</h2>
+          <p className="text-slate-600 text-base">Based on your profile, we recommend these top-rated policies.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -76,9 +76,9 @@ const AdvisorForm = () => {
               transition={{ delay: idx * 0.2 }}
               className={`p-6 rounded-2xl shadow-lg flex flex-col justify-between ${plan.color} ${plan.text || 'text-slate-900'}`}
             >
-              <div className="space-y-4">
-                <h3 className="text-xl font-bold">{plan.name}</h3>
-                <div className="text-3xl font-bold font-mono">
+              <div className="space-y-3">
+                <h3 className="text-lg font-bold">{plan.name}</h3>
+                <div className="text-2xl font-bold font-mono">
                   ${plan.price}<span className="text-sm font-normal opacity-70">/mo</span>
                 </div>
                 <ul className="space-y-2 text-sm text-left">
@@ -127,22 +127,22 @@ const AdvisorForm = () => {
             transition={{ duration: 0.3 }}
             className="space-y-8"
           >
-            <div className="flex items-center space-x-4">
-              <div className="p-3 bg-emerald-100 rounded-2xl text-emerald-600">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-emerald-100 rounded-xl text-emerald-600">
                 {steps[currentStep].icon}
               </div>
-              <h2 className="text-2xl font-bold text-slate-900">{steps[currentStep].title}</h2>
+              <h2 className="text-lg font-bold text-slate-900">{steps[currentStep].title}</h2>
             </div>
-
-            <div className="grid grid-cols-1 gap-4">
+ 
+            <div className="grid grid-cols-1 gap-3">
               {steps[currentStep].options.map((option) => (
                 <button
                   key={option}
                   onClick={() => handleNext(option)}
-                  className="group p-5 bg-white border border-slate-100 rounded-2xl text-left hover:border-emerald-500 hover:shadow-md transition-all flex justify-between items-center"
+                  className="group p-4 bg-white border border-slate-100 rounded-xl text-left hover:border-emerald-500 hover:shadow-md transition-all flex justify-between items-center"
                 >
-                  <span className="font-semibold text-slate-700 group-hover:text-emerald-700 transition-colors">{option}</span>
-                  <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" />
+                  <span className="font-semibold text-slate-700 group-hover:text-emerald-700 transition-colors text-sm">{option}</span>
+                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" />
                 </button>
               ))}
             </div>

@@ -3,20 +3,20 @@ import { CheckCircle2, Shield, Zap, TrendingUp, ArrowRight } from 'lucide-react'
 
 const InsuranceDetails = ({ title, description, icon: Icon, benefits, plans, color = 'emerald' }) => {
   return (
-    <div className="pt-20 pb-20">
+    <div className="pt-12 pb-16">
       {/* Page Hero */}
-      <section className="relative px-6 mb-24">
+      <section className="relative px-6 mb-16">
         <div className="container mx-auto">
-          <div className="glass rounded-[3rem] overflow-hidden flex flex-col lg:flex-row items-center">
-            <div className="p-12 lg:p-20 lg:w-3/5 space-y-8">
-              <div className={`inline-flex p-4 rounded-3xl bg-${color}-100 text-${color}-600`}>
-                <Icon className="w-12 h-12" />
+          <div className="glass rounded-[2.5rem] overflow-hidden flex flex-col lg:flex-row items-center">
+            <div className="p-10 lg:p-16 lg:w-3/5 space-y-6">
+              <div className={`inline-flex p-3 rounded-2xl bg-${color}-100 text-${color}-600`}>
+                <Icon className="w-10 h-10" />
               </div>
-              <h1 className="text-5xl lg:text-7xl font-bold text-slate-900 leading-tight">
+              <h1 className="text-3xl lg:text-5xl font-bold text-slate-900 leading-tight">
                 {title} <br />
                 <span className={`text-${color}-600`}>Insurance</span>
               </h1>
-              <p className="text-xl text-slate-600 max-w-xl leading-relaxed">
+              <p className="text-lg text-slate-600 max-w-xl leading-relaxed">
                 {description}
               </p>
               <button className="btn-primary">Get Your Quote</button>
@@ -36,10 +36,10 @@ const InsuranceDetails = ({ title, description, icon: Icon, benefits, plans, col
       </section>
 
       {/* Benefits Grid */}
-      <section className="container mx-auto px-6 mb-24">
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl font-bold text-slate-900">Why choose our {title} coverage?</h2>
-          <p className="text-slate-500 max-w-2xl mx-auto text-lg">We provide comprehensive solutions tailored to your unique needs and lifestyle.</p>
+      <section className="container mx-auto px-6 mb-16">
+        <div className="text-center mb-10 space-y-3">
+          <h2 className="text-2xl font-bold text-slate-900">Why choose our {title} coverage?</h2>
+          <p className="text-slate-500 max-w-2xl mx-auto text-base">We provide comprehensive solutions tailored to your unique needs and lifestyle.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {benefits.map((benefit, idx) => (
@@ -59,22 +59,22 @@ const InsuranceDetails = ({ title, description, icon: Icon, benefits, plans, col
       </section>
 
       {/* Comparison Table */}
-      <section className="bg-slate-900 py-24 px-6 text-white rounded-[4rem] mx-6">
+      <section className="bg-slate-900 py-16 px-6 text-white rounded-[3rem] mx-6">
         <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Compare Our Plans</h2>
-            <p className="text-slate-400">Choose the level of protection that fits your budget.</p>
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-bold mb-3">Compare Our Plans</h2>
+            <p className="text-slate-400 text-sm">Choose the level of protection that fits your budget.</p>
           </div>
           
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-white/10">
-                  <th className="py-6 text-xl font-bold">Features</th>
+                  <th className="py-4 text-lg font-bold">Features</th>
                   {plans.map(plan => (
-                    <th key={plan.name} className="py-6 text-center">
-                      <div className="text-xl font-bold mb-1">{plan.name}</div>
-                      <div className="text-emerald-500 text-sm font-medium">{plan.price}</div>
+                    <th key={plan.name} className="py-4 text-center">
+                      <div className="text-lg font-bold mb-1">{plan.name}</div>
+                      <div className="text-emerald-500 text-xs font-medium">{plan.price}</div>
                     </th>
                   ))}
                 </tr>
@@ -101,17 +101,17 @@ const InsuranceDetails = ({ title, description, icon: Icon, benefits, plans, col
       </section>
 
       {/* CTA Section */}
-      <section className="container mx-auto px-6 mt-32">
-        <div className="relative p-12 lg:p-24 rounded-[3.5rem] bg-emerald-600 overflow-hidden">
+      <section className="container mx-auto px-6 mt-20">
+        <div className="relative p-10 lg:p-16 rounded-[2.5rem] bg-emerald-600 overflow-hidden">
           <div className="absolute top-0 right-0 w-1/2 h-full bg-white/5 skew-x-12 translate-x-24"></div>
-          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
-            <div className="text-white space-y-6 lg:w-2/3">
-              <h2 className="text-4xl lg:text-6xl font-bold">Ready to secure your future?</h2>
-              <p className="text-emerald-100 text-xl max-w-xl">Join thousands of happy customers who trust Policy Consultant for their protection.</p>
+          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div className="text-white space-y-4 lg:w-2/3">
+              <h2 className="text-3xl lg:text-5xl font-bold">Ready to secure your future?</h2>
+              <p className="text-emerald-100 text-lg max-w-xl">Join thousands of happy customers who trust Policy Consultant for their protection.</p>
             </div>
-            <button className="group bg-white text-emerald-600 px-12 py-6 rounded-[2rem] text-xl font-bold flex items-center space-x-3 transition-all hover:shadow-2xl hover:bg-emerald-50 active:scale-95">
+            <button className="group bg-white text-emerald-600 px-8 py-4 rounded-xl text-lg font-bold flex items-center space-x-3 transition-all hover:shadow-2xl hover:bg-emerald-50 active:scale-95">
               <span>Get Started Now</span>
-              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         </div>

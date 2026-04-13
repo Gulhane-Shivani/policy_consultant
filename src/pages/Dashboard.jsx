@@ -52,8 +52,8 @@ const Dashboard = () => {
       <main className="flex-grow p-6 lg:p-12 space-y-10">
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">Welcome Back, Alex!</h1>
-            <p className="text-slate-500">You have 2 active policies and 1 renewal coming up.</p>
+            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">Welcome Back, Alex!</h1>
+            <p className="text-slate-500 text-sm">You have 2 active policies and 1 renewal coming up.</p>
           </div>
           <div className="flex items-center space-x-4">
             <div className="bg-white p-2 rounded-full border border-slate-100 relative cursor-pointer">
@@ -70,8 +70,8 @@ const Dashboard = () => {
           {/* Active Policies */}
           <section className="xl:col-span-2 space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold text-slate-900">Active Policies</h2>
-              <button className="text-emerald-600 font-bold text-sm hover:underline">View All</button>
+              <h2 className="text-lg font-bold text-slate-900">Active Policies</h2>
+              <button className="text-emerald-600 font-bold text-xs hover:underline">View All</button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {activePolicies.map((policy) => (
@@ -89,8 +89,8 @@ const Dashboard = () => {
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold">{policy.title}</h3>
-                    <p className="text-xl font-medium text-slate-400 mt-1">{policy.premium}</p>
+                    <h3 className="text-xl font-bold">{policy.title}</h3>
+                    <p className="text-lg font-medium text-slate-400 mt-1">{policy.premium}</p>
                   </div>
                   <button className="w-full py-3 bg-slate-50 font-bold rounded-xl text-slate-700 hover:bg-slate-100 transition-colors">Manage Policy</button>
                 </motion.div>
