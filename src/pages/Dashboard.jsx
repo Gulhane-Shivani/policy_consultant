@@ -28,8 +28,7 @@ const Dashboard = () => {
           <nav className="flex-grow space-y-2">
             {[
               { label: 'Overview', icon: LayoutDashboard },
-              { label: 'My Policies', icon: Shield },
-            
+              { label: 'My Policies', icon: Shield },            
             ].map((item) => (
               <button
                 key={item.label}

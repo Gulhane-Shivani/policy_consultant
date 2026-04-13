@@ -27,8 +27,9 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-semibold mb-6">Quick Links</h4>
+            <h4 className="text-white font-semibold mb-6">Insurance Plans</h4>
             <ul className="space-y-4 text-sm">
+              <li><Link to="/plans" className="text-emerald-500 font-bold hover:underline transition-colors">View All Plans</Link></li>
               <li><Link to="/life" className="hover:text-emerald-500 transition-colors">Life Insurance</Link></li>
               <li><Link to="/health" className="hover:text-emerald-500 transition-colors">Health Insurance</Link></li>
               <li><Link to="/car" className="hover:text-emerald-500 transition-colors">Car Insurance</Link></li>

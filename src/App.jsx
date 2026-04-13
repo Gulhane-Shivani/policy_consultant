@@ -10,6 +10,7 @@ import Car from './pages/Car';
 import Business from './pages/Business';
 import Dashboard from './pages/Dashboard';
 import Support from './pages/Support';
+import Plans from './pages/Plans';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/health" element={<Health />} />
             <Route path="/car" element={<Car />} />
             <Route path="/business" element={<Business />} />
+            <Route path="/plans" element={<Plans />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/support" element={<Support />} />
           </Routes>
