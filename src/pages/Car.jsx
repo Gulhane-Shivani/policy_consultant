@@ -10,9 +10,9 @@ const Car = () => {
   ];
 
   const plans = [
-    { name: 'Third Party', price: '$20/mo', features: ['24/7 Support'] },
-    { name: 'Comprehensive', price: '$60/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts'] },
-    { name: 'Luxury Plus', price: '$120/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts', 'Personal Advisor'] }
+    { name: 'Third Party', price: '₹1,499/mo', features: ['24/7 Support'] },
+    { name: 'Comprehensive', price: '₹4,999/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts'] },
+    { name: 'Luxury Plus', price: '₹9,999/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts', 'Personal Advisor'] }
   ];
 
   return (

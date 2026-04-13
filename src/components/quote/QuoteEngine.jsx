@@ -21,8 +21,8 @@ const QuoteEngine = () => {
     setTimeout(() => {
       setLoading(false);
       setQuote({
-        premium: activeTab === 'life' ? '85.50' : activeTab === 'health' ? '120.00' : activeTab === 'car' ? '45.75' : '250.00',
-        coverage: activeTab === 'life' ? '$500,000' : activeTab === 'health' ? '$1,000,000' : activeTab === 'car' ? '$50,000' : '$2,000,000',
+        premium: activeTab === 'life' ? '8,550' : activeTab === 'health' ? '12,000' : activeTab === 'car' ? '4,575' : '25,000',
+        coverage: activeTab === 'life' ? '₹50,00,000' : activeTab === 'health' ? '₹1,00,00,000' : activeTab === 'car' ? '₹5,00,000' : '₹2,00,00,000',
         plan: 'Premium Pro'
       });
     }, 1500);
@@ -121,7 +121,7 @@ const QuoteEngine = () => {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center text-sm font-bold text-slate-400 border-b border-slate-200 pb-4">
                     <span>Monthly Premium</span>
-                    <span className="text-emerald-600 text-3xl">${quote.premium}</span>
+                    <span className="text-emerald-600 text-2xl">₹{quote.premium}</span>
                   </div>
                   <div className="flex justify-between items-center py-2">
                     <span className="text-slate-600 font-medium">Coverage Limit</span>

@@ -14,7 +14,7 @@ const steps = [
     id: 'income',
     title: 'Monthly income range?',
     icon: <TrendingUp className="w-6 h-6" />,
-    options: ['Under $3k', '$3k - $7k', '$7k - $12k', '$12k+']
+    options: ['Under ₹25k', '₹25k - ₹75k', '₹75k - ₹1.5L', '₹1.5L+']
   },
   {
     id: 'family',
@@ -31,9 +31,9 @@ const steps = [
 ];
 
 const plans = [
-  { name: 'Silver Safeguard', price: '45', features: ['Basic Coverage', '24/7 Support', 'Fast Claims'], color: 'bg-slate-100' },
-  { name: 'Emerald Elite', price: '120', features: ['Comprehensive Coverage', 'Free Health Checkups', 'Global Protection'], color: 'bg-emerald-600', text: 'text-white' },
-  { name: 'Legacy Builder', price: '200', features: ['Investment Link', 'Estate Planning', 'Premium Benefits'], color: 'bg-slate-900', text: 'text-white' }
+  { name: 'Silver Safeguard', price: '3,499', features: ['Basic Coverage', '24/7 Support', 'Fast Claims'], color: 'bg-slate-100' },
+  { name: 'Emerald Elite', price: '9,499', features: ['Comprehensive Coverage', 'Free Health Checkups', 'Global Protection'], color: 'bg-emerald-600', text: 'text-white' },
+  { name: 'Legacy Builder', price: '15,999', features: ['Investment Link', 'Estate Planning', 'Premium Benefits'], color: 'bg-slate-900', text: 'text-white' }
 ];
 
 const AdvisorForm = () => {
@@ -79,7 +79,7 @@ const AdvisorForm = () => {
               <div className="space-y-3">
                 <h3 className="text-lg font-bold">{plan.name}</h3>
                 <div className="text-2xl font-bold font-mono">
-                  ${plan.price}<span className="text-sm font-normal opacity-70">/mo</span>
+                  ₹{plan.price}<span className="text-sm font-normal opacity-70">/mo</span>
                 </div>
                 <ul className="space-y-2 text-sm text-left">
                   {plan.features.map(f => <li key={f} className="flex items-center space-x-2">

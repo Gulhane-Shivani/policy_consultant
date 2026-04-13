@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 
 const Dashboard = () => {
   const activePolicies = [
-    { title: 'Health Elite', premium: '$80/mo', status: 'Active', icon: Activity, color: 'emerald' },
-    { title: 'Life SafeGuard', premium: '$55/mo', status: 'Renewing Soon', icon: Shield, color: 'blue' },
+    { title: 'Health Elite', premium: '₹6,400/mo', status: 'Active', icon: Activity, color: 'emerald' },
+    { title: 'Life SafeGuard', premium: '₹4,200/mo', status: 'Renewing Soon', icon: Shield, color: 'blue' },
   ];
 
   const offers = [

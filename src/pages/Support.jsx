@@ -278,7 +278,7 @@ const Support = () => {
                         <h4 className="text-2xl font-bold">Health Elite Plus</h4>
                       </div>
                       <div className="text-right">
-                        <p className="text-3xl font-black text-slate-900">$85.00</p>
+                        <p className="text-3xl font-black text-slate-900">₹6,800</p>
                         <p className="text-xs text-slate-400 font-bold uppercase">per month</p>
                       </div>
                    </div>

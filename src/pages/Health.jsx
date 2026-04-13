@@ -10,9 +10,9 @@ const Health = () => {
   ];
 
   const plans = [
-    { name: 'Core', price: '$40/mo', features: ['Global Coverage', '24/7 Support'] },
-    { name: 'Plus', price: '$80/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts'] },
-    { name: 'Elite', price: '$150/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts', 'Personal Advisor'] }
+    { name: 'Core', price: '₹3,499/mo', features: ['Global Coverage', '24/7 Support'] },
+    { name: 'Plus', price: '₹6,499/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts'] },
+    { name: 'Elite', price: '₹11,999/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts', 'Personal Advisor'] }
   ];
 
   return (

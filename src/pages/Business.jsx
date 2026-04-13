@@ -10,9 +10,9 @@ const Business = () => {
   ];
 
   const plans = [
-    { name: 'Startup', price: '$100/mo', features: ['24/7 Support', 'Fast Payouts'] },
-    { name: 'SMB Pro', price: '$350/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts'] },
-    { name: 'Enterprise', price: '$900+/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts', 'Personal Advisor'] }
+    { name: 'Startup', price: '₹7,999/mo', features: ['24/7 Support', 'Fast Payouts'] },
+    { name: 'SMB Pro', price: '₹27,499/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts'] },
+    { name: 'Enterprise', price: '₹71,999+/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts', 'Personal Advisor'] }
   ];
 
   return (

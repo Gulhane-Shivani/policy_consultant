@@ -10,9 +10,9 @@ const Life = () => {
   ];
 
   const plans = [
-    { name: 'Basic', price: '$25/mo', features: ['Global Coverage', '24/7 Support'] },
-    { name: 'Standard', price: '$55/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts'] },
-    { name: 'Premium', price: '$95/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts', 'Personal Advisor'] }
+    { name: 'Basic', price: '₹1,999/mo', features: ['Global Coverage', '24/7 Support'] },
+    { name: 'Standard', price: '₹4,499/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts'] },
+    { name: 'Premium', price: '₹7,999/mo', features: ['Global Coverage', '24/7 Support', 'Fast Payouts', 'Personal Advisor'] }
   ];
 
   return (
