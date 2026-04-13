@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, RefreshCw, HelpCircle, Phone, Mail, 
@@ -8,9 +9,33 @@ import {
 import toast from 'react-hot-toast';
 
 const Support = () => {
-  const [activeTab, setActiveTab] = useState('help');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'help');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFaq, setExpandedFaq] = useState(null);
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab && ['help', 'claims', 'renewals'].includes(tab)) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === '#contact-section') {
+      const element = document.getElementById('contact-section');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [location.hash]);
+
+  const handleTabChange = (id) => {
+    setActiveTab(id);
+    setSearchParams({ tab: id });
+  };
   const [showClaimForm, setShowClaimForm] = useState(false);
   
   const tabs = [
@@ -58,22 +83,22 @@ const Support = () => {
   };
 
   return (
-    <div className="pt-12 pb-24">
+    <div className="pt-8 pb-16">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-10 space-y-3">
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">How can we help?</h1>
-          <p className="text-slate-500 text-base">Browse our resources or get in touch with our team 24/7.</p>
+        <div className="text-center mb-8 space-y-2">
+          <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">How can we help?</h1>
+          <p className="text-slate-500 text-sm">Browse our resources or get in touch with our team 24/7.</p>
         </div>
 
         {/* Support Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center space-x-2 px-6 py-3 rounded-xl font-bold transition-all ${
+              onClick={() => handleTabChange(tab.id)}
+              className={`flex items-center space-x-2 px-5 py-2.5 rounded-xl font-bold transition-all text-sm ${
                 activeTab === tab.id 
-                  ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-100 scale-105' 
+                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100 scale-105' 
                   : 'bg-white text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'
               }`}
             >
@@ -83,7 +108,7 @@ const Support = () => {
           ))}
         </div>
 
-        <div className="glass rounded-[3rem] p-8 lg:p-16 min-h-[600px] shadow-2xl border-white/40">
+        <div className="glass rounded-[2.5rem] p-6 lg:p-10 min-h-[400px] shadow-2xl border-white/40">
           <AnimatePresence mode="wait">
             {activeTab === 'help' && (
               <motion.div
@@ -91,17 +116,17 @@ const Support = () => {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                className="space-y-16"
+                className="space-y-10"
               >
                 {/* Search Bar */}
-                <div className="relative max-w-2xl mx-auto">
-                   <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 w-6 h-6" />
+                <div className="relative max-w-xl mx-auto">
+                   <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
                    <input 
                     type="text" 
-                    placeholder="Search for articles, topics, keywords..."
+                    placeholder="Search for articles..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-16 pr-8 py-6 rounded-[2rem] border border-slate-100 bg-slate-50/50 outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-lg shadow-inner"
+                    className="w-full pl-14 pr-8 py-4 rounded-2xl border border-slate-100 bg-slate-50/50 outline-none focus:ring-2 focus:ring-emerald-500 transition-all text-base shadow-inner"
                    />
                    {searchQuery && (
                      <div className="absolute right-6 top-1/2 -translate-y-1/2">
@@ -111,19 +136,19 @@ const Support = () => {
                 </div>
 
                 {/* Categories */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {categories.map(cat => (
                     <motion.div 
                       key={cat.id}
                       whileHover={{ y: -5 }}
-                      className="p-8 bg-white rounded-3xl border border-slate-50 space-y-4 shadow-sm hover:shadow-xl transition-all cursor-pointer group"
+                      className="p-6 bg-white rounded-[2rem] border border-slate-50 space-y-3 shadow-sm hover:shadow-xl transition-all cursor-pointer group"
                     >
-                      <div className={`w-14 h-14 rounded-2xl bg-${cat.color}-50 text-${cat.color}-600 flex items-center justify-center`}>
-                        <cat.icon className="w-7 h-7" />
+                      <div className={`w-12 h-12 rounded-xl bg-${cat.color}-50 text-${cat.color}-600 flex items-center justify-center`}>
+                        <cat.icon className="w-6 h-6" />
                       </div>
-                      <h3 className="text-xl font-bold">{cat.title}</h3>
-                      <p className="text-slate-500 text-sm">{cat.text}</p>
-                      <div className="flex items-center text-emerald-600 font-bold text-sm group-hover:translate-x-1 transition-transform">
+                      <h3 className="text-lg font-bold">{cat.title}</h3>
+                      <p className="text-slate-500 text-xs">{cat.text}</p>
+                      <div className="flex items-center text-emerald-600 font-bold text-xs group-hover:translate-x-1 transition-transform">
                         <span>Explore</span> <ChevronRight className="w-4 h-4 ml-1" />
                       </div>
                     </motion.div>
@@ -131,8 +156,8 @@ const Support = () => {
                 </div>
 
                 {/* FAQ Accordion */}
-                <div className="space-y-6 max-w-3xl mx-auto">
-                    <h3 className="text-2xl font-bold text-center mb-8">Frequently Asked Questions</h3>
+                <div className="space-y-4 max-w-2xl mx-auto">
+                    <h3 className="text-xl font-bold text-center mb-6">Frequently Asked Questions</h3>
                     <div className="space-y-4">
                        {filteredFaq.length > 0 ? filteredFaq.map((item) => (
                           <div 
@@ -141,10 +166,10 @@ const Support = () => {
                           >
                              <button 
                                 onClick={() => setExpandedFaq(expandedFaq === item.id ? null : item.id)}
-                                className="w-full px-6 py-5 flex items-center justify-between text-left"
+                                className="w-full px-5 py-4 flex items-center justify-between text-left"
                              >
-                                <span className={`font-bold text-lg ${expandedFaq === item.id ? 'text-emerald-700' : 'text-slate-900'}`}>{item.q}</span>
-                                <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform ${expandedFaq === item.id ? 'rotate-180 text-emerald-500' : ''}`} />
+                                <span className={`font-bold text-base ${expandedFaq === item.id ? 'text-emerald-700' : 'text-slate-900'}`}>{item.q}</span>
+                                <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${expandedFaq === item.id ? 'rotate-180 text-emerald-500' : ''}`} />
                              </button>
                              <AnimatePresence>
                                 {expandedFaq === item.id && (
@@ -154,7 +179,7 @@ const Support = () => {
                                     exit={{ height: 0, opacity: 0 }}
                                     className="overflow-hidden"
                                   >
-                                    <div className="px-6 pb-6 text-slate-600 leading-relaxed border-t border-emerald-100/50 pt-4">
+                                    <div className="px-5 pb-5 text-slate-600 text-sm leading-relaxed border-t border-emerald-100/50 pt-3">
                                       {item.a}
                                     </div>
                                   </motion.div>
@@ -179,36 +204,36 @@ const Support = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="space-y-12"
+                className="space-y-8"
               >
                 {!showClaimForm ? (
-                  <div className="flex flex-col items-center justify-center text-center space-y-10 py-10">
-                    <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center shadow-lg">
-                      <FileText className="w-10 h-10" />
+                  <div className="flex flex-col items-center justify-center text-center space-y-6 py-4">
+                    <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center shadow-lg">
+                      <FileText className="w-7 h-7" />
                     </div>
-                    <div className="max-w-xl space-y-4">
-                      <h2 className="text-2xl font-bold">Smart Claims Process</h2>
-                      <p className="text-slate-500 text-base">Submit your claim digitally in less than 5 minutes. Track progress every step of the way.</p>
+                    <div className="max-w-md space-y-2">
+                      <h2 className="text-xl font-bold">Smart Claims Process</h2>
+                      <p className="text-slate-500 text-sm">Submit your claim digitally in less than 5 minutes. Track progress every step of the way.</p>
                     </div>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-4xl">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-3xl">
                       {[
                         { step: '01', title: 'Report', text: 'Quick details about incident' },
                         { step: '02', title: 'Review', text: 'AI & human verification' },
                         { step: '03', title: 'Payout', text: 'Direct bank transfer' }
                       ].map(s => (
-                        <div key={s.step} className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 relative group overflow-hidden">
-                          <div className="absolute -top-4 -right-4 text-7xl font-black text-emerald-600/5 group-hover:text-emerald-600/10 transition-colors">{s.step}</div>
-                          <span className="text-xl font-bold text-emerald-600">{s.step}</span>
-                          <h4 className="font-bold text-xl mt-4">{s.title}</h4>
-                          <p className="text-sm text-slate-500 mt-2">{s.text}</p>
+                        <div key={s.step} className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 relative group overflow-hidden">
+                          <div className="absolute -top-3 -right-3 text-5xl font-black text-emerald-600/5 group-hover:text-emerald-600/10 transition-colors">{s.step}</div>
+                          <span className="text-lg font-bold text-emerald-600">{s.step}</span>
+                          <h4 className="font-bold text-base mt-2">{s.title}</h4>
+                          <p className="text-xs text-slate-500 mt-1">{s.text}</p>
                         </div>
                       ))}
                     </div>
                     
                     <button 
                       onClick={() => setShowClaimForm(true)}
-                      className="btn-primary px-16 py-5 text-xl shadow-xl shadow-emerald-200"
+                      className="btn-primary px-10 py-3.5 text-lg shadow-xl shadow-emerald-200"
                     >
                       Log a New Claim
                     </button>
@@ -260,62 +285,62 @@ const Support = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="flex flex-col items-center justify-center text-center space-y-12 py-10"
+                className="flex flex-col items-center justify-center text-center space-y-8 py-4"
               >
-                <div className="w-24 h-24 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center shadow-lg relative">
-                   <RefreshCw className="w-10 h-10 animate-spin-slow" />
-                   <div className="absolute -top-1 -right-1 w-6 h-6 bg-emerald-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold">Pro</div>
+                <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center shadow-lg relative">
+                   <RefreshCw className="w-7 h-7 animate-spin-slow" />
+                   <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 text-white rounded-full flex items-center justify-center text-[8px] font-bold">Pro</div>
                 </div>
-                <div className="max-w-xl space-y-4">
-                  <h2 className="text-4xl font-bold">Hassle-free Renewals</h2>
-                  <p className="text-slate-500 text-lg">Never let your protection lapse. Manage auto-renewals and payment cycles with ease.</p>
+                <div className="max-w-md space-y-2">
+                  <h2 className="text-3xl font-bold">Hassle-free Renewals</h2>
+                  <p className="text-slate-500 text-base">Never let your protection lapse. Manage auto-renewals with ease.</p>
                 </div>
 
-                <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 w-full max-w-2xl shadow-xl space-y-8">
-                   <div className="flex items-center justify-between pb-6 border-b border-slate-100">
+                <div className="bg-white p-8 rounded-[2rem] border border-slate-100 w-full max-w-xl shadow-xl space-y-6">
+                   <div className="flex items-center justify-between pb-5 border-b border-slate-100">
                       <div className="text-left">
-                        <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Upcoming Renewal</p>
-                        <h4 className="text-2xl font-bold">Health Elite Plus</h4>
+                        <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mb-1">Upcoming Renewal</p>
+                        <h4 className="text-xl font-bold">Health Elite Plus</h4>
                       </div>
                       <div className="text-right">
-                        <p className="text-3xl font-black text-slate-900">₹6,800</p>
-                        <p className="text-xs text-slate-400 font-bold uppercase">per month</p>
+                        <p className="text-2xl font-black text-slate-900">₹6,800</p>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase">per month</p>
                       </div>
                    </div>
                    
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 text-left space-y-1">
-                         <p className="text-xs font-bold text-slate-400">Renewal Date</p>
-                         <p className="font-bold text-slate-900">June 12, 2026</p>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 text-left space-y-1">
+                         <p className="text-[10px] font-bold text-slate-400">Renewal Date</p>
+                         <p className="font-bold text-slate-900 text-sm">June 12, 2026</p>
                       </div>
-                      <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 text-left space-y-1">
-                         <p className="text-xs font-bold text-slate-400">Payment Mode</p>
+                      <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 text-left space-y-1">
+                         <p className="text-[10px] font-bold text-slate-400">Payment Mode</p>
                          <div className="flex items-center space-x-2">
-                           <div className="w-8 h-5 bg-slate-800 rounded"></div>
-                           <p className="font-bold text-slate-900 text-sm">Visa ending in 4242</p>
+                           <div className="w-6 h-4 bg-slate-800 rounded"></div>
+                           <p className="font-bold text-slate-900 text-xs">Visa ending in 4242</p>
                          </div>
                       </div>
                    </div>
 
-                   <label className="flex items-center justify-between p-6 bg-emerald-600/5 rounded-2xl border border-emerald-100 cursor-pointer group">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                          <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                   <label className="flex items-center justify-between p-5 bg-emerald-600/5 rounded-2xl border border-emerald-100 cursor-pointer group">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                          <CheckCircle2 className="w-5 h-5 text-emerald-600" />
                         </div>
                         <div className="text-left">
-                           <p className="font-bold text-slate-900">Auto-Renewal Active</p>
-                           <p className="text-xs text-slate-500">Your policy will automatically renew on June 12.</p>
+                           <p className="font-bold text-slate-900 text-sm">Auto-Renewal Active</p>
+                           <p className="text-[10px] text-slate-500">Your policy will automatically renew on June 12.</p>
                         </div>
                       </div>
-                      <div className="w-14 h-8 bg-emerald-600 rounded-full flex items-center px-1">
-                         <div className="w-6 h-6 bg-white rounded-full ml-auto"></div>
+                      <div className="w-12 h-6 bg-emerald-600 rounded-full flex items-center px-1">
+                         <div className="w-4 h-4 bg-white rounded-full ml-auto"></div>
                       </div>
                    </label>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-                  <button onClick={() => toast.success('Payment settings updated!')} className="btn-primary px-12 py-4">Manage Auto-Renewals</button>
-                  <button className="btn-secondary px-12 py-4">View All Policies</button>
+                <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
+                  <button onClick={() => toast.success('Payment settings updated!')} className="btn-primary px-8 py-3 text-sm">Manage Auto-Renewals</button>
+                  <button className="btn-secondary px-8 py-3 text-sm">View All Policies</button>
                 </div>
               </motion.div>
             )}
@@ -323,7 +348,7 @@ const Support = () => {
         </div>
 
         {/* Contact Selection & Form */}
-        <div className="mt-32 grid grid-cols-1 lg:grid-cols-3 gap-16">
+        <div id="contact-section" className="mt-32 grid grid-cols-1 lg:grid-cols-3 gap-16">
            <div className="lg:col-span-1 space-y-10">
               <div className="space-y-4">
                  <h2 className="text-4xl font-bold">Contact Our Experts</h2>

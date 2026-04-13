@@ -17,7 +17,7 @@ const Navbar = () => {
   }, []);
 
   const navLinks = [
-    { name: '', path: '/' },
+    { name: 'Home', path: '/' },
     { name: 'Life', path: '/life' },
     { name: 'Health', path: '/health' },
     { name: 'Car', path: '/car' },

@@ -1,7 +1,9 @@
-import { Shield, Clock, Gift, Settings, LogOut, LayoutDashboard, FileText, Activity, AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { Shield, Clock, Gift, Settings, LogOut, LayoutDashboard, FileText, Activity, AlertCircle, ShoppingBag, CreditCard } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Dashboard = () => {
+  const [activeTab, setActiveTab] = useState('Overview');
   const activePolicies = [
     { title: 'Health Elite', premium: '₹6,400/mo', status: 'Active', icon: Activity, color: 'emerald' },
     { title: 'Life SafeGuard', premium: '₹4,200/mo', status: 'Renewing Soon', icon: Shield, color: 'blue' },
@@ -25,15 +27,15 @@ const Dashboard = () => {
 
           <nav className="flex-grow space-y-2">
             {[
-              { label: 'Overview', icon: LayoutDashboard, active: true },
+              { label: 'Overview', icon: LayoutDashboard },
               { label: 'My Policies', icon: Shield },
-              { label: 'Claims History', icon: FileText },
-              { label: 'Account Settings', icon: Settings },
+            
             ].map((item) => (
               <button
                 key={item.label}
+                onClick={() => setActiveTab(item.label)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-semibold transition-all ${
-                  item.active ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100' : 'text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'
+                  activeTab === item.label ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100' : 'text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'
                 }`}
               >
                 <item.icon className="w-5 h-5" />
@@ -49,11 +51,11 @@ const Dashboard = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-grow p-6 lg:p-12 space-y-10">
+      <main className="flex-grow p-5 lg:p-10 space-y-8">
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">Welcome Back, Alex!</h1>
-            <p className="text-slate-500 text-sm">You have 2 active policies and 1 renewal coming up.</p>
+            <h1 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">Welcome Back, Alex!</h1>
+            <p className="text-slate-500 text-xs">You have 2 active policies and 1 renewal coming up.</p>
           </div>
           <div className="flex items-center space-x-4">
             <div className="bg-white p-2 rounded-full border border-slate-100 relative cursor-pointer">
@@ -65,7 +67,7 @@ const Dashboard = () => {
         </header>
 
         {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           
           {/* Active Policies */}
           <section className="xl:col-span-2 space-y-6">
@@ -78,7 +80,7 @@ const Dashboard = () => {
                 <motion.div 
                   key={policy.title}
                   whileHover={{ y: -5 }}
-                  className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm space-y-6"
+                  className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4"
                 >
                   <div className="flex justify-between">
                     <div className={`p-4 rounded-2xl bg-${policy.color}-50 text-${policy.color}-600`}>
@@ -89,26 +91,26 @@ const Dashboard = () => {
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold">{policy.title}</h3>
-                    <p className="text-lg font-medium text-slate-400 mt-1">{policy.premium}</p>
+                    <h3 className="text-lg font-bold">{policy.title}</h3>
+                    <p className="text-base font-medium text-slate-400 mt-0.5">{policy.premium}</p>
                   </div>
-                  <button className="w-full py-3 bg-slate-50 font-bold rounded-xl text-slate-700 hover:bg-slate-100 transition-colors">Manage Policy</button>
+                  <button className="w-full py-2.5 bg-slate-50 font-bold rounded-xl text-slate-700 text-sm hover:bg-slate-100 transition-colors">Manage Policy</button>
                 </motion.div>
               ))}
             </div>
           </section>
 
           {/* Sidebar Cards */}
-          <aside className="space-y-10">
+          <aside className="space-y-8">
             {/* Renewal Alert */}
-            <div className="bg-slate-900 p-8 rounded-[2.5rem] text-white space-y-6 relative overflow-hidden">
-               <Clock className="w-12 h-12 text-emerald-500" />
-               <div className="space-y-2">
-                 <h3 className="text-2xl font-bold">Upcoming Renewal</h3>
-                 <p className="text-slate-400 text-sm">Your life insurance policy expires in 12 days. Renew now to avoid gap in coverage.</p>
+            <div className="bg-slate-900 p-6 rounded-[2rem] text-white space-y-4 relative overflow-hidden">
+               <Clock className="w-10 h-10 text-emerald-500" />
+               <div className="space-y-1.5">
+                 <h3 className="text-xl font-bold">Upcoming Renewal</h3>
+                 <p className="text-slate-400 text-xs">Your life insurance policy expires in 12 days. Renew now to avoid gap in coverage.</p>
                </div>
-               <button className="w-full btn-primary py-4">Renew Safely</button>
-               <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-emerald-500/10 rounded-full"></div>
+               <button className="w-full btn-primary py-3 text-sm">Renew Safely</button>
+               <div className="absolute -bottom-10 -right-10 w-24 h-24 bg-emerald-500/10 rounded-full"></div>
             </div>
 
             {/* Personalized Offers */}
