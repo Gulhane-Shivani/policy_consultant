@@ -2,6 +2,7 @@ import Hero from '../components/home/Hero';
 import TrustBar from '../components/home/TrustBar';
 import AdvisorForm from '../components/advisor/AdvisorForm';
 import QuoteEngine from '../components/quote/QuoteEngine';
+import Reviews from '../components/home/Reviews';
 
 const Home = () => {
   return (
@@ -32,6 +33,9 @@ const Home = () => {
           <QuoteEngine />
         </div>
       </section>
+
+      {/* Reviews Section */}
+      <Reviews />
 
       {/* Why Choose Us */}
       <section className="container mx-auto px-6">
