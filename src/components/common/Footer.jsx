@@ -71,9 +71,9 @@ const Footer = () => {
         <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-xs">
           <p>© 2026 Policy Consultant. All rights reserved.</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="hover:text-emerald-500 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-emerald-500 transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-emerald-500 transition-colors">Cookie Policy</a>
+            <Link to="/privacy" className="hover:text-emerald-500 transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-emerald-500 transition-colors">Terms of Service</Link>
+            <Link to="/cookies" className="hover:text-emerald-500 transition-colors">Cookie Policy</Link>
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { CheckCircle2, Shield, Zap, TrendingUp, ArrowRight } from 'lucide-react';
 
 const InsuranceDetails = ({ title, description, icon: Icon, benefits, plans, color = 'emerald' }) => {
@@ -19,7 +20,7 @@ const InsuranceDetails = ({ title, description, icon: Icon, benefits, plans, col
               <p className="text-base text-slate-600 max-w-xl leading-relaxed">
                 {description}
               </p>
-              <button className="btn-primary py-2.5 px-6 text-sm">Get Your Quote</button>
+              <Link to="/plans" className="btn-primary py-2.5 px-6 text-sm inline-block">Get Your Quote</Link>
             </div>
             <div className={`lg:w-2/5 h-full min-h-[300px] bg-${color}-600 flex items-center justify-center relative overflow-hidden`}>
               <Icon className="w-48 h-48 text-white/20 absolute -right-16 -bottom-16 rotate-12" />
@@ -95,7 +96,7 @@ const InsuranceDetails = ({ title, description, icon: Icon, benefits, plans, col
           </div>
           
           <div className="mt-16 text-center">
-             <button className="btn-primary">Compare All Features</button>
+             <Link to="/plans" className="btn-primary">Compare All Features</Link>
           </div>
         </div>
       </section>
@@ -109,10 +110,10 @@ const InsuranceDetails = ({ title, description, icon: Icon, benefits, plans, col
               <h2 className="text-2xl lg:text-4xl font-bold">Ready to secure your future?</h2>
               <p className="text-emerald-100 text-base max-w-xl">Join thousands of happy customers who trust Policy Consultant for their protection.</p>
             </div>
-            <button className="group bg-white text-emerald-600 px-6 py-3 rounded-lg text-base font-bold flex items-center space-x-3 transition-all hover:shadow-2xl hover:bg-emerald-50 active:scale-95">
+            <Link to="/plans" className="group bg-white text-emerald-600 px-6 py-3 rounded-lg text-base font-bold flex items-center space-x-3 transition-all hover:shadow-2xl hover:bg-emerald-50 active:scale-95">
               <span>Get Started Now</span>
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
           </div>
         </div>
       </section>

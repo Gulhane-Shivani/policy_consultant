@@ -83,7 +83,7 @@ const Support = () => {
   };
 
   return (
-    <div className="pt-8 pb-16">
+    <div className="pb-16">
       <div className="container mx-auto px-6">
         <div className="text-center mb-8 space-y-2">
           <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">How can we help?</h1>

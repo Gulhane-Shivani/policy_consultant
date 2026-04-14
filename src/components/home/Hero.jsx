@@ -3,11 +3,18 @@ import { ShieldCheck, ArrowRight, Activity, Car, Briefcase } from 'lucide-react'
 import { Link } from 'react-router-dom';
 
 const Hero = () => {
+  const scrollToAdvisor = () => {
+    const element = document.getElementById('advisor');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="relative min-h-[90vh] flex items-center overflow-hidden bg-slate-50">
+    <div className="relative pt-12 pb-24 overflow-hidden bg-slate-50">
       {/* Mesh Gradient Background */}
       <div className="absolute inset-0 z-0 opacity-20 mesh-gradient"></div>
-      
+
       {/* Decorative blobs */}
       <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-200 rounded-full blur-3xl opacity-30 animate-pulse"></div>
       <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-300 rounded-full blur-3xl opacity-30 animate-pulse" style={{ animationDelay: '2s' }}></div>
@@ -24,23 +31,28 @@ const Hero = () => {
               <ShieldCheck className="w-5 h-5 text-emerald-600" />
               <span className="text-emerald-700 text-sm font-semibold uppercase tracking-wider">Trusted by 2M+ Users</span>
             </div>
-            
+
             <h1 className="text-3xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
               Smart Insurance <br />
               <span className="text-emerald-600">Decisions</span> Made <br />
               <span className="underline decoration-emerald-500/30">Simple</span>
             </h1>
-            
+
             <p className="text-lg text-slate-600 max-w-lg leading-relaxed">
               Get personalized AI-driven advice to find the perfect policy for you, your family, or your business in minutes.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
-              <button className="btn-primary flex items-center space-x-2 group w-full sm:w-auto justify-center">
+              <button
+                onClick={scrollToAdvisor}
+                className="btn-primary flex items-center space-x-2 group w-full sm:w-auto justify-center"
+              >
                 <span>Get Started</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="btn-secondary w-full sm:w-auto">Explore Plans</button>
+              <Link to="/plans" className="btn-secondary w-full sm:w-auto text-center">
+                Explore Plans
+              </Link>
             </div>
           </motion.div>
 
@@ -53,7 +65,7 @@ const Hero = () => {
             <div className="relative z-10 glass rounded-[2.5rem] p-8 shadow-2xl border-white/40">
               {/* Illustration Placeholder / 3D Style Elements */}
               <div className="grid grid-cols-2 gap-4">
-                <motion.div 
+                <motion.div
                   animate={{ y: [0, -10, 0] }}
                   transition={{ repeat: Infinity, duration: 3 }}
                   className="bg-emerald-600 p-8 rounded-3xl flex flex-col items-center justify-center text-white space-y-4 shadow-xl"
@@ -61,7 +73,7 @@ const Hero = () => {
                   <Activity className="w-12 h-12" />
                   <span className="font-bold">Health</span>
                 </motion.div>
-                <motion.div 
+                <motion.div
                   animate={{ y: [0, 10, 0] }}
                   transition={{ repeat: Infinity, duration: 4, delay: 0.5 }}
                   className="bg-slate-900 p-8 rounded-3xl flex flex-col items-center justify-center text-white space-y-4 shadow-xl"
@@ -69,7 +81,7 @@ const Hero = () => {
                   <Car className="w-12 h-12" />
                   <span className="font-bold">Auto</span>
                 </motion.div>
-                <motion.div 
+                <motion.div
                   animate={{ y: [0, 15, 0] }}
                   transition={{ repeat: Infinity, duration: 5, delay: 1 }}
                   className="bg-white p-8 rounded-3xl flex flex-col items-center justify-center text-emerald-600 space-y-4 shadow-xl border border-emerald-50"
@@ -94,7 +106,7 @@ const Hero = () => {
                 </div>
               </div>
             </div>
-            
+
             {/* Background Circle */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-emerald-50 rounded-full -z-10 blur-2xl"></div>
           </motion.div>

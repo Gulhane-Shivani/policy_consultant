@@ -19,34 +19,33 @@ const Dashboard = () => {
       {/* Sidebar Navigation - Fixed for desktop */}
       <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-slate-100 p-6 space-y-10">
         <div className="flex items-center space-x-2 px-2">
-            <div className="bg-emerald-600 p-2 rounded-xl">
-              <Shield className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-bold text-slate-900">Portal</span>
+          <div className="bg-emerald-600 p-2 rounded-xl">
+            <Shield className="w-5 h-5 text-white" />
           </div>
+          <span className="font-bold text-slate-900">Portal</span>
+        </div>
 
-          <nav className="flex-grow space-y-2">
-            {[
-              { label: 'Overview', icon: LayoutDashboard },
-              { label: 'My Policies', icon: Shield },            
-            ].map((item) => (
-              <button
-                key={item.label}
-                onClick={() => setActiveTab(item.label)}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-semibold transition-all ${
-                  activeTab === item.label ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100' : 'text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'
+        <nav className="flex-grow space-y-2">
+          {[
+            { label: 'Overview', icon: LayoutDashboard },
+            { label: 'My Policies', icon: Shield },
+          ].map((item) => (
+            <button
+              key={item.label}
+              onClick={() => setActiveTab(item.label)}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-semibold transition-all ${activeTab === item.label ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-100' : 'text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'
                 }`}
-              >
-                <item.icon className="w-5 h-5" />
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </nav>
+            >
+              <item.icon className="w-5 h-5" />
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </nav>
 
-          <button className="flex items-center space-x-3 px-4 py-3 text-red-500 font-semibold hover:bg-red-50 rounded-xl transition-all">
-            <LogOut className="w-5 h-5" />
-            <span>Logout</span>
-          </button>
+        <button className="flex items-center space-x-3 px-4 py-3 text-red-500 font-semibold hover:bg-red-50 rounded-xl transition-all">
+          <LogOut className="w-5 h-5" />
+          <span>Logout</span>
+        </button>
       </aside>
 
       {/* Main Content */}
@@ -58,8 +57,8 @@ const Dashboard = () => {
           </div>
           <div className="flex items-center space-x-4">
             <div className="bg-white p-2 rounded-full border border-slate-100 relative cursor-pointer">
-               <AlertCircle className="w-6 h-6 text-slate-400" />
-               <div className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></div>
+              <AlertCircle className="w-6 h-6 text-slate-400" />
+              <div className="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></div>
             </div>
             <div className="bg-emerald-100 px-4 py-2 rounded-xl font-bold text-emerald-700">Premium Member</div>
           </div>
@@ -67,7 +66,7 @@ const Dashboard = () => {
 
         {/* Dashboard Grid */}
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-          
+
           {/* Active Policies */}
           <section className="xl:col-span-2 space-y-6">
             <div className="flex justify-between items-center">
@@ -76,7 +75,7 @@ const Dashboard = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {activePolicies.map((policy) => (
-                <motion.div 
+                <motion.div
                   key={policy.title}
                   whileHover={{ y: -5 }}
                   className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4"
@@ -103,30 +102,30 @@ const Dashboard = () => {
           <aside className="space-y-8">
             {/* Renewal Alert */}
             <div className="bg-slate-900 p-6 rounded-[2rem] text-white space-y-4 relative overflow-hidden">
-               <Clock className="w-10 h-10 text-emerald-500" />
-               <div className="space-y-1.5">
-                 <h3 className="text-xl font-bold">Upcoming Renewal</h3>
-                 <p className="text-slate-400 text-xs">Your life insurance policy expires in 12 days. Renew now to avoid gap in coverage.</p>
-               </div>
-               <button className="w-full btn-primary py-3 text-sm">Renew Safely</button>
-               <div className="absolute -bottom-10 -right-10 w-24 h-24 bg-emerald-500/10 rounded-full"></div>
+              <Clock className="w-10 h-10 text-emerald-500" />
+              <div className="space-y-1.5">
+                <h3 className="text-xl font-bold">Upcoming Renewal</h3>
+                <p className="text-slate-400 text-xs">Your life insurance policy expires in 12 days. Renew now to avoid gap in coverage.</p>
+              </div>
+              <button className="w-full btn-primary py-3 text-sm">Renew Safely</button>
+              <div className="absolute -bottom-10 -right-10 w-24 h-24 bg-emerald-500/10 rounded-full"></div>
             </div>
 
             {/* Personalized Offers */}
             <div className="space-y-6">
-               <h2 className="text-xl font-bold flex items-center space-x-2">
-                  <Gift className="w-5 h-5 text-emerald-600" />
-                  <span>Exclusive Offers</span>
-               </h2>
-               <div className="space-y-4">
-                  {offers.map((offer) => (
-                    <div key={offer.title} className="p-6 bg-emerald-50 rounded-3xl border border-emerald-100 group cursor-pointer hover:bg-emerald-600 transition-all duration-300">
-                       <span className="text-xs font-bold bg-white text-emerald-600 px-2 py-1 rounded mb-2 inline-block shadow-sm">{offer.discount}</span>
-                       <h4 className="font-bold text-slate-900 group-hover:text-white transition-colors capitalize">{offer.title}</h4>
-                       <p className="text-emerald-700 text-xs mt-1 group-hover:text-emerald-100 transition-colors">{offer.text}</p>
-                    </div>
-                  ))}
-               </div>
+              <h2 className="text-xl font-bold flex items-center space-x-2">
+                <Gift className="w-5 h-5 text-emerald-600" />
+                <span>Exclusive Offers</span>
+              </h2>
+              <div className="space-y-4">
+                {offers.map((offer) => (
+                  <div key={offer.title} className="p-6 bg-emerald-50 rounded-3xl border border-emerald-100 group cursor-pointer hover:bg-emerald-600 transition-all duration-300">
+                    <span className="text-xs font-bold bg-white text-emerald-600 px-2 py-1 rounded mb-2 inline-block shadow-sm">{offer.discount}</span>
+                    <h4 className="font-bold text-slate-900 group-hover:text-white transition-colors capitalize">{offer.title}</h4>
+                    <p className="text-emerald-700 text-xs mt-1 group-hover:text-emerald-100 transition-colors">{offer.text}</p>
+                  </div>
+                ))}
+              </div>
             </div>
           </aside>
         </div>

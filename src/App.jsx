@@ -11,6 +11,9 @@ import Business from './pages/Business';
 import Dashboard from './pages/Dashboard';
 import Support from './pages/Support';
 import Plans from './pages/Plans';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import Cookies from './pages/Cookies';
 
 function App() {
   return (
@@ -29,6 +32,9 @@ function App() {
             <Route path="/plans" element={<Plans />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/support" element={<Support />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/cookies" element={<Cookies />} />
           </Routes>
         </main>
         <Footer />

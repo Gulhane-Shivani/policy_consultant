@@ -5,12 +5,12 @@ import QuoteEngine from '../components/quote/QuoteEngine';
 
 const Home = () => {
   return (
-    <div className="space-y-32 pb-32">
+    <div className="space-y-16 pb-16">
       <Hero />
       <TrustBar />
       
       {/* Smart Advisor Section */}
-      <section className="container mx-auto px-6">
+      <section id="advisor" className="container mx-auto px-6">
         <div className="text-center mb-10 space-y-3">
           <h2 className="text-2xl lg:text-3xl font-bold text-slate-900">Get Personalized Advice</h2>
           <p className="text-slate-500 max-w-2xl mx-auto text-base">
@@ -19,9 +19,9 @@ const Home = () => {
         </div>
         <AdvisorForm />
       </section>
-
+ 
       {/* Quote Engine Section */}
-      <section className="bg-slate-50 py-32">
+      <section className="bg-slate-50 py-16">
         <div className="container mx-auto px-6">
           <div className="text-center mb-10 space-y-3">
             <h2 className="text-2xl lg:text-3xl font-bold text-slate-900">Instant Quote Estimator</h2>
