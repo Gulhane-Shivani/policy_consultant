@@ -7,6 +7,8 @@ import {
   Send, Shield, CheckCircle2, AlertCircle, Upload
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { api } from '../utils/api';
+import { Loader2 } from 'lucide-react';
 
 const Support = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -75,11 +77,27 @@ const Support = () => {
     setShowClaimForm(false);
   };
 
-  const [contactData, setContactData] = useState({ name: '', email: '', message: '' });
-  const handleContactSubmit = (e) => {
+  const [contactData, setContactData] = useState({ 
+    full_name: '', 
+    email: '', 
+    phone: '',
+    insurance_type: 'General',
+    message: '' 
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleContactSubmit = async (e) => {
     e.preventDefault();
-    toast.success(`Thanks ${contactData.name}, we've received your message!`);
-    setContactData({ name: '', email: '', message: '' });
+    setIsSubmitting(true);
+    try {
+      await api.post('/contact', contactData);
+      toast.success(`Thanks ${contactData.full_name}, we've received your message!`);
+      setContactData({ full_name: '', email: '', phone: '', insurance_type: 'General', message: '' });
+    } catch (error) {
+      toast.error(error.message || 'Failed to send message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -384,8 +402,8 @@ const Support = () => {
                         <input 
                           type="text" 
                           placeholder="John Smith" 
-                          value={contactData.name}
-                          onChange={(e) => setContactData({...contactData, name: e.target.value})}
+                          value={contactData.full_name}
+                          onChange={(e) => setContactData({...contactData, full_name: e.target.value})}
                           className="w-full p-4 bg-slate-50/50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium"
                           required 
                         />
@@ -402,6 +420,33 @@ const Support = () => {
                         />
                       </div>
                    </div>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-700">Phone Number</label>
+                        <input 
+                          type="tel" 
+                          placeholder="+1 (555) 000-0000" 
+                          value={contactData.phone}
+                          onChange={(e) => setContactData({...contactData, phone: e.target.value})}
+                          className="w-full p-4 bg-slate-50/50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium"
+                          required 
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-sm font-bold text-slate-700">Insurance Type</label>
+                        <select 
+                          value={contactData.insurance_type}
+                          onChange={(e) => setContactData({...contactData, insurance_type: e.target.value})}
+                          className="w-full p-4 bg-slate-50/50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium appearance-none"
+                        >
+                          <option value="General">General Inquiry</option>
+                          <option value="Life">Life Insurance</option>
+                          <option value="Health">Health Insurance</option>
+                          <option value="Car">Car Insurance</option>
+                          <option value="Business">Business Insurance</option>
+                        </select>
+                      </div>
+                   </div>
                    <div className="space-y-2">
                       <label className="text-sm font-bold text-slate-700">How can we help?</label>
                       <textarea 
@@ -413,9 +458,19 @@ const Support = () => {
                         required
                       ></textarea>
                    </div>
-                   <button type="submit" className="w-full btn-primary py-5 rounded-[2rem] text-xl font-bold flex items-center justify-center space-x-3 group">
-                      <span>Send Message</span>
-                      <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                   <button 
+                      type="submit" 
+                      disabled={isSubmitting}
+                      className="w-full btn-primary py-5 rounded-[2rem] text-xl font-bold flex items-center justify-center space-x-3 group disabled:opacity-70"
+                   >
+                      {isSubmitting ? (
+                        <Loader2 className="w-6 h-6 animate-spin" />
+                      ) : (
+                        <>
+                          <span>Send Message</span>
+                          <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        </>
+                      )}
                    </button>
                 </form>
               </div>

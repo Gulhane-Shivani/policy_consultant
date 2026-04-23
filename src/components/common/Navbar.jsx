@@ -1,12 +1,29 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Shield, Menu, X, User } from 'lucide-react';
+import { Shield, Menu, X, User, LogOut, ShieldAlert } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) setUser(JSON.parse(storedUser));
+  }, [location]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
+    setUser(null);
+    toast.success('Logged out successfully');
+    navigate('/login');
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,10 +68,28 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-            <Link to="/dashboard" className="btn-primary flex items-center space-x-2 py-2 px-4 whitespace-nowrap">
-              <User className="w-4 h-4" />
-              <span>Dashboard</span>
-            </Link>
+            {user ? (
+              <div className="flex items-center space-x-4">
+                {user.is_admin && (
+                  <Link to="/admin" className="text-sm font-bold text-slate-600 hover:text-emerald-600 flex items-center space-x-1">
+                    <ShieldAlert className="w-4 h-4" />
+                    <span>Admin</span>
+                  </Link>
+                )}
+                <Link to="/dashboard" className="btn-primary flex items-center space-x-2 py-2 px-4 whitespace-nowrap">
+                  <User className="w-4 h-4" />
+                  <span>{user.full_name?.split(' ')[0]}</span>
+                </Link>
+                <button onClick={handleLogout} className="p-2 text-slate-400 hover:text-red-500 transition-colors" title="Logout">
+                  <LogOut className="w-5 h-5" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-3">
+                <Link to="/login" className="text-sm font-bold text-slate-600 hover:text-emerald-600 px-4 py-2 whitespace-nowrap">Sign In</Link>
+                <Link to="/register" className="btn-primary py-2 px-6 rounded-xl font-bold text-sm shadow-lg shadow-emerald-100 whitespace-nowrap">Get Started</Link>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -86,15 +121,43 @@ const Navbar = () => {
                   {link.name}
                 </Link>
               ))}
-              <div className="pt-4 border-t border-slate-50">
-                <Link
-                  to="/dashboard"
-                  className="btn-primary flex items-center justify-center space-x-2 w-full py-4 text-lg"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <User className="w-5 h-5" />
-                  <span>Dashboard</span>
-                </Link>
+              <div className="pt-4 border-t border-slate-50 space-y-3">
+                {user ? (
+                  <>
+                    <Link
+                      to="/dashboard"
+                      className="btn-primary flex items-center justify-center space-x-2 w-full py-4 text-lg"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <User className="w-5 h-5" />
+                      <span>{user.full_name}</span>
+                    </Link>
+                    <button
+                      onClick={() => { handleLogout(); setIsOpen(false); }}
+                      className="flex items-center justify-center space-x-2 w-full py-4 text-lg text-red-500 font-bold border border-red-100 rounded-2xl hover:bg-red-50"
+                    >
+                      <LogOut className="w-5 h-5" />
+                      <span>Logout</span>
+                    </button>
+                  </>
+                ) : (
+                  <div className="grid grid-cols-2 gap-4">
+                    <Link
+                      to="/login"
+                      className="flex items-center justify-center py-4 text-lg font-bold text-slate-600 border border-slate-100 rounded-2xl"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      to="/register"
+                      className="btn-primary flex items-center justify-center py-4 text-lg font-bold"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      Sign Up
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>
