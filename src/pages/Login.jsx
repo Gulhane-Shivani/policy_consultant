@@ -23,11 +23,19 @@ const Login = () => {
       
       const data = await api.post('/login', formData);
       
-      localStorage.setItem('access_token', data.access_token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      
-      toast.success('Login successful!');
-      navigate('/dashboard');
+      if (data.access_token) {
+        localStorage.setItem('access_token', data.access_token);
+        if (data.user) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+          toast.success('Login successful!');
+          navigate('/dashboard');
+        } else {
+          console.error('User data missing in login response:', data);
+          toast.error('Login response incomplete');
+        }
+      } else {
+        toast.error('Invalid login response');
+      }
     } catch (error) {
       toast.error(error.message || 'Invalid credentials');
     } finally {
