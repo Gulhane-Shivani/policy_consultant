@@ -77,7 +77,7 @@ const Navbar = () => {
             ))}
             {user ? (
               <div className="flex items-center space-x-4">
-                {user.is_admin && (
+                {user.role === 'admin' && (
                   <Link to="/admin" className="text-sm font-bold text-slate-600 hover:text-emerald-600 flex items-center space-x-1">
                     <ShieldAlert className="w-4 h-4" />
                     <span>Admin</span>
@@ -131,6 +131,16 @@ const Navbar = () => {
               <div className="pt-4 border-t border-slate-50 space-y-3">
                 {user ? (
                   <>
+                    {user.role === 'admin' && (
+                      <Link
+                        to="/admin"
+                        className="flex items-center justify-center space-x-2 w-full py-4 text-lg font-bold text-slate-600 border border-slate-100 rounded-2xl hover:bg-slate-50"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        <ShieldAlert className="w-5 h-5" />
+                        <span>Admin Panel</span>
+                      </Link>
+                    )}
                     <Link
                       to="/dashboard"
                       className="btn-primary flex items-center justify-center space-x-2 w-full py-4 text-lg"

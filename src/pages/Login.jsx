@@ -28,7 +28,11 @@ const Login = () => {
         if (data.user) {
           localStorage.setItem('user', JSON.stringify(data.user));
           toast.success('Login successful!');
-          navigate('/dashboard');
+          if (data.user.role === 'admin') {
+            navigate('/admin');
+          } else {
+            navigate('/dashboard');
+          }
         } else {
           console.error('User data missing in login response:', data);
           toast.error('Login response incomplete');

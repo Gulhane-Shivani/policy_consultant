@@ -25,8 +25,8 @@ const Admin = () => {
       // In a real app, you might want to run these in parallel
       const usersData = await api.get('/admin/users');
       const contactsData = await api.get('/admin/contacts');
-      setUsers(usersData);
-      setContacts(contactsData);
+      setUsers(usersData.users || []);
+      setContacts(contactsData.contacts || []);
     } catch (error) {
       toast.error('Failed to fetch admin data. Redirecting...');
       // apiRequest utility handles 401 and redirects to /login
@@ -131,8 +131,8 @@ const Admin = () => {
                           <p className="text-xs text-slate-400">{user.mobile}</p>
                         </td>
                         <td className="px-8 py-6">
-                          <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase ${user.is_admin ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
-                            {user.is_admin ? 'Admin' : 'User'}
+                          <span className={`px-4 py-1.5 rounded-full text-xs font-black uppercase ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
+                            {user.role}
                           </span>
                         </td>
                         <td className="px-8 py-6">

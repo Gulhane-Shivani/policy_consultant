@@ -1,9 +1,15 @@
 import { useState } from 'react';
-import { Shield, Clock, Gift, Settings, LogOut, LayoutDashboard, FileText, Activity, AlertCircle, ShoppingBag, CreditCard } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Shield, Clock, Gift, Settings, LogOut, LayoutDashboard, FileText, Activity, AlertCircle, ShoppingBag, CreditCard, ShieldAlert } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('Overview');
+  const [user] = useState(() => {
+    const saved = localStorage.getItem('user');
+    return saved && saved !== 'undefined' ? JSON.parse(saved) : null;
+  });
+
   const activePolicies = [
     { title: 'Health Elite', premium: '₹6,400/mo', status: 'Active', icon: Activity, color: 'emerald' },
     { title: 'Life SafeGuard', premium: '₹4,200/mo', status: 'Renewing Soon', icon: Shield, color: 'blue' },
@@ -42,7 +48,14 @@ const Dashboard = () => {
           ))}
         </nav>
 
-        <button className="flex items-center space-x-3 px-4 py-3 text-red-500 font-semibold hover:bg-red-50 rounded-xl transition-all">
+        <button 
+          onClick={() => {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+          }}
+          className="flex items-center space-x-3 px-4 py-3 text-red-500 font-semibold hover:bg-red-50 rounded-xl transition-all w-full text-left"
+        >
           <LogOut className="w-5 h-5" />
           <span>Logout</span>
         </button>
@@ -52,7 +65,9 @@ const Dashboard = () => {
       <main className="flex-grow p-5 lg:p-10 space-y-8">
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">Welcome Back, Alex!</h1>
+            <h1 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600">
+              Welcome Back, {user?.full_name?.split(' ')[0] || 'User'}!
+            </h1>
             <p className="text-slate-500 text-xs">You have 2 active policies and 1 renewal coming up.</p>
           </div>
           <div className="flex items-center space-x-4">
@@ -112,6 +127,12 @@ const Dashboard = () => {
             </div>
 
             {/* Personalized Offers */}
+            {user.role === 'admin' && (
+              <Link to="/admin" className="text-sm font-bold text-slate-600 hover:text-emerald-600 flex items-center space-x-1">
+                <ShieldAlert className="w-4 h-4" />
+                <span>Admin</span>
+              </Link>
+            )}
             <div className="space-y-6">
               <h2 className="text-xl font-bold flex items-center space-x-2">
                 <Gift className="w-5 h-5 text-emerald-600" />
