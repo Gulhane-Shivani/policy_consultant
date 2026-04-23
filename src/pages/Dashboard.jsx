@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Shield, Clock, Gift, Settings, LogOut, LayoutDashboard, FileText, Activity, AlertCircle, ShoppingBag, CreditCard, ShieldAlert } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -9,6 +9,14 @@ const Dashboard = () => {
     const saved = localStorage.getItem('user');
     return saved && saved !== 'undefined' ? JSON.parse(saved) : null;
   });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user && user.role === 'admin') {
+      navigate('/admin');
+    }
+  }, [user, navigate]);
 
   const activePolicies = [
     { title: 'Health Elite', premium: '₹6,400/mo', status: 'Active', icon: Activity, color: 'emerald' },
@@ -127,12 +135,6 @@ const Dashboard = () => {
             </div>
 
             {/* Personalized Offers */}
-            {user.role === 'admin' && (
-              <Link to="/admin" className="text-sm font-bold text-slate-600 hover:text-emerald-600 flex items-center space-x-1">
-                <ShieldAlert className="w-4 h-4" />
-                <span>Admin</span>
-              </Link>
-            )}
             <div className="space-y-6">
               <h2 className="text-xl font-bold flex items-center space-x-2">
                 <Gift className="w-5 h-5 text-emerald-600" />
