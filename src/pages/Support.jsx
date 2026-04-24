@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, RefreshCw, HelpCircle, Phone, Mail, 
   MessageSquare, Search, ChevronRight, ChevronDown, 
-  Send, Shield, CheckCircle2, AlertCircle, Upload
+  Send, Shield, CheckCircle2, AlertCircle, Upload, ArrowRight
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { api } from '../utils/api';
@@ -76,6 +76,22 @@ const Support = () => {
     );
     setShowClaimForm(false);
   };
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      const parsedUser = JSON.parse(savedUser);
+      setUser(parsedUser);
+      setContactData(prev => ({
+        ...prev,
+        full_name: parsedUser.full_name || '',
+        email: parsedUser.email || '',
+        phone: parsedUser.mobile || ''
+      }));
+    }
+  }, []);
 
   const [contactData, setContactData] = useState({ 
     full_name: '', 
@@ -394,7 +410,7 @@ const Support = () => {
            </div>
 
            <div className="lg:col-span-2">
-              <div className="glass p-10 lg:p-12 rounded-[3.5rem] shadow-xl border-white/50">
+              <div className="glass p-10 lg:p-12 rounded-[3.5rem] shadow-xl border-white/50 transition-all duration-500">
                 <form onSubmit={handleContactSubmit} className="space-y-6">
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
@@ -404,7 +420,8 @@ const Support = () => {
                           placeholder="John Smith" 
                           value={contactData.full_name}
                           onChange={(e) => setContactData({...contactData, full_name: e.target.value})}
-                          className="w-full p-4 bg-slate-50/50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium"
+                          disabled={!user}
+                          className="w-full p-4 bg-slate-50/50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium disabled:cursor-not-allowed"
                           required 
                         />
                       </div>
@@ -415,7 +432,8 @@ const Support = () => {
                           placeholder="john@example.com" 
                           value={contactData.email}
                           onChange={(e) => setContactData({...contactData, email: e.target.value})}
-                          className="w-full p-4 bg-slate-50/50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium"
+                          disabled={!user}
+                          className="w-full p-4 bg-slate-50/50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium disabled:cursor-not-allowed"
                           required 
                         />
                       </div>
@@ -425,10 +443,11 @@ const Support = () => {
                         <label className="text-sm font-bold text-slate-700">Phone Number</label>
                         <input 
                           type="tel" 
-                          placeholder="+1 (555) 000-0000" 
+                          placeholder="10 Digit Number" 
                           value={contactData.phone}
                           onChange={(e) => setContactData({...contactData, phone: e.target.value})}
-                          className="w-full p-4 bg-slate-50/50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium"
+                          disabled={!user}
+                          className="w-full p-4 bg-slate-50/50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium disabled:cursor-not-allowed"
                           required 
                         />
                       </div>
@@ -437,7 +456,8 @@ const Support = () => {
                         <select 
                           value={contactData.insurance_type}
                           onChange={(e) => setContactData({...contactData, insurance_type: e.target.value})}
-                          className="w-full p-4 bg-slate-50/50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium appearance-none"
+                          disabled={!user}
+                          className="w-full p-4 bg-slate-50/50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium appearance-none disabled:cursor-not-allowed"
                         >
                           <option value="General">General Inquiry</option>
                           <option value="Life">Life Insurance</option>
@@ -454,24 +474,39 @@ const Support = () => {
                         placeholder="Type your message here..." 
                         value={contactData.message}
                         onChange={(e) => setContactData({...contactData, message: e.target.value})}
-                        className="w-full p-6 bg-slate-50/50 border border-slate-100 rounded-[2rem] outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium"
+                        disabled={!user}
+                        className="w-full p-6 bg-slate-50/50 border border-slate-100 rounded-[2rem] outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-medium disabled:cursor-not-allowed"
                         required
                       ></textarea>
                    </div>
-                   <button 
-                      type="submit" 
-                      disabled={isSubmitting}
-                      className="w-full btn-primary py-5 rounded-[2rem] text-xl font-bold flex items-center justify-center space-x-3 group disabled:opacity-70"
-                   >
-                      {isSubmitting ? (
-                        <Loader2 className="w-6 h-6 animate-spin" />
-                      ) : (
-                        <>
-                          <span>Send Message</span>
-                          <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                        </>
-                      )}
-                   </button>
+
+                   <div className="flex justify-center pt-4">
+                     {user ? (
+                       <button 
+                          type="submit" 
+                          disabled={isSubmitting}
+                          className="btn-primary px-12 py-3.5 rounded-2xl text-lg font-bold flex items-center justify-center space-x-3 group disabled:opacity-70 shadow-xl shadow-emerald-100"
+                       >
+                          {isSubmitting ? (
+                            <Loader2 className="w-6 h-6 animate-spin" />
+                          ) : (
+                            <>
+                              <span>Send Message</span>
+                              <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                            </>
+                          )}
+                       </button>
+                     ) : (
+                       <button 
+                          type="button"
+                          onClick={() => window.location.href = '/login'}
+                          className="bg-emerald-600 text-white px-12 py-3.5 rounded-2xl text-lg font-bold flex items-center justify-center space-x-3 hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-100 group"
+                       >
+                          <span>Sign In to Contact Us</span>
+                          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                       </button>
+                     )}
+                   </div>
                 </form>
               </div>
            </div>
