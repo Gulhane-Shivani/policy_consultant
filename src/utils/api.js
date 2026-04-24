@@ -1,4 +1,9 @@
-const API_URL = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_URL ;
+const getApiUrl = () => {
+  const url = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_URL || '';
+  return url.endsWith('/') ? url.slice(0, -1) : url;
+};
+
+const API_URL = getApiUrl();
 
 
 /**
@@ -28,6 +33,9 @@ export const apiRequest = async (endpoint, options = {}) => {
   }
 
   try {
+    if (!API_URL) {
+      throw new Error('API Base URL is not configured. Please set VITE_API_URL.');
+    }
     const response = await fetch(`${API_URL}${endpoint}`, config);
     const data = await response.json();
 
