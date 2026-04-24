@@ -19,6 +19,12 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
 
+    if (!/^[0-9]{10}$/.test(formData.mobile)) {
+      toast.error('Mobile number must be exactly 10 digits');
+      setLoading(false);
+      return;
+    }
+
     if (formData.password.length < 8) {
       toast.error('Password must be at least 8 characters long');
       setLoading(false);
