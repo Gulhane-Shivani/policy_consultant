@@ -24,6 +24,25 @@ import AdminOverview from './pages/dashboard/AdminOverview';
 import SuperAdminConsole from './pages/dashboard/SuperAdminConsole';
 import CSRHub from './pages/dashboard/CSRHub';
 
+// New Dashboard Pages
+import Policies from './pages/dashboard/Policies';
+import Renewals from './pages/dashboard/Renewals';
+import Payments from './pages/dashboard/Payments';
+import Notifications from './pages/dashboard/Notifications';
+import Performance from './pages/dashboard/Performance';
+import Customers from './pages/dashboard/Customers';
+import Tasks from './pages/dashboard/Tasks';
+import Communication from './pages/dashboard/Communication';
+import StaffMembers from './pages/dashboard/StaffMembers';
+import CustomerManagement from './pages/dashboard/CustomerManagement';
+import PolicyPlans from './pages/dashboard/PolicyPlans';
+import Reports from './pages/dashboard/Reports';
+import MasterSettings from './pages/dashboard/MasterSettings';
+import SystemConfig from './pages/dashboard/SystemConfig';
+import ClaimsSupport from './pages/dashboard/ClaimsSupport';
+import TicketsQueries from './pages/dashboard/TicketsQueries';
+import PolicyServicing from './pages/dashboard/PolicyServicing';
+
 // Wrapper to conditionally show Navbar/Footer
 const AppLayout = ({ children }) => {
   const location = useLocation();
@@ -68,22 +87,43 @@ function App() {
           <Route path="/admin" element={<DashboardLayout />}>
             <Route index element={<AdminOverview />} />
             <Route path="dashboard" element={<AdminOverview />} />
-            {/* Other admin routes can be added here */}
-            <Route path="users" element={<Admin />} /> {/* Reuse existing Admin for User Control */}
+            <Route path="policies" element={<Policies />} />
+            <Route path="renewals" element={<Renewals />} />
+            <Route path="payments" element={<Payments />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="performance" element={<Performance />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="tasks" element={<Tasks />} />
+            <Route path="communication" element={<Communication />} />
+            <Route path="users" element={<Admin />} />
           </Route>
 
           {/* Super Admin Dashboard Routes */}
           <Route path="/super-admin" element={<DashboardLayout />}>
             <Route index element={<SuperAdminConsole />} />
             <Route path="dashboard" element={<SuperAdminConsole />} />
-            {/* Other super admin routes */}
+            <Route path="staff" element={<StaffMembers />} />
+            <Route path="customers" element={<CustomerManagement />} />
+            <Route path="policies" element={<Policies />} />
+            <Route path="plans" element={<PolicyPlans />} />
+            <Route path="renewals" element={<Renewals />} />
+            <Route path="payments" element={<Payments />} />
+            <Route path="notifications" element={<Notifications />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="settings" element={<MasterSettings />} />
+            <Route path="config" element={<SystemConfig />} />
           </Route>
 
           {/* CSR Dashboard Routes */}
           <Route path="/csr" element={<DashboardLayout />}>
             <Route index element={<CSRHub />} />
             <Route path="dashboard" element={<CSRHub />} />
-            {/* Other CSR routes */}
+            <Route path="customers" element={<Customers />} />
+            <Route path="claims" element={<ClaimsSupport />} />
+            <Route path="renewals" element={<Renewals />} />
+            <Route path="tickets" element={<TicketsQueries />} />
+            <Route path="servicing" element={<PolicyServicing />} />
+            <Route path="communication" element={<Communication />} />
           </Route>
         </Routes>
       </AppLayout>

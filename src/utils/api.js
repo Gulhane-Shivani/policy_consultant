@@ -1,11 +1,10 @@
-// const getApiUrl = () => {
-//   const url = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_URL || '';
-//   return url.endsWith('/') ? url.slice(0, -1) : url;
-// };
 const getApiUrl = () => {
-  return "http://127.0.0.1:8000/"
+  const url = "http://127.0.0.1:8000";
+  // Remove trailing slash if present to avoid double slashes when joining with endpoints
+  return url.endsWith('/') ? url.slice(0, -1) : url;
 };
 const API_URL = getApiUrl();
+console.log('[API] Base URL:', API_URL);
 
 
 
