@@ -1,9 +1,12 @@
+// const getApiUrl = () => {
+//   const url = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_URL || '';
+//   return url.endsWith('/') ? url.slice(0, -1) : url;
+// };
 const getApiUrl = () => {
-  const url = import.meta.env.VITE_API_URL || import.meta.env.NEXT_PUBLIC_API_URL || '';
-  return url.endsWith('/') ? url.slice(0, -1) : url;
+  return "http://127.0.0.1:8000/"
 };
-
 const API_URL = getApiUrl();
+
 
 
 /**
