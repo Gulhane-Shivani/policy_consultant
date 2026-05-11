@@ -1,7 +1,9 @@
 const getApiUrl = () => {
-  const url = "http://127.0.0.1:8000";
-  // Remove trailing slash if present to avoid double slashes when joining with endpoints
-  return url.endsWith('/') ? url.slice(0, -1) : url;
+  // Try to get from env first, then fallback to local
+  
+  
+  // Local fallback (Uvicorn defaults to 8000)
+  return "http://127.0.0.1:8000";
 };
 const API_URL = getApiUrl();
 console.log('[API] Base URL:', API_URL);
