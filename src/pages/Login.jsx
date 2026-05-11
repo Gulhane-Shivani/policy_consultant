@@ -28,10 +28,24 @@ const Login = () => {
         if (data.user) {
           localStorage.setItem('user', JSON.stringify(data.user));
           toast.success('Login successful!');
-          if (data.user.role === 'admin') {
-            navigate('/admin');
-          } else {
-            navigate('/dashboard');
+          
+          // Role-based redirection logic
+          const role = data.user.role;
+          switch (role) {
+            case 'super_admin':
+              navigate('/super-admin');
+              break;
+            case 'admin':
+              navigate('/admin');
+              break;
+            case 'agent':
+            case 'csr':
+              navigate('/staff');
+              break;
+            case 'user':
+            default:
+              navigate('/dashboard');
+              break;
           }
         } else {
           console.error('User data missing in login response:', data);

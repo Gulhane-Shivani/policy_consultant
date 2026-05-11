@@ -11,8 +11,9 @@ const DashboardLayout = () => {
   const getRole = () => {
     if (location.pathname.startsWith('/admin')) return 'admin';
     if (location.pathname.startsWith('/super-admin')) return 'super-admin';
+    if (location.pathname.startsWith('/staff')) return 'staff';
     if (location.pathname.startsWith('/csr')) return 'csr';
-    return 'admin'; // Default
+    return 'user'; // Default
   };
 
   const role = getRole();

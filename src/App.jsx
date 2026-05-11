@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Navbar from './components/common/Navbar';
 import Footer from './components/common/Footer';
@@ -17,12 +17,15 @@ import Cookies from './pages/Cookies';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Admin from './pages/Admin';
+import RoleProtectedRoute from './components/common/RoleProtectedRoute';
+import PublicRoute from './components/common/PublicRoute';
 
 // Dashboard Components
 import DashboardLayout from './components/dashboard/DashboardLayout';
 import AdminOverview from './pages/dashboard/AdminOverview';
 import SuperAdminConsole from './pages/dashboard/SuperAdminConsole';
 import CSRHub from './pages/dashboard/CSRHub';
+import AgentPortal from './pages/dashboard/AgentPortal';
 
 // New Dashboard Pages
 import Policies from './pages/dashboard/Policies';
@@ -48,6 +51,7 @@ const AppLayout = ({ children }) => {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/admin') || 
                       location.pathname.startsWith('/super-admin') || 
+                      location.pathname.startsWith('/staff') ||
                       location.pathname.startsWith('/csr');
 
   return (
@@ -69,22 +73,43 @@ function App() {
       <AppLayout>
         <Routes>
           {/* Main Website Routes */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={
+            <PublicRoute>
+              <Home />
+            </PublicRoute>
+          } />
           <Route path="/life" element={<Life />} />
           <Route path="/health" element={<Health />} />
           <Route path="/car" element={<Car />} />
           <Route path="/business" element={<Business />} />
           <Route path="/plans" element={<Plans />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          {/* User Dashboard */}
+          <Route path="/dashboard" element={
+            <RoleProtectedRoute allowedRoles={['user']}>
+              <Dashboard />
+            </RoleProtectedRoute>
+          } />
           <Route path="/support" element={<Support />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/cookies" element={<Cookies />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          } />
+          <Route path="/register" element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          } />
 
           {/* Admin Dashboard Routes */}
-          <Route path="/admin" element={<DashboardLayout />}>
+          <Route path="/admin" element={
+            <RoleProtectedRoute allowedRoles={['admin', 'super_admin']}>
+              <DashboardLayout />
+            </RoleProtectedRoute>
+          }>
             <Route index element={<AdminOverview />} />
             <Route path="dashboard" element={<AdminOverview />} />
             <Route path="policies" element={<Policies />} />
@@ -99,7 +124,11 @@ function App() {
           </Route>
 
           {/* Super Admin Dashboard Routes */}
-          <Route path="/super-admin" element={<DashboardLayout />}>
+          <Route path="/super-admin" element={
+            <RoleProtectedRoute allowedRoles={['super_admin']}>
+              <DashboardLayout />
+            </RoleProtectedRoute>
+          }>
             <Route index element={<SuperAdminConsole />} />
             <Route path="dashboard" element={<SuperAdminConsole />} />
             <Route path="staff" element={<StaffMembers />} />
@@ -114,10 +143,24 @@ function App() {
             <Route path="config" element={<SystemConfig />} />
           </Route>
 
-          {/* CSR Dashboard Routes */}
-          <Route path="/csr" element={<DashboardLayout />}>
-            <Route index element={<CSRHub />} />
-            <Route path="dashboard" element={<CSRHub />} />
+          {/* Staff/CSR Dashboard Routes */}
+          <Route path="/staff" element={
+            <RoleProtectedRoute allowedRoles={['csr', 'agent', 'admin', 'super_admin']}>
+              <DashboardLayout />
+            </RoleProtectedRoute>
+          }>
+            <Route index element={
+              (() => {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                return user.role === 'agent' ? <AgentPortal /> : <CSRHub />;
+              })()
+            } />
+            <Route path="dashboard" element={
+              (() => {
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                return user.role === 'agent' ? <AgentPortal /> : <CSRHub />;
+              })()
+            } />
             <Route path="customers" element={<Customers />} />
             <Route path="claims" element={<ClaimsSupport />} />
             <Route path="renewals" element={<Renewals />} />
@@ -125,6 +168,9 @@ function App() {
             <Route path="servicing" element={<PolicyServicing />} />
             <Route path="communication" element={<Communication />} />
           </Route>
+
+          {/* Legacy CSR route redirection or alias */}
+          <Route path="/csr/*" element={<Navigate to="/staff" replace />} />
         </Routes>
       </AppLayout>
     </Router>

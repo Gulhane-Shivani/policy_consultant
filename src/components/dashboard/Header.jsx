@@ -9,9 +9,20 @@ const Header = ({ role }) => {
     switch (role) {
       case 'admin': return 'Operations Manager';
       case 'super-admin': return 'Super Administrator';
+      case 'staff':
       case 'csr': return 'Customer Service Representative';
+      case 'agent': return 'Insurance Agent';
       default: return 'User';
     }
+  };
+
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : { full_name: 'User', role: 'user' };
+
+  const handleSignOut = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('access_token');
+    window.location.href = '/login';
   };
 
   return (
@@ -39,10 +50,10 @@ const Header = ({ role }) => {
             className="flex items-center space-x-3 p-1.5 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all"
           >
             <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black">
-              JD
+              {user.full_name?.charAt(0) || 'U'}
             </div>
             <div className="text-left hidden md:block">
-              <p className="text-xs font-black text-slate-900 leading-tight">John Doe</p>
+              <p className="text-xs font-black text-slate-900 leading-tight">{user.full_name || 'User'}</p>
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">{getRoleLabel()}</p>
             </div>
             <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
@@ -68,7 +79,10 @@ const Header = ({ role }) => {
                   <span>Settings</span>
                 </button>
                 <div className="my-2 border-t border-slate-100"></div>
-                <button className="w-full flex items-center space-x-3 px-3 py-2.5 text-red-600 hover:bg-red-50 rounded-xl transition-all font-bold text-sm">
+                <button 
+                  onClick={handleSignOut}
+                  className="w-full flex items-center space-x-3 px-3 py-2.5 text-red-600 hover:bg-red-50 rounded-xl transition-all font-bold text-sm"
+                >
                   <LogOut className="w-4 h-4" />
                   <span>Sign Out</span>
                 </button>

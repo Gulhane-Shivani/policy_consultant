@@ -4,45 +4,27 @@ import {
   LayoutDashboard, FileText, RefreshCw, CreditCard, 
   Bell, Users, UserCheck, Shield, MessageSquare, 
   Settings, Database, BarChart3, HelpCircle, ChevronRight,
-  UserCircle2, PieChart, LifeBuoy
+  UserCircle2, PieChart, LifeBuoy, LogOut
 } from 'lucide-react';
 
 const Sidebar = ({ role }) => {
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : { full_name: 'John Doe', role: 'user' };
+  
   const getNavItems = () => {
+    // Shared items
+    const profileItem = { label: 'Personal Profile', icon: UserCircle2, path: '/dashboard/profile' }; // Example path
+    
+    // Inquiry Management (Shared by staff roles)
+    const inquiryItems = [
+      { label: "Today's Tasks", icon: LayoutDashboard, path: '/staff/dashboard' },
+      { label: 'Customer 360°', icon: Users, path: '/staff/customers' },
+      { label: 'Renewal Desk', icon: RefreshCw, path: '/staff/renewals' },
+      { label: 'Tickets & Queries', icon: MessageSquare, path: '/staff/tickets' },
+      { label: 'Communications', icon: MessageSquare, path: '/staff/communication' },
+    ];
+
     switch (role) {
-      case 'admin':
-        return [
-          {
-            group: 'Operations',
-            items: [
-              { label: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
-              { label: 'Policy Management', icon: FileText, path: '/admin/policies' },
-              { label: 'Renewals', icon: RefreshCw, path: '/admin/renewals' },
-              { label: 'Payments', icon: CreditCard, path: '/admin/payments' },
-              { label: 'Notifications', icon: Bell, path: '/admin/notifications' },
-            ]
-          },
-          {
-            group: 'Performance',
-            items: [
-              { label: 'Team Performance', icon: BarChart3, path: '/admin/performance' },
-              { label: 'Customer 360°', icon: Users, path: '/admin/customers' },
-              { label: 'Approvals & Tasks', icon: UserCheck, path: '/admin/tasks' },
-            ]
-          },
-          {
-            group: 'Enterprise',
-            items: [
-              { label: 'Communication', icon: MessageSquare, path: '/admin/communication' },
-            ]
-          },
-          {
-            group: 'System',
-            items: [
-              { label: 'User Control', icon: Shield, path: '/admin/users' },
-            ]
-          }
-        ];
       case 'super-admin':
         return [
           {
@@ -51,7 +33,7 @@ const Sidebar = ({ role }) => {
               { label: 'Dashboard', icon: LayoutDashboard, path: '/super-admin/dashboard' },
               { 
                 label: 'User Management', 
-                icon: Users, 
+                icon: Shield, 
                 subItems: [
                   { label: 'Staff Members', path: '/super-admin/staff' },
                   { label: 'Customers', path: '/super-admin/customers' }
@@ -67,32 +49,63 @@ const Sidebar = ({ role }) => {
               },
               { label: 'Renewals', icon: RefreshCw, path: '/super-admin/renewals' },
               { label: 'Payments', icon: CreditCard, path: '/super-admin/payments' },
-              { label: 'Notifications', icon: Bell, path: '/super-admin/notifications' },
               { label: 'Reports', icon: PieChart, path: '/super-admin/reports' },
               { label: 'Master Settings', icon: Settings, path: '/super-admin/settings' },
               { label: 'System Config', icon: Database, path: '/super-admin/config' },
             ]
+          },
+          {
+            group: 'Account',
+            items: [profileItem]
           }
         ];
-      case 'csr':
+      case 'admin':
         return [
           {
-            group: 'Primary Tabs',
+            group: 'Operations',
             items: [
-              { label: "Today's Tasks", icon: LayoutDashboard, path: '/csr/dashboard' },
-              { label: 'Customer 360°', icon: Users, path: '/csr/customers' },
-              { label: 'Claims Support', icon: LifeBuoy, path: '/csr/claims' },
-              { label: 'Renewal Desk', icon: RefreshCw, path: '/csr/renewals' },
-              { label: 'Tickets & Queries', icon: MessageSquare, path: '/csr/tickets' },
-              { label: 'Policy Servicing', icon: FileText, path: '/csr/servicing' },
-              { label: 'Communications', icon: MessageSquare, path: '/csr/communication' },
+              { label: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
+              { label: 'Policy Management', icon: FileText, path: '/admin/policies' },
+              { label: 'Renewals', icon: RefreshCw, path: '/admin/renewals' },
+              { label: 'Payments', icon: CreditCard, path: '/admin/payments' },
             ]
+          },
+          {
+            group: 'Inquiry Management',
+            items: inquiryItems
+          },
+          {
+            group: 'Account',
+            items: [profileItem]
+          }
+        ];
+      case 'staff':
+      case 'csr':
+      case 'agent':
+        return [
+          {
+            group: 'Inquiry Management',
+            items: inquiryItems
+          },
+          {
+            group: 'Account',
+            items: [profileItem]
           }
         ];
       default:
-        return [];
+        return [
+          {
+            group: 'Customer Portal',
+            items: [
+              { label: 'My Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+              { label: 'My Policies', icon: Shield, path: '/dashboard/policies' },
+              profileItem
+            ]
+          }
+        ];
     }
   };
+
 
   const navItems = getNavItems();
 
@@ -160,16 +173,30 @@ const Sidebar = ({ role }) => {
         </div>
       )}
 
-      <div className="p-6 border-t border-slate-800 flex items-center space-x-3">
-        <div className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center">
-          <UserCircle2 className="w-6 h-6 text-slate-400" />
+      <div className="p-6 border-t border-slate-800 space-y-4">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center font-bold text-indigo-400 border border-slate-700">
+            {user.full_name?.charAt(0) || 'U'}
+          </div>
+          <div className="flex-grow overflow-hidden">
+            <p className="text-sm font-bold truncate text-slate-200">{user.full_name || 'User'}</p>
+            <p className="text-[10px] text-slate-500 font-bold uppercase truncate">
+              {role.replace('-', ' ')}
+            </p>
+          </div>
         </div>
-        <div className="flex-grow overflow-hidden">
-          <p className="text-sm font-bold truncate">John Doe</p>
-          <p className="text-[10px] text-slate-500 font-bold uppercase truncate">
-            {role.replace('-', ' ')}
-          </p>
-        </div>
+        
+        <button 
+          onClick={() => {
+            localStorage.removeItem('user');
+            localStorage.removeItem('access_token');
+            window.location.href = '/login';
+          }}
+          className="w-full flex items-center justify-center space-x-2 py-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all group"
+        >
+          <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+          <span>Sign Out</span>
+        </button>
       </div>
     </div>
   );
