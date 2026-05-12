@@ -32,6 +32,7 @@ import SuperAdminDashboard from './pages/dashboard/super-admin/Dashboard';
 import StaffMembers from './pages/dashboard/super-admin/StaffMembers';
 import CustomerManagement from './pages/dashboard/super-admin/CustomerManagement';
 import PolicyPlans from './pages/dashboard/super-admin/PolicyPlans';
+import PlanDetailView from './pages/dashboard/super-admin/PlanDetailView';
 import Reports from './pages/dashboard/super-admin/Reports';
 import MasterSettings from './pages/dashboard/super-admin/MasterSettings';
 import SystemConfig from './pages/dashboard/super-admin/SystemConfig';
@@ -142,6 +143,7 @@ function App() {
             <Route path="customers" element={<CustomerManagement />} />
             <Route path="policies" element={<Policies />} />
             <Route path="plans" element={<PolicyPlans />} />
+            <Route path="plans/:id" element={<PlanDetailView />} />
             <Route path="renewals" element={<Renewals />} />
             <Route path="payments" element={<Payments />} />
             <Route path="notifications" element={<Notifications />} />

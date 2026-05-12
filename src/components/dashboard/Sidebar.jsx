@@ -4,7 +4,7 @@ import {
   LayoutDashboard, FileText, RefreshCw, CreditCard,
   Bell, Users, UserCheck, Shield, MessageSquare,
   Settings, Database, BarChart3, HelpCircle, ChevronRight,
-  UserCircle2, PieChart, LifeBuoy, LogOut, ChevronDown
+  UserCircle2, PieChart, LifeBuoy, LogOut, ChevronDown, ShieldCheck
 } from 'lucide-react';
 
 const Sidebar = ({ role }) => {
@@ -71,7 +71,7 @@ const Sidebar = ({ role }) => {
           {
             group: 'Inquiry Management',
             items: [
-              { label: "Today's Tasks", icon: LayoutDashboard, path: '/admin/tasks' },
+              
               { label: 'Customer 360°', icon: Users, path: '/admin/customers' },
               { label: 'Communications', icon: MessageSquare, path: '/admin/communication' },
             ]
@@ -88,7 +88,7 @@ const Sidebar = ({ role }) => {
             items: [
               { label: 'Dashboard', icon: LayoutDashboard, path: '/agent/dashboard' },
               { label: 'My Leads', icon: Users, path: '/agent/customers' },
-              { label: 'Renewal Follow-ups', icon: RefreshCw, path: '/agent/renewals' },
+              { label: 'Renewal , icon: RefreshCw, path: '/agent/renewals' },
               { label: 'Communication Hub', icon: MessageSquare, path: '/agent/communication' },
             ]
           },

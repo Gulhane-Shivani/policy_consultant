@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Briefcase, Package, Settings,
   ArrowUpRight, ArrowDownRight,
-  MoreVertical, Trash2, CheckCircle, Search, Filter,
+  MoreVertical, Trash2, CheckCircle, CheckCircle2, Search, Filter,
   Plus, X, Edit3, Eye, Shield, DollarSign, Activity, List, Users
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,43 +11,123 @@ import { api } from '../../../utils/api';
 import { toast } from 'react-hot-toast';
 
 const PolicyPlans = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [filterCategory, setFilterCategory] = useState('All');
+  const [filterProvider, setFilterProvider] = useState('All');
 
-  const providers = ['LIC', 'HDFC ERGO', 'ICICI Lombard', 'Star Health', 'Bajaj Allianz'];
+  const providers = [
+    'Care Health', 'Niva Bupa', 'Star Health', 'Aditya Birla',
+    'HDFC Life', 'ICICI Prudential', 'LIC of India',
+    'Digit Insurance', 'ICICI Lombard', 'TATA AIG', 'Bajaj Allianz'
+  ];
 
   const [formData, setFormData] = useState({
     plan_id: '',
     name: '',
-    category: 'Life',
-    term: '10 Years',
+    category: 'Health',
+    term: '1 Year',
     basePremium: '',
     benefits: '',
     coverage: '',
     provider: providers[0],
     status: 'Active',
+    howToClaim: '',
+    verdict: ''
   });
 
   const [stats, setStats] = useState([
     { label: 'Active Plans', value: '0', change: '+0', icon: Briefcase, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Avg. Premium', value: '₹0', change: '+0%', icon: Package, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Avg. Monthly Premium', value: '₹0', change: '+0%', icon: Package, color: 'text-emerald-600', bg: 'bg-emerald-50' },
     { label: 'Policy Categories', value: '4', change: 'Stable', icon: List, color: 'text-amber-600', bg: 'bg-amber-50' },
   ]);
 
   const fetchPlans = async () => {
     try {
       setLoading(true);
-      // Mock data for initial implementation
       const mockData = [
-        { id: 1, plan_id: 'PLAN-01', name: 'Elite Life Plus', category: 'Life', term: '20 Years', basePremium: '12000', benefits: 'High coverage, Low premium', coverage: '₹50L - ₹1Cr', provider: 'LIC', status: 'Active' },
-        { id: 2, plan_id: 'PLAN-02', name: 'Health Secure', category: 'Health', term: '1 Year', basePremium: '4500', benefits: 'Cashless hospitalisation', coverage: '₹5L - ₹10L', provider: 'HDFC ERGO', status: 'Active' },
-        { id: 3, plan_id: 'PLAN-03', name: 'Auto Guard', category: 'Car', term: '1 Year', basePremium: '3000', benefits: 'Zero Dep, Engine cover', coverage: 'IDV based', provider: 'ICICI Lombard', status: 'Draft' },
-        { id: 4, plan_id: 'PLAN-04', name: 'Business Pro', category: 'Business', term: '5 Years', basePremium: '25000', benefits: 'Comprehensive liability', coverage: '₹2Cr - ₹5Cr', provider: 'Bajaj Allianz', status: 'Active' },
+        { 
+          id: 1, plan_id: 'PLAN-H1', name: 'CARE SUPREME DISCOUNTED', category: 'Health', term: '1 Year', basePremium: '615', 
+          benefits: '• No room rent limit\n• Unlimited restoration\n• Global Treatment\n• OPD Consultations', 
+          coverage: '5 Lakh', provider: 'Care Health', status: 'Active',
+          howToClaim: '1. Visit Network Hospital 2. Show Policy ID 3. Cashless approval in 2 hours.',
+          verdict: 'Comprehensive health coverage designed for families with priority hospital networks.'
+        },
+        { 
+          id: 2, plan_id: 'PLAN-H2', name: 'REASSURE 2.0 TITANIUM+', category: 'Health', term: '1 Year', basePremium: '628', 
+          benefits: '• No room rent limit\n• 100% no claim bonus\n• Modern Treatment\n• Zero Room Limit', 
+          coverage: '5 Lakh', provider: 'Niva Bupa', status: 'Active',
+          howToClaim: '1. Intimate via App 2. Upload Bills 3. Payout in 48 hours for non-network.',
+          verdict: 'Elite medical protection with zero-deductibles and instant renewal discounts.'
+        },
+        { 
+          id: 3, plan_id: 'PLAN-H3', name: 'COMPREHENSIVE INDIVIDUAL', category: 'Health', term: '1 Year', basePremium: '708', 
+          benefits: '• Single Private A/C Room\n• 100% restoration\n• Air Ambulance\n• Second Opinion', 
+          coverage: '5 Lakh', provider: 'Star Health', status: 'Active',
+          howToClaim: '1. Call 24/7 Helpline 2. Pre-auth in 1 hour 3. Treatment starts.',
+          verdict: 'Reliable individual health insurance with a vast network of 10,000+ hospitals.'
+        },
+        { 
+          id: 4, plan_id: 'PLAN-H4', name: 'ACTIVE ONE MAX', category: 'Health', term: '1 Year', basePremium: '517', 
+          benefits: '• No room rent limit\n• 100% no claim bonus\n• Health Returns\n• Chronic Care', 
+          coverage: '5 Lakh', provider: 'Aditya Birla', status: 'Active',
+          howToClaim: '1. Simple QR scan at hospital 2. Verified via App 3. Automated Payout.',
+          verdict: 'Modern insurance for the active generation, rewarding a healthy lifestyle.'
+        },
+        { 
+          id: 5, plan_id: 'PLAN-L1', name: 'TERM SMART GUARD', category: 'Life', term: 'Whole Life', basePremium: '1200', 
+          benefits: '• Whole life cover\n• Terminal illness benefit\n• Level Premium\n• Rider Options', 
+          coverage: '1 Crore', provider: 'HDFC Life', status: 'Active',
+          howToClaim: '1. Family notifies company 2. Documents via Email 3. Fast-track Payout.',
+          verdict: 'Maximum security for your family with flexible payouts and critical illness protection.'
+        },
+        { 
+          id: 6, plan_id: 'PLAN-L2', name: 'IPROTECT SMART', category: 'Life', term: 'Up to 85 yrs', basePremium: '1150', 
+          benefits: '• Accidental death cover\n• Critical illness rider\n• Life Stage Upgrades\n• Cancer Cover', 
+          coverage: '1 Crore', provider: 'ICICI Prudential', status: 'Active',
+          howToClaim: '1. One-click Claim 2. Physical audit 3. Full settlement guaranteed.',
+          verdict: 'Intelligent term insurance that adjusts its coverage based on your life stages.'
+        },
+        { 
+          id: 7, plan_id: 'PLAN-L3', name: 'STANDARD TERM PLAN', category: 'Life', term: '35 Years', basePremium: '900', 
+          benefits: '• Government backed\n• Tax savings U/S 80C\n• High Trust\n• Low Rejection', 
+          coverage: '50 Lakh', provider: 'LIC of India', status: 'Active',
+          howToClaim: '1. Visit nearest branch 2. Submit form 3. Cheque delivery.',
+          verdict: 'Trust-backed government term plan providing simple and reliable life cover.'
+        },
+        { 
+          id: 8, plan_id: 'PLAN-C1', name: 'ECO DRIVE COMPREHENSIVE', category: 'Car', term: '1 Year', basePremium: '450', 
+          benefits: '• Zero depreciation\n• 24/7 Roadside support\n• Self Inspection\n• Zero Paper', 
+          coverage: 'IDV 8L', provider: 'Digit Insurance', status: 'Active',
+          howToClaim: '1. Upload Photo 2. Get Approval 3. Drive to Garage.',
+          verdict: 'Paperless car insurance with 1-hour inspection and cashless repairs.'
+        },
+        { 
+          id: 9, plan_id: 'PLAN-C2', name: 'MOTOR SECURE PLUS', category: 'Car', term: '1 Year', basePremium: '520', 
+          benefits: '• Fast tag enabled\n• Cashless garage mesh\n• Key Replacement\n• Tyre Cover', 
+          coverage: 'IDV 10L', provider: 'ICICI Lombard', status: 'Active',
+          howToClaim: '1. Call Towing 2. Workshop drop 3. Get Car back.',
+          verdict: 'The standard for motor protection in India, offering comprehensive coverage.'
+        },
+        { 
+          id: 10, plan_id: 'PLAN-B1', name: 'SMB LIABILITY PRO', category: 'Business', term: '1 Year', basePremium: '2500', 
+          benefits: '• Professional indemnity\n• Cyber liability cover\n• Cyber Safe\n• Director Cover', 
+          coverage: '50 Lakh', provider: 'TATA AIG', status: 'Active',
+          howToClaim: '1. Case Notification 2. Advisor assigned 3. Legal assist.',
+          verdict: 'Protect your professional venture from legal liabilities and cyber threats.'
+        },
+        { 
+          id: 11, plan_id: 'PLAN-B2', name: 'ASSET PROTECTION ELITE', category: 'Business', term: '1 Year', basePremium: '4200', 
+          benefits: '• Fire & burglary cover\n• Public liability\n• Theft Cover\n• Machinery Breakdown', 
+          coverage: '1 Crore', provider: 'Bajaj Allianz', status: 'Active',
+          howToClaim: '1. Loss assessment 2. Audit 3. Direct settlement.',
+          verdict: 'Total management of your business risks, from fire to third-party liabilities.'
+        }
       ];
       setData(mockData);
       updateStats(mockData);
@@ -61,8 +142,8 @@ const PolicyPlans = () => {
     const active = plans.filter(p => p.status === 'Active').length;
     const avg = plans.length > 0 ? Math.round(plans.reduce((acc, p) => acc + parseInt(p.basePremium), 0) / plans.length) : 0;
     setStats([
-      { label: 'Active Plans', value: active.toString(), change: '+2', icon: Briefcase, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-      { label: 'Avg. Premium', value: `₹${avg}`, change: '+5.4%', icon: Package, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+      { label: 'Active Plans', value: active.toString(), change: '+7', icon: Briefcase, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+      { label: 'Avg. Monthly Premium', value: `₹${avg}`, change: '+12.4%', icon: Package, color: 'text-emerald-600', bg: 'bg-emerald-50' },
       { label: 'Policy Categories', value: '4', change: 'Stable', icon: List, color: 'text-amber-600', bg: 'bg-amber-50' },
     ]);
   };
@@ -78,15 +159,17 @@ const PolicyPlans = () => {
       setSelectedPlan(plan);
     } else {
       setFormData({
-        plan_id: `PLAN-0${data.length + 1}`,
+        plan_id: `PLAN-${Date.now().toString().slice(-4)}`,
         name: '',
-        category: 'Life',
-        term: '10 Years',
+        category: 'Health',
+        term: '1 Year',
         basePremium: '',
         benefits: '',
         coverage: '',
         provider: providers[0],
         status: 'Active',
+        howToClaim: '',
+        verdict: ''
       });
       setIsEditing(false);
     }
@@ -127,10 +210,34 @@ const PolicyPlans = () => {
     }
   };
 
-  const filteredData = data.filter(p => 
-    p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    p.plan_id.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const getProviderLogo = (provider) => {
+    const colors = {
+      'Care Health': 'bg-amber-100 text-amber-600',
+      'Niva Bupa': 'bg-emerald-100 text-emerald-600',
+      'Star Health': 'bg-teal-100 text-teal-600',
+      'Aditya Birla': 'bg-rose-100 text-rose-600',
+      'HDFC Life': 'bg-indigo-100 text-indigo-600',
+      'ICICI Prudential': 'bg-violet-100 text-violet-600',
+      'LIC of India': 'bg-orange-100 text-orange-600',
+      'Digit Insurance': 'bg-amber-50 text-amber-500',
+      'ICICI Lombard': 'bg-blue-100 text-blue-600',
+      'TATA AIG': 'bg-slate-100 text-slate-600',
+      'Bajaj Allianz': 'bg-slate-50 text-slate-500'
+    };
+    return (
+      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-[10px] ${colors[provider] || 'bg-slate-100 text-slate-400'}`}>
+        {provider.split(' ').map(n => n[0]).join('').slice(0, 2)}
+      </div>
+    );
+  };
+
+  const filteredData = data.filter(p => {
+    const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          p.plan_id.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = filterCategory === 'All' || p.category === filterCategory;
+    const matchesProvider = filterProvider === 'All' || p.provider === filterProvider;
+    return matchesSearch && matchesCategory && matchesProvider;
+  });
 
   return (
     <div className="space-y-8 pb-12">
@@ -176,7 +283,34 @@ const PolicyPlans = () => {
             <h2 className="text-xl font-black text-slate-900 tracking-tight">Active Plan Catalog</h2>
             <p className="text-sm font-bold text-slate-400 uppercase tracking-tighter">Configure product specifications</p>
           </div>
-          <div className="flex items-center space-x-3">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="relative">
+              <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <select 
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                className="pl-10 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold appearance-none outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all cursor-pointer"
+              >
+                <option value="All">All Categories</option>
+                <option value="Health">Health</option>
+                <option value="Life">Life</option>
+                <option value="Car">Car</option>
+                <option value="Business">Business</option>
+              </select>
+            </div>
+
+            <div className="relative">
+              <Shield className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <select 
+                value={filterProvider}
+                onChange={(e) => setFilterProvider(e.target.value)}
+                className="pl-10 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold appearance-none outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all cursor-pointer"
+              >
+                <option value="All">All Providers</option>
+                {providers.map(p => <option key={p} value={p}>{p}</option>)}
+              </select>
+            </div>
+
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input 
@@ -209,14 +343,16 @@ const PolicyPlans = () => {
                   <td className="px-8 py-6">
                     <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-tighter">{item.category}</span>
                   </td>
-                  <td className="px-8 py-6 font-bold text-slate-500">{item.provider}</td>
+                  <td className="px-8 py-6">
+                    <div className="flex items-center space-x-3">
+                      {getProviderLogo(item.provider)}
+                      <span className="font-bold text-slate-600">{item.provider}</span>
+                    </div>
+                  </td>
                   <td className="px-8 py-6 text-right">
                     <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-all">
                       <button 
-                        onClick={() => {
-                          setSelectedPlan(item);
-                          setIsDetailModalOpen(true);
-                        }}
+                        onClick={() => navigate(`/super-admin/plans/${item.id}`)}
                         className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
                       >
                         <Eye className="w-5 h-5" />
@@ -356,67 +492,6 @@ const PolicyPlans = () => {
                   </button>
                 </div>
               </form>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* Detail View Modal */}
-      <AnimatePresence>
-        {isDetailModalOpen && selectedPlan && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-6">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsDetailModalOpen(false)} className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" />
-            <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="relative w-full max-w-2xl bg-white rounded-[3rem] shadow-2xl overflow-hidden p-10">
-              <div className="flex justify-between items-start mb-8">
-                <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl">
-                    {selectedPlan.category.charAt(0)}
-                  </div>
-                  <div>
-                    <h2 className="text-3xl font-black text-slate-900 tracking-tighter">{selectedPlan.name}</h2>
-                    <p className="text-emerald-600 font-bold uppercase text-[10px] tracking-widest">{selectedPlan.provider} • {selectedPlan.category} Plan</p>
-                  </div>
-                </div>
-                <button onClick={() => setIsDetailModalOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-all">
-                  <X className="w-6 h-6 text-slate-400" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-8 mb-8">
-                <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Base Premium</p>
-                  <p className="text-2xl font-black text-slate-900">₹{selectedPlan.basePremium}</p>
-                </div>
-                <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Standard Term</p>
-                  <p className="text-2xl font-black text-slate-900">{selectedPlan.term}</p>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <div>
-                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center">
-                    <Shield className="w-4 h-4 mr-2 text-emerald-500" />
-                    Coverage Summary
-                  </h4>
-                  <p className="text-slate-900 font-black text-lg">{selectedPlan.coverage}</p>
-                </div>
-                <div>
-                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center">
-                    <Activity className="w-4 h-4 mr-2 text-emerald-500" />
-                    Plan Benefits
-                  </h4>
-                  <p className="text-slate-600 font-bold text-sm leading-relaxed whitespace-pre-line">{selectedPlan.benefits}</p>
-                </div>
-              </div>
-
-              <div className="mt-10 pt-8 border-t border-slate-100 flex justify-between items-center">
-                <div className="flex -space-x-2">
-                  {[1,2,3].map(i => <div key={i} className="w-10 h-10 rounded-full border-4 border-white bg-slate-200" />)}
-                  <div className="w-10 h-10 rounded-full border-4 border-white bg-emerald-50 text-emerald-600 flex items-center justify-center text-[10px] font-black">+42</div>
-                </div>
-                <p className="text-xs font-bold text-slate-400">45 active policies under this plan</p>
-              </div>
             </motion.div>
           </div>
         )}
