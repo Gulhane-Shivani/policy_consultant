@@ -8,7 +8,7 @@ const Header = ({ role }) => {
   const getRoleLabel = () => {
     switch (role) {
       case 'admin': return 'Operations Manager';
-      case 'super-admin': return 'Super Administrator';
+      case 'super_admin': return 'Super Administrator';
       case 'staff':
       case 'csr': return 'Customer Service Representative';
       case 'agent': return 'Insurance Agent';

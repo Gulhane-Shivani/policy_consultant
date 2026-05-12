@@ -6,7 +6,7 @@ import {
   Plus, X, Mail, Phone as PhoneIcon, Lock
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { api } from '../../utils/api';
+import { api } from '../../../utils/api';
 import { toast } from 'react-hot-toast';
 
 const StaffMembers = () => {

@@ -6,7 +6,7 @@ import {
   ChevronRight, ArrowRight
 } from 'lucide-react';
 
-const CSRHub = () => {
+const CSRDashboard = () => {
   const [tasks] = useState([
     { id: 1, title: 'Callback: Sarah Jenkins', priority: 'High', time: '10:30 AM', type: 'Claim Follow-up' },
     { id: 2, title: 'Review: Policy Renewal #4829', priority: 'Medium', time: '11:15 AM', type: 'Renewal' },
@@ -19,7 +19,7 @@ const CSRHub = () => {
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tighter">CSR Agent Hub</h1>
-          <p className="text-slate-500 font-bold">Good morning, John. You have {tasks.length} tasks today.</p>
+          <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Policy Consultant • Support Terminal</p>
         </div>
         <div className="text-right">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">System Status</p>
@@ -61,7 +61,7 @@ const CSRHub = () => {
             {tasks.map((task) => (
               <div key={task.id} className="p-6 flex items-center justify-between hover:bg-slate-50/50 transition-all group">
                 <div className="flex items-center space-x-4">
-                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black ${task.priority === 'High' ? 'bg-rose-50 text-rose-500' : task.priority === 'Medium' ? 'bg-amber-50 text-amber-500' : 'bg-emerald-50 text-emerald-500'}`}>
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black ${task.priority === 'High' ? 'bg-rose-50 text-rose-500' : task.priority === 'Medium' ? 'bg-amber-50 text-amber-500' : 'bg-emerald-50 text-emerald-600'}`}>
                     <Clock className="w-6 h-6" />
                   </div>
                   <div>
@@ -140,4 +140,4 @@ const CSRHub = () => {
   );
 };
 
-export default CSRHub;
+export default CSRDashboard;

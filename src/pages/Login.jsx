@@ -39,8 +39,10 @@ const Login = () => {
               navigate('/admin');
               break;
             case 'agent':
+              navigate('/agent');
+              break;
             case 'csr':
-              navigate('/staff');
+              navigate('/csr');
               break;
             case 'user':
             default:

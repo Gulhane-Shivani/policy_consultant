@@ -8,7 +8,6 @@ import Life from './pages/Life';
 import Health from './pages/Health';
 import Car from './pages/Car';
 import Business from './pages/Business';
-import Dashboard from './pages/Dashboard';
 import Support from './pages/Support';
 import Plans from './pages/Plans';
 import Privacy from './pages/Privacy';
@@ -22,37 +21,49 @@ import PublicRoute from './components/common/PublicRoute';
 
 // Dashboard Components
 import DashboardLayout from './components/dashboard/DashboardLayout';
-import AdminOverview from './pages/dashboard/AdminOverview';
-import SuperAdminConsole from './pages/dashboard/SuperAdminConsole';
-import CSRHub from './pages/dashboard/CSRHub';
-import AgentPortal from './pages/dashboard/AgentPortal';
 
-// New Dashboard Pages
-import Policies from './pages/dashboard/Policies';
-import Renewals from './pages/dashboard/Renewals';
-import Payments from './pages/dashboard/Payments';
-import Notifications from './pages/dashboard/Notifications';
-import Performance from './pages/dashboard/Performance';
-import Customers from './pages/dashboard/Customers';
-import Tasks from './pages/dashboard/Tasks';
-import Communication from './pages/dashboard/Communication';
-import StaffMembers from './pages/dashboard/StaffMembers';
-import CustomerManagement from './pages/dashboard/CustomerManagement';
-import PolicyPlans from './pages/dashboard/PolicyPlans';
-import Reports from './pages/dashboard/Reports';
-import MasterSettings from './pages/dashboard/MasterSettings';
-import SystemConfig from './pages/dashboard/SystemConfig';
-import ClaimsSupport from './pages/dashboard/ClaimsSupport';
-import TicketsQueries from './pages/dashboard/TicketsQueries';
-import PolicyServicing from './pages/dashboard/PolicyServicing';
+// Admin Pages
+import AdminDashboard from './pages/dashboard/admin/Dashboard';
+import Performance from './pages/dashboard/admin/Performance';
+import Tasks from './pages/dashboard/admin/Tasks';
+
+// Super Admin Pages
+import SuperAdminDashboard from './pages/dashboard/super-admin/Dashboard';
+import StaffMembers from './pages/dashboard/super-admin/StaffMembers';
+import CustomerManagement from './pages/dashboard/super-admin/CustomerManagement';
+import PolicyPlans from './pages/dashboard/super-admin/PolicyPlans';
+import Reports from './pages/dashboard/super-admin/Reports';
+import MasterSettings from './pages/dashboard/super-admin/MasterSettings';
+import SystemConfig from './pages/dashboard/super-admin/SystemConfig';
+
+// CSR Pages
+import CSRDashboard from './pages/dashboard/csr/Dashboard';
+import ClaimsSupport from './pages/dashboard/csr/ClaimsSupport';
+import TicketsQueries from './pages/dashboard/csr/TicketsQueries';
+import PolicyServicing from './pages/dashboard/csr/PolicyServicing';
+
+// Agent Pages
+import AgentDashboard from './pages/dashboard/agent/Dashboard';
+
+// Customer Pages
+import CustomerDashboard from './pages/dashboard/customer/Dashboard';
+
+// Shared Pages
+import Policies from './pages/dashboard/shared/Policies';
+import Renewals from './pages/dashboard/shared/Renewals';
+import Payments from './pages/dashboard/shared/Payments';
+import Notifications from './pages/dashboard/shared/Notifications';
+import Customers from './pages/dashboard/shared/Customers';
+import Communication from './pages/dashboard/shared/Communication';
 
 // Wrapper to conditionally show Navbar/Footer
 const AppLayout = ({ children }) => {
   const location = useLocation();
   const isDashboard = location.pathname.startsWith('/admin') || 
                       location.pathname.startsWith('/super-admin') || 
-                      location.pathname.startsWith('/staff') ||
-                      location.pathname.startsWith('/csr');
+                      location.pathname.startsWith('/agent') ||
+                      location.pathname.startsWith('/csr') ||
+                      location.pathname.startsWith('/staff');
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -86,7 +97,7 @@ function App() {
           {/* User Dashboard */}
           <Route path="/dashboard" element={
             <RoleProtectedRoute allowedRoles={['user']}>
-              <Dashboard />
+              <CustomerDashboard />
             </RoleProtectedRoute>
           } />
           <Route path="/support" element={<Support />} />
@@ -106,12 +117,12 @@ function App() {
 
           {/* Admin Dashboard Routes */}
           <Route path="/admin" element={
-            <RoleProtectedRoute allowedRoles={['admin', 'super_admin']}>
+            <RoleProtectedRoute allowedRoles={['admin']}>
               <DashboardLayout />
             </RoleProtectedRoute>
           }>
-            <Route index element={<AdminOverview />} />
-            <Route path="dashboard" element={<AdminOverview />} />
+            <Route index element={<AdminDashboard />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="policies" element={<Policies />} />
             <Route path="renewals" element={<Renewals />} />
             <Route path="payments" element={<Payments />} />
@@ -120,7 +131,6 @@ function App() {
             <Route path="customers" element={<Customers />} />
             <Route path="tasks" element={<Tasks />} />
             <Route path="communication" element={<Communication />} />
-            <Route path="users" element={<Admin />} />
           </Route>
 
           {/* Super Admin Dashboard Routes */}
@@ -129,8 +139,8 @@ function App() {
               <DashboardLayout />
             </RoleProtectedRoute>
           }>
-            <Route index element={<SuperAdminConsole />} />
-            <Route path="dashboard" element={<SuperAdminConsole />} />
+            <Route index element={<SuperAdminDashboard />} />
+            <Route path="dashboard" element={<SuperAdminDashboard />} />
             <Route path="staff" element={<StaffMembers />} />
             <Route path="customers" element={<CustomerManagement />} />
             <Route path="policies" element={<Policies />} />
@@ -143,24 +153,27 @@ function App() {
             <Route path="config" element={<SystemConfig />} />
           </Route>
 
-          {/* Staff/CSR Dashboard Routes */}
-          <Route path="/staff" element={
-            <RoleProtectedRoute allowedRoles={['csr', 'agent', 'admin', 'super_admin']}>
+          {/* Agent Dashboard Routes */}
+          <Route path="/agent" element={
+            <RoleProtectedRoute allowedRoles={['agent']}>
               <DashboardLayout />
             </RoleProtectedRoute>
           }>
-            <Route index element={
-              (() => {
-                const user = JSON.parse(localStorage.getItem('user') || '{}');
-                return user.role === 'agent' ? <AgentPortal /> : <CSRHub />;
-              })()
-            } />
-            <Route path="dashboard" element={
-              (() => {
-                const user = JSON.parse(localStorage.getItem('user') || '{}');
-                return user.role === 'agent' ? <AgentPortal /> : <CSRHub />;
-              })()
-            } />
+            <Route index element={<AgentDashboard />} />
+            <Route path="dashboard" element={<AgentDashboard />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="renewals" element={<Renewals />} />
+            <Route path="communication" element={<Communication />} />
+          </Route>
+
+          {/* CSR Dashboard Routes */}
+          <Route path="/csr" element={
+            <RoleProtectedRoute allowedRoles={['csr']}>
+              <DashboardLayout />
+            </RoleProtectedRoute>
+          }>
+            <Route index element={<CSRDashboard />} />
+            <Route path="dashboard" element={<CSRDashboard />} />
             <Route path="customers" element={<Customers />} />
             <Route path="claims" element={<ClaimsSupport />} />
             <Route path="renewals" element={<Renewals />} />
@@ -169,8 +182,15 @@ function App() {
             <Route path="communication" element={<Communication />} />
           </Route>
 
-          {/* Legacy CSR route redirection or alias */}
-          <Route path="/csr/*" element={<Navigate to="/staff" replace />} />
+          {/* Fallback Redirections */}
+          <Route path="/staff/*" element={
+            (() => {
+              const user = JSON.parse(localStorage.getItem('user') || '{}');
+              if (user.role === 'agent') return <Navigate to="/agent" replace />;
+              if (user.role === 'csr') return <Navigate to="/csr" replace />;
+              return <Navigate to="/login" replace />;
+            })()
+          } />
         </Routes>
       </AppLayout>
     </Router>

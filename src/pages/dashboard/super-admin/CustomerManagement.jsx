@@ -5,7 +5,7 @@ import {
   MoreVertical, Trash2, CheckCircle, Search, Filter
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { api } from '../../utils/api';
+import { api } from '../../../utils/api';
 import { toast } from 'react-hot-toast';
 
 const CustomerManagement = () => {
@@ -13,13 +13,13 @@ const CustomerManagement = () => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [stats, setStats] = useState([
-    { label: 'Platform Users', value: '0', change: 'Live', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+    { label: 'Platform Users', value: '0', change: 'Live', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
     { label: 'Active Clients', value: '0', change: 'Live', icon: UserPlus, color: 'text-emerald-600', bg: 'bg-emerald-50' },
   ]);
 
   useEffect(() => {
     setStats([
-      { label: 'Platform Users', value: data.length.toString(), change: 'Live', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+      { label: 'Platform Users', value: data.length.toString(), change: 'Live', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
       { label: 'Active Clients', value: data.filter(u => u.is_active).length.toString(), change: 'Live', icon: UserPlus, color: 'text-emerald-600', bg: 'bg-emerald-50' },
     ]);
   }, [data]);
@@ -98,7 +98,7 @@ const CustomerManagement = () => {
         ))}
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-indigo-900/5 overflow-hidden">
+      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-emerald-900/5 overflow-hidden">
         <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
           <div>
             <h2 className="text-xl font-black text-slate-900 tracking-tight">Global Client Base</h2>
@@ -114,7 +114,7 @@ const CustomerManagement = () => {
                 placeholder="Search accounts..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-600/20 transition-all" 
+                className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all" 
               />
             </div>
           </div>

@@ -20,20 +20,15 @@ const Sidebar = ({ role }) => {
   };
   
   const getNavItems = () => {
-    // Shared items
-    const profileItem = { label: 'Personal Profile', icon: UserCircle2, path: '/dashboard/profile' }; // Example path
+    // Determine the path prefix based on role
+    const rolePrefix = role === 'super_admin' ? '/super-admin' : role === 'admin' ? '/admin' : `/${role}`;
     
-    // Inquiry Management (Shared by staff roles)
-    const inquiryItems = [
-      { label: "Today's Tasks", icon: LayoutDashboard, path: '/staff/dashboard' },
-      { label: 'Customer 360°', icon: Users, path: '/staff/customers' },
-      { label: 'Renewal Desk', icon: RefreshCw, path: '/staff/renewals' },
-      { label: 'Tickets & Queries', icon: MessageSquare, path: '/staff/tickets' },
-      { label: 'Communications', icon: MessageSquare, path: '/staff/communication' },
-    ];
-
+    // Shared items
+    const profileItem = { label: 'Personal Profile', icon: UserCircle2, path: `${rolePrefix}/profile` };
+    
+    // Role-specific nav generation
     switch (role) {
-      case 'super-admin':
+      case 'super_admin':
         return [
           {
             group: 'Master Console',
@@ -75,20 +70,44 @@ const Sidebar = ({ role }) => {
           },
           {
             group: 'Inquiry Management',
-            items: inquiryItems
+            items: [
+              { label: "Today's Tasks", icon: LayoutDashboard, path: '/admin/tasks' },
+              { label: 'Customer 360°', icon: Users, path: '/admin/customers' },
+              { label: 'Communications', icon: MessageSquare, path: '/admin/communication' },
+            ]
           },
           {
             group: 'Account',
             items: [profileItem]
           }
         ];
-      case 'staff':
-      case 'csr':
       case 'agent':
         return [
           {
-            group: 'Inquiry Management',
-            items: inquiryItems
+            group: 'Advisor Workspace',
+            items: [
+              { label: 'Dashboard', icon: LayoutDashboard, path: '/agent/dashboard' },
+              { label: 'My Leads', icon: Users, path: '/agent/customers' },
+              { label: 'Renewal Follow-ups', icon: RefreshCw, path: '/agent/renewals' },
+              { label: 'Communication Hub', icon: MessageSquare, path: '/agent/communication' },
+            ]
+          },
+          {
+            group: 'Account',
+            items: [profileItem]
+          }
+        ];
+      case 'csr':
+        return [
+          {
+            group: 'Support Terminal',
+            items: [
+              { label: 'Dashboard', icon: LayoutDashboard, path: '/csr/dashboard' },
+              { label: 'Customer Search', icon: Users, path: '/csr/customers' },
+              { label: 'Claim Support', icon: ShieldCheck, path: '/csr/claims' },
+              { label: 'Active Tickets', icon: MessageSquare, path: '/csr/tickets' },
+              { label: 'Policy Servicing', icon: Settings, path: '/csr/servicing' },
+            ]
           },
           {
             group: 'Account',
@@ -102,7 +121,7 @@ const Sidebar = ({ role }) => {
             items: [
               { label: 'My Dashboard', icon: LayoutDashboard, path: '/dashboard' },
               { label: 'My Policies', icon: Shield, path: '/dashboard/policies' },
-              profileItem
+              { label: 'Personal Profile', icon: UserCircle2, path: '/dashboard/profile' }
             ]
           }
         ];

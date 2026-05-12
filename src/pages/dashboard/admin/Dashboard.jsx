@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const AdminOverview = () => {
+const AdminDashboard = () => {
   const [stats] = useState([
     { label: 'Total Customer', value: '1,284', change: '+12.5%', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
     { label: 'Active Policies', value: '842', change: '+8.2%', icon: FileCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
@@ -141,4 +141,4 @@ const AdminOverview = () => {
   );
 };
 
-export default AdminOverview;
+export default AdminDashboard;

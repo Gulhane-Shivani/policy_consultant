@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const SuperAdminConsole = () => {
+const SuperAdminDashboard = () => {
   const revenueData = [
     { name: 'Jan', revenue: 45000 },
     { name: 'Feb', revenue: 52000 },
@@ -41,8 +41,8 @@ const SuperAdminConsole = () => {
     { label: 'Active Policies', value: '1,420', icon: FileCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
     { label: 'Renewal Due', value: '156', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
     { label: 'Expired Policies', value: '42', icon: AlertCircle, color: 'text-rose-600', bg: 'bg-rose-50' },
-    { label: 'Total Revenue', value: '$428.5k', icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Pending Requests', value: '28', icon: Activity, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+    { label: 'Total Revenue', value: '₹42.8L', icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Pending Requests', value: '28', icon: Activity, color: 'text-emerald-600', bg: 'bg-emerald-50' },
   ];
 
   return (
@@ -228,4 +228,4 @@ const SuperAdminConsole = () => {
   );
 };
 
-export default SuperAdminConsole;
+export default SuperAdminDashboard;

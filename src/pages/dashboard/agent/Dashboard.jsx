@@ -11,47 +11,43 @@ import {
   CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 
-const AgentPortal = () => {
+const AgentDashboard = () => {
   const [user] = useState(() => {
     const saved = localStorage.getItem('user');
     return saved && saved !== 'undefined' ? JSON.parse(saved) : { full_name: 'Agent' };
   });
 
   const performanceData = [
-    { name: 'Mon', sales: 4000, leads: 2400 },
-    { name: 'Tue', sales: 3000, leads: 1398 },
-    { name: 'Wed', sales: 2000, leads: 9800 },
-    { name: 'Thu', sales: 2780, leads: 3908 },
-    { name: 'Fri', sales: 1890, leads: 4800 },
-    { name: 'Sat', sales: 2390, leads: 3800 },
-    { name: 'Sun', sales: 3490, leads: 4300 },
+    { name: 'Mon', sales: 4, leads: 12 },
+    { name: 'Tue', sales: 7, leads: 15 },
+    { name: 'Wed', sales: 5, leads: 8 },
+    { name: 'Thu', sales: 12, leads: 22 },
+    { name: 'Fri', sales: 9, leads: 18 },
+    { name: 'Sat', sales: 15, leads: 25 },
+    { name: 'Sun', sales: 10, leads: 14 },
   ];
 
   const recentLeads = [
-    { id: 1, name: 'Robert Fox', type: 'Life Insurance', status: 'Follow-up', date: '2 hours ago' },
-    { id: 2, name: 'Esther Howard', type: 'Health Elite', status: 'Hot Lead', date: '5 hours ago' },
-    { id: 3, name: 'Jenny Wilson', type: 'Motor Policy', status: 'Qualified', date: '1 day ago' },
-    { id: 4, name: 'Guy Hawkins', type: 'Home Guard', status: 'Closed', date: '2 days ago' },
+    { id: 1, name: 'Robert Fox', type: 'Life Insurance', status: 'Hot Lead', date: 'Just now' },
+    { id: 2, name: 'Jane Cooper', type: 'Health Insurance', status: 'New', date: '25m ago' },
+    { id: 3, name: 'Wade Warren', type: 'Car Insurance', status: 'Follow-up', date: '1h ago' },
+    { id: 4, name: 'Guy Hawkins', type: 'Life Insurance', status: 'Hot Lead', date: '3h ago' },
   ];
 
   return (
     <div className="space-y-8 pb-12">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Agent Performance Hub</h1>
-          <p className="text-slate-500 font-bold">Welcome back, {user.full_name.split(' ')[0]}. Here is your sales activity.</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Advisor Portal</h1>
+          <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Policy Consultant • Sales Performance</p>
         </div>
-        <div className="flex items-center space-x-3">
-          <div className="bg-white p-4 rounded-2xl border border-slate-200 flex items-center space-x-4 shadow-sm">
-            <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-              <Award className="w-6 h-6 text-emerald-600" />
+        <div className="flex -space-x-2">
+          {[1,2,3,4].map(i => (
+            <div key={i} className="w-10 h-10 rounded-full border-4 border-white bg-slate-200 overflow-hidden">
+              <img src={`https://i.pravatar.cc/150?u=${i}`} alt="team" />
             </div>
-            <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Monthly Rank</p>
-              <p className="text-sm font-black text-slate-900">#4 in Branch</p>
-            </div>
-          </div>
+          ))}
+          <div className="w-10 h-10 rounded-full border-4 border-white bg-emerald-600 flex items-center justify-center text-white text-[10px] font-black">+12</div>
         </div>
       </div>
 
@@ -88,7 +84,7 @@ const AgentPortal = () => {
             <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
               <FileText className="w-6 h-6" />
             </div>
-            <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Target: 20</span>
+            <span className="text-xs font-black text-emerald-500 uppercase tracking-widest">Target: 20</span>
           </div>
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Policies Closed</p>
           <h3 className="text-2xl font-black text-slate-900 mt-1">14</h3>
@@ -96,10 +92,10 @@ const AgentPortal = () => {
 
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40">
           <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-orange-50 text-orange-600 rounded-2xl">
+            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
               <TrendingUp className="w-6 h-6" />
             </div>
-            <span className="text-xs font-black text-orange-500">Avg 82%</span>
+            <span className="text-xs font-black text-emerald-500">Avg 82%</span>
           </div>
           <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Conversion Rate</p>
           <h3 className="text-2xl font-black text-slate-900 mt-1">76%</h3>
@@ -170,7 +166,7 @@ const AgentPortal = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${lead.status === 'Hot Lead' ? 'bg-rose-50 text-rose-500' : 'bg-slate-100 text-slate-500'}`}>
+                  <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${lead.status === 'Hot Lead' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
                     {lead.status}
                   </span>
                   <p className="text-[10px] font-bold text-slate-300 mt-1">{lead.date}</p>
@@ -232,4 +228,4 @@ const AgentPortal = () => {
   );
 };
 
-export default AgentPortal;
+export default AgentDashboard;
