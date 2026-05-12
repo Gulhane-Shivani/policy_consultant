@@ -60,39 +60,10 @@ const Header = ({ role }) => {
               <p className="text-xs font-black text-slate-900 leading-tight">{user.full_name || 'User'}</p>
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">{getRoleLabel()}</p>
             </div>
-            <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isProfileOpen ? 'rotate-180' : ''}`} />
+           
           </button>
 
-          <AnimatePresence>
-            {isProfileOpen && (
-              <motion.div 
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                className="absolute right-0 mt-3 w-56 bg-white border border-slate-200 rounded-2xl shadow-2xl shadow-emerald-900/10 p-2 z-50"
-              >
-                <div className="p-3 border-b border-slate-100 mb-2">
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Account Settings</p>
-                </div>
-                <button className="w-full flex items-center space-x-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-xl transition-all font-bold text-sm">
-                  <User className="w-4 h-4" />
-                  <span>My Profile</span>
-                </button>
-                <button className="w-full flex items-center space-x-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 rounded-xl transition-all font-bold text-sm">
-                  <Settings className="w-4 h-4" />
-                  <span>Settings</span>
-                </button>
-                <div className="my-2 border-t border-slate-100"></div>
-                <button 
-                  onClick={handleSignOut}
-                  className="w-full flex items-center space-x-3 px-3 py-2.5 text-red-600 hover:bg-red-50 rounded-xl transition-all font-bold text-sm"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Sign Out</span>
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
+        
         </div>
       </div>
     </header>
