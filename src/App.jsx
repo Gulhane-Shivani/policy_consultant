@@ -109,6 +109,9 @@ function App() {
             <Route path="policies/:id" element={<PolicyDetailView />} />
             <Route path="claims" element={<CustomerClaims />} />
             <Route path="payments" element={<CustomerPayments />} />
+            <Route path="requests" element={<Support />} />
+            <Route path="documents" element={<Policies />} />
+            <Route path="loan" element={<CustomerDashboard />} />
             <Route path="support" element={<Support />} />
             <Route path="profile" element={<CustomerProfile />} />
           </Route>

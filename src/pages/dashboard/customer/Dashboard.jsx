@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Shield, CreditCard, PieChart, 
   ChevronRight, Download, MessageSquare, 
@@ -16,6 +17,7 @@ const CustomerOverview = () => {
     { label: 'Total Policies', value: '3', icon: Shield, color: 'blue' },
     { label: 'Sum Assured', value: '₹1.5 Cr', icon: PieChart, color: 'emerald' },
     { label: 'Next Premium', value: '₹4,200', icon: CreditCard, color: 'amber' },
+    { label: 'Pending Claims', value: '1', icon: ShieldAlert, color: 'rose' },
   ];
 
   const policies = [
@@ -54,21 +56,21 @@ const CustomerOverview = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, i) => (
           <motion.div 
             key={i}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-all"
+            className="bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-all"
           >
             <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
-              <h3 className="text-3xl font-black text-slate-900 mt-1">{stat.value}</h3>
+              <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
+              <h3 className="text-xl md:text-3xl font-black text-slate-900 mt-1">{stat.value}</h3>
             </div>
-            <div className={`w-14 h-14 rounded-2xl bg-${stat.color}-50 flex items-center justify-center text-${stat.color}-600 group-hover:scale-110 transition-transform`}>
-              <stat.icon className="w-7 h-7" />
+            <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-${stat.color}-50 flex items-center justify-center text-${stat.color}-600 group-hover:scale-110 transition-transform`}>
+              <stat.icon className="w-5 h-5 md:w-7 md:h-7" />
             </div>
           </motion.div>
         ))}
@@ -79,7 +81,7 @@ const CustomerOverview = () => {
         <div className="xl:col-span-2 space-y-6">
           <div className="flex justify-between items-center px-2">
             <h2 className="text-xl font-black text-slate-900 tracking-tight">Your Active Portfolio</h2>
-            <button className="text-emerald-600 font-bold text-xs hover:underline uppercase tracking-widest">View All</button>
+            <Link to="/dashboard/policies" className="text-emerald-600 font-bold text-xs hover:underline uppercase tracking-widest">View All</Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {policies.map((policy) => (
@@ -105,9 +107,9 @@ const CustomerOverview = () => {
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Annual Premium</p>
                     <p className="text-2xl font-black text-slate-900">₹{policy.premium}</p>
                   </div>
-                  <button className="p-4 bg-slate-50 rounded-2xl text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all">
+                  <Link to={`/dashboard/policies/${policy.id}`} className="p-4 bg-slate-50 rounded-2xl text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all">
                     <ChevronRight className="w-6 h-6" />
-                  </button>
+                  </Link>
                 </div>
                 <div className={`absolute top-0 right-0 w-32 h-32 bg-${policy.color}-500/5 rounded-full -mr-16 -mt-16 group-hover:scale-110 transition-transform`} />
               </motion.div>
@@ -119,17 +121,17 @@ const CustomerOverview = () => {
             <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-8 px-2">Quick Actions</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {[
-                { label: 'Pay Premium', icon: CreditCard, color: 'emerald' },
-                { label: 'File Claim', icon: ShieldAlert, color: 'rose' },
-                { label: 'Download ID', icon: Download, color: 'blue' },
-                { label: 'Get Support', icon: MessageSquare, color: 'amber' },
+                { label: 'Pay Premium', icon: CreditCard, color: 'emerald', path: '/dashboard/payments' },
+                { label: 'File Claim', icon: ShieldAlert, color: 'rose', path: '/dashboard/claims' },
+                { label: 'Download ID', icon: Download, color: 'blue', path: '/dashboard/policies' },
+                { label: 'Get Support', icon: MessageSquare, color: 'amber', path: '/dashboard/support' },
               ].map((action, i) => (
-                <button key={i} className="flex flex-col items-center justify-center p-8 rounded-[2.5rem] bg-slate-50 border border-transparent hover:border-emerald-200 hover:bg-white transition-all group">
+                <Link key={i} to={action.path} className="flex flex-col items-center justify-center p-8 rounded-[2.5rem] bg-slate-50 border border-transparent hover:border-emerald-200 hover:bg-white transition-all group">
                   <div className={`w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-${action.color}-600 mb-4 group-hover:scale-110 transition-transform`}>
                     <action.icon className="w-7 h-7" />
                   </div>
                   <span className="text-[10px] font-black text-slate-600 uppercase tracking-tighter text-center">{action.label}</span>
-                </button>
+                </Link>
               ))}
             </div>
           </div>

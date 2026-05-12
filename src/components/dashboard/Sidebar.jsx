@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink, Link, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, RefreshCw, CreditCard,
   Bell, Users, UserCheck, Shield, MessageSquare,
   Settings, Database, BarChart3, HelpCircle, ChevronRight,
   UserCircle2, PieChart, LifeBuoy, LogOut, ChevronDown, ShieldCheck,
-  ShieldAlert, User
+  ShieldAlert, User, Landmark, CloudDownload, Wrench
 } from 'lucide-react';
 
 const Sidebar = ({ role }) => {
   const [openMenus, setOpenMenus] = useState({});
+  const location = useLocation();
   const userStr = localStorage.getItem('user');
   const user = userStr ? JSON.parse(userStr) : { full_name: 'John Doe', role: 'user' };
 
@@ -32,7 +33,6 @@ const Sidebar = ({ role }) => {
       case 'super_admin':
         return [
           {
-            group: 'Master Console',
             items: [
               { label: 'Dashboard', icon: LayoutDashboard, path: '/super-admin/dashboard' },
               {
@@ -61,71 +61,55 @@ const Sidebar = ({ role }) => {
       case 'admin':
         return [
           {
-            group: 'Operations',
             items: [
               { label: 'Dashboard', icon: LayoutDashboard, path: '/admin/dashboard' },
               { label: 'Policy Management', icon: FileText, path: '/admin/policies' },
               { label: 'Renewals', icon: RefreshCw, path: '/admin/renewals' },
               { label: 'Payments', icon: CreditCard, path: '/admin/payments' },
-            ]
-          },
-          {
-            group: 'Inquiry Management',
-            items: [
-              
               { label: 'Customer 360°', icon: Users, path: '/admin/customers' },
               { label: 'Communications', icon: MessageSquare, path: '/admin/communication' },
+              profileItem
             ]
-          },
-          {
-            group: 'Account',
-            items: [profileItem]
           }
         ];
       case 'agent':
         return [
           {
-            group: 'Advisor Workspace',
             items: [
               { label: 'Dashboard', icon: LayoutDashboard, path: '/agent/dashboard' },
               { label: 'My Leads', icon: Users, path: '/agent/customers' },
               { label: 'Renewal Follow-ups', icon: RefreshCw, path: '/agent/renewals' },
               { label: 'Communication Hub', icon: MessageSquare, path: '/agent/communication' },
+              profileItem
             ]
-          },
-          {
-            group: 'Account',
-            items: [profileItem]
           }
         ];
       case 'csr':
         return [
           {
-            group: 'Support Terminal',
             items: [
               { label: 'Dashboard', icon: LayoutDashboard, path: '/csr/dashboard' },
               { label: 'Customer Search', icon: Users, path: '/csr/customers' },
               { label: 'Claim Support', icon: ShieldCheck, path: '/csr/claims' },
               { label: 'Active Tickets', icon: MessageSquare, path: '/csr/tickets' },
               { label: 'Policy Servicing', icon: Settings, path: '/csr/servicing' },
+              profileItem
             ]
-          },
-          {
-            group: 'Account',
-            items: [profileItem]
           }
         ];
       default:
         return [
           {
-            group: 'Customer Portal',
             items: [
               { label: 'Overview', icon: LayoutDashboard, path: '/dashboard' },
               { label: 'My Policies', icon: Shield, path: '/dashboard/policies' },
-              { label: 'Claims Center', icon: ShieldAlert, path: '/dashboard/claims' },
               { label: 'Payments', icon: CreditCard, path: '/dashboard/payments' },
+              { label: 'Claims', icon: ShieldAlert, path: '/dashboard/claims' },
+              { label: 'Service Requests', icon: Settings, path: '/dashboard/requests' },
+              { label: 'Document Vault', icon: CloudDownload, path: '/dashboard/documents' },
+              { label: 'Policy Loan', icon: Landmark, path: '/dashboard/loan' },
               { label: 'Profile', icon: User, path: '/dashboard/profile' },
-              { label: 'Help & Support', icon: HelpCircle, path: '/dashboard/support' }
+              { label: 'Support', icon: HelpCircle, path: '/dashboard/support' }
             ]
           }
         ];
@@ -141,21 +125,23 @@ const Sidebar = ({ role }) => {
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
-      <Link to="/" className="p-6 flex items-center space-x-3">
-        <div className="bg-emerald-600 p-2 rounded-xl">
+      <Link to="/" className="p-8 flex items-center space-x-3">
+        <div className="bg-emerald-600 p-2 rounded-xl shadow-lg shadow-emerald-200">
           <Shield className="w-6 h-6 text-white" />
         </div>
-        <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-emerald-800">
+        <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-emerald-900 tracking-tight">
           Policy Consultant
         </span>
       </Link>
 
-      <nav className="flex-grow px-4 space-y-8 mt-4">
+      <nav className="flex-grow px-4 space-y-2 mt-4">
         {navItems.map((group, idx) => (
-          <div key={idx} className="space-y-2">
-            <h3 className="px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
-              {group.group}
-            </h3>
+          <div key={idx} className="space-y-1">
+            {group.group && (
+              <h3 className="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                {group.group}
+              </h3>
+            )}
             <div className="space-y-1">
               {group.items.map((item, itemIdx) => {
                 const isOpen = openMenus[item.label];
@@ -165,10 +151,10 @@ const Sidebar = ({ role }) => {
                       <div className="space-y-1">
                         <button
                           onClick={() => toggleMenu(item.label)}
-                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all group ${isOpen ? 'bg-emerald-50 text-emerald-600' : 'text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'}`}
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all group ${isOpen ? 'bg-emerald-50 text-emerald-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
                         >
                           <div className="flex items-center space-x-3">
-                            <item.icon className="w-5 h-5" />
+                            <item.icon className={`w-5 h-5 transition-colors ${isOpen ? 'text-emerald-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
                             <span className="font-bold text-sm">{item.label}</span>
                           </div>
                           {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
@@ -191,10 +177,14 @@ const Sidebar = ({ role }) => {
                       <NavLink
                         to={item.path}
                         end={item.label === 'Overview' || item.label === 'My Dashboard'}
-                        className={({ isActive }) => `flex items-center space-x-3 px-4 py-3 rounded-xl transition-all group ${isActive ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' : 'text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'}`}
+                        className={({ isActive }) => `flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all group ${isActive ? 'bg-emerald-50 text-emerald-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
                       >
-                        <item.icon className="w-5 h-5" />
-                        <span className="font-bold text-sm">{item.label}</span>
+                        {({ isActive }) => (
+                          <>
+                            <item.icon className={`w-5 h-5 transition-colors ${isActive ? 'text-emerald-600' : 'text-slate-400 group-hover:text-slate-600'}`} />
+                            <span className="font-bold text-sm">{item.label}</span>
+                          </>
+                        )}
                       </NavLink>
                     )}
                   </div>
@@ -205,38 +195,17 @@ const Sidebar = ({ role }) => {
         ))}
       </nav>
 
-      {role === 'csr' && (
-        <div className="p-4 mt-auto">
-          <button className="w-full flex items-center justify-center space-x-2 py-4 bg-indigo-600/10 border border-indigo-600/20 text-indigo-400 rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-indigo-600 hover:text-white transition-all">
-            <HelpCircle className="w-4 h-4" />
-            <span>Support Desk</span>
-          </button>
-        </div>
-      )}
-
-      <div className="p-6 border-t border-slate-100 space-y-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center font-bold text-emerald-600 border border-slate-100">
-            {user.full_name?.charAt(0) || 'U'}
-          </div>
-          <div className="flex-grow overflow-hidden">
-            <p className="text-sm font-bold truncate text-slate-900">{user.full_name || 'User'}</p>
-            <p className="text-[10px] text-slate-400 font-bold uppercase truncate">
-              {role.replace('-', ' ')}
-            </p>
-          </div>
-        </div>
-
+      <div className="p-6 border-t border-slate-50 mt-auto">
         <button
           onClick={() => {
             localStorage.removeItem('user');
             localStorage.removeItem('access_token');
             window.location.href = '/login';
           }}
-          className="w-full flex items-center justify-center space-x-2 py-3 bg-rose-50 text-rose-600 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all group"
+          className="w-full flex items-center space-x-3 px-4 py-3 text-rose-500 hover:bg-rose-50 rounded-xl font-bold text-sm transition-all group"
         >
-          <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform" />
-          <span>Sign Out</span>
+          <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+          <span>Logout</span>
         </button>
       </div>
     </div>

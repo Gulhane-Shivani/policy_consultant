@@ -4,7 +4,7 @@ import {
   ArrowUpRight, ArrowDownRight,
   MoreVertical, Trash2, CheckCircle, Search, Filter,
   Plus, X, Eye, Edit3, Calendar, DollarSign, User, MapPin, Activity,
-  CreditCard, RefreshCw
+  CreditCard, RefreshCw, Download
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../../utils/api';
@@ -40,6 +40,17 @@ const Policies = () => {
     benefits: '',
   });
 
+  // Status Validation Helper
+  const getValidatedStatus = (p) => {
+    const now = new Date();
+    const end = new Date(p.end_date);
+    const diffDays = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return 'Expired';
+    if (diffDays <= 30) return 'Renewal Due';
+    return 'Active';
+  };
+
   const [stats, setStats] = useState([
     { label: 'Active Policies', value: '0', change: '+0', icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
     { label: 'Renewal Due', value: '0', change: '+0', icon: FileText, color: 'text-amber-600', bg: 'bg-amber-50' },
@@ -49,16 +60,13 @@ const Policies = () => {
   const fetchPolicies = async () => {
     try {
       setLoading(true);
-      // Simulate API call for now or use real endpoint if available
-      // const res = await api.get('/policies');
-      // setData(res);
       
       // Mock data for initial implementation as requested
       const mockData = [
         { 
           id: 1, 
           policy_number: 'POL-8901', 
-          client_name: 'John Doe', 
+          client_name: 'Shivani Ashok Gulhane', 
           type: 'Life Insurance', 
           premium: '1200', 
           status: 'Active',
@@ -79,7 +87,7 @@ const Policies = () => {
         { 
           id: 2, 
           policy_number: 'POL-8902', 
-          client_name: 'Jane Smith', 
+          client_name: 'Shivani Ashok Gulhane', 
           type: 'Health Insurance', 
           premium: '850', 
           status: 'Renewal Due',
@@ -128,8 +136,19 @@ const Policies = () => {
           renewal_history: []
         },
       ];
-      setData(mockData);
-      updateStats(mockData);
+
+      // Get purchased policies from localStorage
+      const boughtPolicies = JSON.parse(localStorage.getItem('bought_policies') || '[]');
+      const combinedData = [...boughtPolicies, ...mockData];
+
+      // Filter policies for customers to only show their own
+      let displayData = combinedData;
+      if (user?.role === 'user') {
+        displayData = combinedData.filter(p => p.client_name === user.full_name || p.client_name === 'Shivani Ashok Gulhane');
+      }
+
+      setData(displayData);
+      updateStats(displayData);
     } catch (error) {
       toast.error('Failed to load policies');
     } finally {
@@ -138,9 +157,9 @@ const Policies = () => {
   };
 
   const updateStats = (policies) => {
-    const active = policies.filter(p => p.status === 'Active').length;
-    const due = policies.filter(p => p.status === 'Renewal Due').length;
-    const expired = policies.filter(p => p.status === 'Expired').length;
+    const active = policies.filter(p => getValidatedStatus(p) === 'Active').length;
+    const due = policies.filter(p => getValidatedStatus(p) === 'Renewal Due').length;
+    const expired = policies.filter(p => getValidatedStatus(p) === 'Expired').length;
     setStats([
       { label: 'Active Policies', value: active.toString(), change: '+5.4%', icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
       { label: 'Renewal Due', value: due.toString(), change: '+12.5%', icon: FileText, color: 'text-amber-600', bg: 'bg-amber-50' },
@@ -150,7 +169,7 @@ const Policies = () => {
 
   useEffect(() => {
     fetchPolicies();
-  }, []);
+  }, [user]);
 
   const handleOpenModal = (policy = null) => {
     if (policy) {
@@ -160,7 +179,7 @@ const Policies = () => {
     } else {
       setFormData({
         policy_number: `POL-${Math.floor(1000 + Math.random() * 9000)}`,
-        client_name: '',
+        client_name: user?.role === 'user' ? user.full_name : '',
         type: 'Life Insurance',
         premium: '',
         status: 'Active',
@@ -173,6 +192,11 @@ const Policies = () => {
       setIsEditing(false);
     }
     setIsModalOpen(true);
+  };
+
+  const handleOpenDetail = (policy) => {
+    setSelectedPolicy(policy);
+    setIsDetailModalOpen(true);
   };
 
   const handleSubmit = (e) => {
@@ -220,26 +244,40 @@ const Policies = () => {
   const filteredData = data.filter(p => {
     const matchesSearch = p.client_name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          p.policy_number.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === 'All' || p.status === filterStatus;
+    const currentStatus = getValidatedStatus(p);
+    const matchesFilter = filterStatus === 'All' || currentStatus === filterStatus;
     return matchesSearch && matchesFilter;
   });
+
 
   return (
     <div className="space-y-8 pb-12">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Policy Management</h1>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tighter">
+            {user?.role === 'user' ? 'My Policies' : 'Policy Management'}
+          </h1>
           <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Policy Consultant • Lifecycle Oversight</p>
         </div>
-        {user?.role !== 'user' && (
-          <button 
-            onClick={() => handleOpenModal()}
-            className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add New Policy</span>
-          </button>
-        )}
+        <div className="flex items-center space-x-3">
+          {user?.role === 'user' ? (
+            <button 
+              onClick={() => navigate('/plans')}
+              className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Buy New Policy</span>
+            </button>
+          ) : (
+            <button 
+              onClick={() => handleOpenModal()}
+              className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add New Policy</span>
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -264,102 +302,185 @@ const Policies = () => {
         ))}
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-emerald-900/5 overflow-hidden">
-        <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
-          <div>
-            <h2 className="text-xl font-black text-slate-900 tracking-tight">Policies Repository</h2>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-tighter">Filter and manage policy lifecycle</p>
-          </div>
-          <div className="flex items-center space-x-3">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input 
-                type="text" 
-                placeholder="Search..." 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all" 
-              />
+      {user?.role === 'user' ? (
+        // CUSTOMER CARD VIEW
+        <div className="space-y-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm">
+            <div>
+              <h2 className="text-xl font-black text-slate-900 tracking-tight">Your Active Policies</h2>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Filter and manage policy lifecycle</p>
             </div>
-            <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1">
-              {['All', 'Active', 'Renewal Due', 'Expired'].map((status) => (
-                <button
-                  key={status}
-                  onClick={() => setFilterStatus(status)}
-                  className={`px-3 py-1.5 text-[10px] font-black uppercase tracking-tighter rounded-lg transition-all ${filterStatus === status ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' : 'text-slate-400 hover:text-emerald-600'}`}
-                >
-                  {status}
-                </button>
-              ))}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="relative min-w-[240px]">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input 
+                  type="text" 
+                  placeholder="Search policy or provider..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all" 
+                />
+              </div>
+              <div className="flex items-center bg-slate-50 border border-slate-100 rounded-xl p-1">
+                {['All', 'Active', 'Renewal Due', 'Expired'].map((status) => (
+                  <button
+                    key={status}
+                    onClick={() => setFilterStatus(status)}
+                    className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all ${filterStatus === status ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-400 hover:text-emerald-600'}`}
+                  >
+                    {status}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-slate-50/50">
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Policy ID</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Provider</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Client</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Premium</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filteredData.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
-                  <td className="px-8 py-6 font-bold text-slate-900">{item.policy_number}</td>
-                  <td className="px-8 py-6">
-                    <div className="flex items-center space-x-2">
-                      {getProviderLogo(item.provider, item.domain)}
-                      <span className="font-bold text-slate-600 text-xs">{item.provider}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            <AnimatePresence mode="popLayout">
+              {filteredData.map((item) => {
+                const currentStatus = getValidatedStatus(item);
+                return (
+                  <motion.div
+                    layout
+                    key={item.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    whileHover={{ y: -10 }}
+                    className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-xl shadow-slate-200/40 relative overflow-hidden group flex flex-col"
+                  >
+                    <div className="flex justify-between items-start mb-8 relative z-10">
+                      <div className="flex items-center space-x-3">
+                        {getProviderLogo(item.provider, item.domain)}
+                        <div>
+                          <h3 className="font-black text-slate-900 leading-none">{item.provider}</h3>
+                          <p className="text-[10px] font-bold text-slate-400 uppercase mt-1 tracking-widest">{item.policy_number}</p>
+                        </div>
+                      </div>
+                      <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${currentStatus === 'Active' ? 'bg-emerald-50 text-emerald-600' : currentStatus === 'Renewal Due' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600'}`}>
+                        {currentStatus}
+                      </span>
                     </div>
-                  </td>
-                  <td className="px-8 py-6 font-bold text-slate-700">{item.client_name}</td>
-                  <td className="px-8 py-6">
-                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-tighter">{item.type}</span>
-                  </td>
-                  <td className="px-8 py-6 font-bold text-slate-900">₹{item.premium}</td>
-                  <td className="px-8 py-6">
-                    <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter ${item.status === 'Active' ? 'bg-emerald-50 text-emerald-600' : item.status === 'Renewal Due' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600'}`}>
-                      {item.status}
-                    </span>
-                  </td>
-                  <td className="px-8 py-6 text-right">
-                    <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-all">
+
+                    <div className="flex-grow space-y-6 relative z-10">
+                      <div>
+                        <h4 className="text-xl font-black text-slate-900 tracking-tight leading-tight uppercase line-clamp-1">{item.type}</h4>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-50">
+                        <div>
+                          <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Premium</p>
+                          <p className="text-lg font-black text-slate-900">₹{item.premium}</p>
+                        </div>
+                        <div>
+                          <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Expires On</p>
+                          <p className="text-sm font-bold text-slate-700">{item.end_date}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-8 flex items-center justify-between relative z-10">
                       <button 
-                        onClick={() => navigate(`${location.pathname}/${item.id}`)}
-                        className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
+                        onClick={() => navigate(`/dashboard/policies/${item.id}`)}
+                        className="flex-grow px-6 py-3 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-slate-900/10"
                       >
-                        <Eye className="w-5 h-5" />
+                        View Details
                       </button>
-                      {user?.role !== 'user' && (
-                        <>
-                          <button 
-                            onClick={() => handleOpenModal(item)}
-                            className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
-                          >
-                            <Edit3 className="w-5 h-5" />
-                          </button>
-                          <button 
-                            onClick={() => handleDelete(item.id)}
-                            className="p-2 hover:bg-rose-50 text-rose-600 rounded-lg transition-all"
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </button>
-                        </>
-                      )}
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
         </div>
-      </div>
+      ) : (
+        // ADMIN TABLE VIEW (Previous Layout)
+        <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-emerald-900/5 overflow-hidden">
+          <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
+            <div>
+              <h2 className="text-xl font-black text-slate-900 tracking-tight">Policies Repository</h2>
+              <p className="text-sm font-bold text-slate-400 uppercase tracking-tighter">Filter and manage policy lifecycle</p>
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input 
+                  type="text" 
+                  placeholder="Search..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all" 
+                />
+              </div>
+              <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1">
+                {['All', 'Active', 'Renewal Due', 'Expired'].map((status) => (
+                  <button
+                    key={status}
+                    onClick={() => setFilterStatus(status)}
+                    className={`px-3 py-1.5 text-[10px] font-black uppercase tracking-tighter rounded-lg transition-all ${filterStatus === status ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' : 'text-slate-400 hover:text-emerald-600'}`}
+                  >
+                    {status}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="bg-slate-50/50">
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Policy ID</th>
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Provider</th>
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Client</th>
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Premium</th>
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filteredData.map((item) => (
+                  <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
+                    <td className="px-8 py-6 font-bold text-slate-900">{item.policy_number}</td>
+                    <td className="px-8 py-6">
+                      <div className="flex items-center space-x-2">
+                        {getProviderLogo(item.provider, item.domain)}
+                        <span className="font-bold text-slate-600 text-xs">{item.provider}</span>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6 font-bold text-slate-700">{item.client_name}</td>
+                    <td className="px-8 py-6">
+                      <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-tighter">{item.type}</span>
+                    </td>
+                    <td className="px-8 py-6 font-bold text-slate-900">₹{item.premium}</td>
+                    <td className="px-8 py-6 text-right">
+                      <div className="flex items-center justify-end space-x-2">
+                        <button 
+                          onClick={() => handleOpenDetail(item)}
+                          className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
+                        >
+                          <Eye className="w-5 h-5" />
+                        </button>
+                        <button 
+                          onClick={() => handleOpenModal(item)}
+                          className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
+                        >
+                          <Edit3 className="w-5 h-5" />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(item.id)}
+                          className="p-2 hover:bg-rose-50 text-rose-600 rounded-lg transition-all"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* Add/Edit Modal */}
       <AnimatePresence>

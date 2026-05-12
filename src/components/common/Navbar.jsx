@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Shield, Menu, X, User, LogOut, ShieldAlert } from 'lucide-react';
+import { Shield, Menu, X, User, LogOut, ShieldAlert, ChevronDown, LayoutDashboard, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const Navbar = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user');
     setUser(null);
+    setIsProfileOpen(false);
     toast.success('Logged out successfully');
     navigate('/login');
   };
@@ -48,6 +50,16 @@ const Navbar = () => {
     { name: 'Business', path: '/business' },
     { name: 'Support', path: '/support' },
   ];
+
+  const getDashboardPath = (role) => {
+    switch (role) {
+      case 'super_admin': return '/super-admin';
+      case 'admin': return '/admin';
+      case 'agent': return '/agent';
+      case 'csr': return '/csr';
+      default: return '/dashboard';
+    }
+  };
 
   return (
     <nav className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? 'glass py-3' : 'bg-transparent py-5'}`}>
@@ -76,23 +88,92 @@ const Navbar = () => {
               </Link>
             ))}
             {user ? (
-              <div className="flex items-center space-x-4">
-                <Link 
-                  to={
-                    user.role === 'super_admin' ? '/super-admin' : 
-                    user.role === 'admin' ? '/admin' : 
-                    user.role === 'agent' ? '/agent' : 
-                    user.role === 'csr' ? '/csr' : 
-                    '/dashboard'
-                  } 
-                  className="btn-primary flex items-center space-x-2 py-2 px-4 whitespace-nowrap shadow-lg shadow-emerald-900/10"
+              <div className="relative">
+                <button 
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center space-x-3 p-1.5 pr-3 rounded-full hover:bg-white/50 hover:shadow-sm transition-all border border-transparent hover:border-slate-200"
                 >
-                  <User className="w-4 h-4" />
-                  <span>{user.full_name?.split(' ')[0]}'s Workspace</span>
-                </Link>
-                <button onClick={handleLogout} className="p-2 text-slate-400 hover:text-red-500 transition-colors" title="Logout">
-                  <LogOut className="w-5 h-5" />
+                  <div className="w-9 h-9 rounded-full bg-emerald-600 flex items-center justify-center text-white font-bold shadow-sm ring-2 ring-white overflow-hidden">
+                    {user.profile_photo ? (
+                      <img src={user.profile_photo} alt={user.full_name} className="w-full h-full object-cover" />
+                    ) : (
+                      <img 
+                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&background=059669&color=fff`} 
+                        alt={user.full_name} 
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span className="text-xs font-bold text-slate-800 leading-tight">{user.full_name?.split(' ')[0]}</span>
+                    <span className="text-[10px] font-medium text-slate-500 uppercase tracking-tight">{user.role?.replace('_', ' ')}</span>
+                  </div>
+                  <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''}`} />
                 </button>
+
+                {/* Dropdown Menu */}
+                <AnimatePresence>
+                  {isProfileOpen && (
+                    <>
+                      <div className="fixed inset-0 z-40" onClick={() => setIsProfileOpen(false)} />
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        className="absolute right-0 mt-2 w-72 bg-white rounded-3xl shadow-2xl border border-slate-100 p-4 z-50 overflow-hidden"
+                      >
+                        <div className="flex items-center space-x-4 p-2 mb-4">
+                           <div className="w-14 h-14 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700 text-xl font-bold overflow-hidden">
+                             {user.profile_photo ? (
+                               <img src={user.profile_photo} alt={user.full_name} className="w-full h-full object-cover" />
+                             ) : (
+                               <img 
+                                 src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&background=ecfdf5&color=059669&bold=true`} 
+                                 alt={user.full_name} 
+                                 className="w-full h-full object-cover"
+                               />
+                             )}
+                           </div>
+                           <div className="flex flex-col">
+                             <span className="font-bold text-slate-900 line-clamp-1">{user.full_name}</span>
+                             <span className="text-xs text-slate-500 line-clamp-1">{user.email}</span>
+                           </div>
+                        </div>
+                        
+                        <div className="h-px bg-slate-50 mb-2" />
+                        
+                        <div className="space-y-1">
+                          <Link 
+                            to={getDashboardPath(user.role)}
+                            className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 transition-colors group"
+                            onClick={() => setIsProfileOpen(false)}
+                          >
+                            <LayoutDashboard className="w-5 h-5 text-slate-400 group-hover:text-emerald-600" />
+                            <span className="font-semibold text-sm">Dashboard</span>
+                          </Link>
+                          <Link 
+                            to={user.role === 'user' ? '/dashboard/profile' : '#'}
+                            className="flex items-center space-x-3 p-3 rounded-2xl hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 transition-colors group"
+                            onClick={() => setIsProfileOpen(false)}
+                          >
+                            <Settings className="w-5 h-5 text-slate-400 group-hover:text-emerald-600" />
+                            <span className="font-semibold text-sm">Profile Settings</span>
+                          </Link>
+                        </div>
+                        
+                        <div className="h-px bg-slate-50 my-2" />
+                        
+                        <button 
+                          onClick={handleLogout}
+                          className="flex items-center space-x-3 w-full p-3 rounded-2xl hover:bg-red-50 text-slate-600 hover:text-red-600 transition-colors group"
+                        >
+                          <LogOut className="w-5 h-5 text-slate-400 group-hover:text-red-500" />
+                          <span className="font-semibold text-sm">Sign Out</span>
+                        </button>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
               </div>
             ) : (
               <div className="flex items-center space-x-3">
@@ -116,15 +197,35 @@ const Navbar = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="lg:hidden bg-white border-t border-slate-100 absolute w-full shadow-2xl z-40"
+            className="lg:hidden bg-white border-t border-slate-100 absolute w-full shadow-2xl z-40 overflow-hidden rounded-b-[2rem]"
           >
             <div className="flex flex-col p-6 space-y-4">
+              {user && (
+                <div className="flex items-center space-x-4 p-4 bg-slate-50 rounded-3xl mb-2">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-600 flex items-center justify-center text-white font-bold overflow-hidden">
+                    {user.profile_photo ? (
+                      <img src={user.profile_photo} alt={user.full_name} className="w-full h-full object-cover" />
+                    ) : (
+                      <img 
+                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.full_name)}&background=059669&color=fff`} 
+                        alt={user.full_name} 
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="font-bold text-slate-900">{user.full_name}</span>
+                    <span className="text-xs text-slate-500 uppercase font-semibold">{user.role?.replace('_', ' ')}</span>
+                  </div>
+                </div>
+              )}
+
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`text-base font-bold transition-colors ${
-                    location.pathname === link.path ? 'text-emerald-600' : 'text-slate-600'
+                  className={`text-base font-bold px-4 py-2 rounded-xl transition-colors ${
+                    location.pathname === link.path ? 'bg-emerald-50 text-emerald-600' : 'text-slate-600'
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
@@ -135,22 +236,16 @@ const Navbar = () => {
                 {user ? (
                   <>
                     <Link
-                      to={
-                        user.role === 'super_admin' ? '/super-admin' : 
-                        user.role === 'admin' ? '/admin' : 
-                        user.role === 'agent' ? '/agent' : 
-                        user.role === 'csr' ? '/csr' : 
-                        '/dashboard'
-                      }
-                      className="btn-primary flex items-center justify-center space-x-2 w-full py-4 text-lg"
+                      to={getDashboardPath(user.role)}
+                      className="btn-primary flex items-center justify-center space-x-2 w-full py-4 rounded-2xl text-lg font-bold"
                       onClick={() => setIsOpen(false)}
                     >
-                      <User className="w-5 h-5" />
-                      <span>{user.full_name}'s Workspace</span>
+                      <LayoutDashboard className="w-5 h-5" />
+                      <span>Workspace Dashboard</span>
                     </Link>
                     <button
                       onClick={() => { handleLogout(); setIsOpen(false); }}
-                      className="flex items-center justify-center space-x-2 w-full py-4 text-lg text-red-500 font-bold border border-red-100 rounded-2xl hover:bg-red-50"
+                      className="flex items-center justify-center space-x-2 w-full py-4 text-lg text-red-500 font-bold border border-red-100 rounded-2xl hover:bg-red-50 transition-colors"
                     >
                       <LogOut className="w-5 h-5" />
                       <span>Logout</span>
@@ -160,14 +255,14 @@ const Navbar = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <Link
                       to="/login"
-                      className="flex items-center justify-center py-4 text-lg font-bold text-slate-600 border border-slate-100 rounded-2xl"
+                      className="flex items-center justify-center py-4 text-lg font-bold text-slate-600 border border-slate-100 rounded-2xl hover:bg-slate-50"
                       onClick={() => setIsOpen(false)}
                     >
                       Sign In
                     </Link>
                     <Link
                       to="/register"
-                      className="btn-primary flex items-center justify-center py-4 text-lg font-bold"
+                      className="btn-primary flex items-center justify-center py-4 text-lg font-bold rounded-2xl"
                       onClick={() => setIsOpen(false)}
                     >
                       Sign Up
@@ -184,3 +279,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

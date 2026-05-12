@@ -1,15 +1,32 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Heart, Activity, Car, Briefcase, ChevronRight,
   Shield, CheckCircle2, Search, Filter, ArrowRight,
-  TrendingUp, Star, Award, ChevronDown, CheckCircle, Info
+  TrendingUp, Star, Award, ChevronDown, CheckCircle, Info,
+  X, FileText, CreditCard, Lock, Check, Zap, ArrowLeft
 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 const Plans = () => {
+  const navigate = useNavigate();
   const [filter, setFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedPlanId, setExpandedPlanId] = useState(null);
+  
+  // Purchase Flow State
+  const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
+  const [purchaseStep, setPurchaseStep] = useState(1);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState('');
+  const [isAgreed, setIsAgreed] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const [user] = useState(() => {
+    const saved = localStorage.getItem('user');
+    return saved && saved !== 'undefined' ? JSON.parse(saved) : null;
+  });
 
   const plans = [
     {
@@ -110,6 +127,45 @@ const Plans = () => {
 
   const toggleExpand = (id) => {
     setExpandedPlanId(expandedPlanId === id ? null : id);
+  };
+
+  const handleBuyNow = (plan) => {
+    setSelectedPlan(plan);
+    setPurchaseStep(1);
+    setIsPurchaseModalOpen(true);
+  };
+
+  const handleCompletePurchase = () => {
+    setIsProcessing(true);
+    // Simulate API call
+    setTimeout(() => {
+      const newPolicy = {
+        id: Date.now(),
+        policy_number: `POL-${Math.floor(1000 + Math.random() * 9000)}`,
+        client_name: user?.full_name || 'Customer',
+        type: selectedPlan.type + ' Insurance',
+        premium: selectedPlan.price.toString(),
+        status: 'Active',
+        start_date: new Date().toISOString().split('T')[0],
+        end_date: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
+        provider: selectedPlan.provider,
+        domain: selectedPlan.domain,
+        benefits: selectedPlan.benefits.join(', '),
+        nominee_name: 'Not Assigned',
+        nominee_relation: 'N/A',
+        payment_history: [{ date: new Date().toISOString().split('T')[0], amount: selectedPlan.price.toString(), status: 'Paid' }],
+        renewal_history: [{ date: new Date().toISOString().split('T')[0], type: 'Initial' }]
+      };
+
+      // Save to localStorage for persistence
+      const savedPolicies = JSON.parse(localStorage.getItem('bought_policies') || '[]');
+      localStorage.setItem('bought_policies', JSON.stringify([newPolicy, ...savedPolicies]));
+
+      setIsProcessing(false);
+      toast.success('Policy purchased successfully!');
+      setIsPurchaseModalOpen(false);
+      navigate('/dashboard/policies');
+    }, 2000);
   };
 
   return (
@@ -269,7 +325,12 @@ const Plans = () => {
                             <h6 className="text-lg font-bold text-slate-900">Get covered in 5 mins.</h6>
                             <p className="text-xs text-slate-400">Includes all taxes and direct settlement benefits.</p>
                           </div>
-                          <button className="w-full btn-primary py-4 rounded-xl text-base font-bold shadow-2xl">Buy Now</button>
+                          <button 
+                            onClick={() => handleBuyNow(plan)}
+                            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-xl text-base font-bold shadow-2xl transition-all"
+                          >
+                            Buy Now
+                          </button>
                         </div>
                       </div>
                     </motion.div>
@@ -280,6 +341,237 @@ const Plans = () => {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Purchase Modal */}
+      <AnimatePresence>
+        {isPurchaseModalOpen && selectedPlan && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-slate-900/80 backdrop-blur-md"
+              onClick={() => !isProcessing && setIsPurchaseModalOpen(false)}
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row min-h-[600px]"
+            >
+              {/* Sidebar Info (Step Progress) */}
+              <div className="w-full md:w-80 bg-slate-900 p-8 text-white flex flex-col justify-between">
+                <div className="space-y-8">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center">
+                      <Shield className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-lg tracking-tighter uppercase leading-none">SafeGuard</h3>
+                      <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mt-1">Direct Purchase</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    {[
+                      { step: 1, label: 'Plan Summary', icon: Info },
+                      { step: 2, label: 'Terms & Conditions', icon: FileText },
+                      { step: 3, label: 'Payment Mode', icon: CreditCard }
+                    ].map((s) => (
+                      <div key={s.step} className={`flex items-center space-x-4 ${purchaseStep >= s.step ? 'opacity-100' : 'opacity-30'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all ${purchaseStep > s.step ? 'bg-emerald-500 border-emerald-500' : purchaseStep === s.step ? 'border-emerald-500 text-emerald-500' : 'border-slate-700 text-slate-500'}`}>
+                          {purchaseStep > s.step ? <Check className="w-4 h-4 text-white" /> : <span className="text-xs font-black">{s.step}</span>}
+                        </div>
+                        <p className={`text-xs font-black uppercase tracking-widest ${purchaseStep === s.step ? 'text-emerald-500' : 'text-slate-400'}`}>{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                  <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Due Now</p>
+                  <p className="text-3xl font-black text-white">₹{selectedPlan.price}<span className="text-xs font-bold text-slate-500 ml-1">/mo</span></p>
+                </div>
+              </div>
+
+              {/* Main Content Area */}
+              <div className="flex-grow flex flex-col bg-slate-50">
+                <div className="p-4 flex justify-end">
+                  <button onClick={() => setIsPurchaseModalOpen(false)} className="p-2 hover:bg-slate-200 rounded-xl transition-all">
+                    <X className="w-6 h-6 text-slate-400" />
+                  </button>
+                </div>
+
+                <div className="flex-grow p-8 md:p-12 overflow-y-auto custom-scrollbar">
+                  <AnimatePresence mode="wait">
+                    {purchaseStep === 1 && (
+                      <motion.div
+                        key="step1"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        className="space-y-8"
+                      >
+                        <div>
+                          <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">Review Your Plan</h2>
+                          <p className="text-slate-500 font-bold uppercase text-[10px] tracking-widest mt-1">Step 1 of 3 • Coverage Summary</p>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Plan Name</p>
+                            <p className="text-lg font-black text-slate-900">{selectedPlan.name}</p>
+                          </div>
+                          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Provider</p>
+                            <p className="text-lg font-black text-slate-900">{selectedPlan.provider}</p>
+                          </div>
+                          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Coverage Amount</p>
+                            <p className="text-lg font-black text-emerald-600">{selectedPlan.cover}</p>
+                          </div>
+                          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Policy Term</p>
+                            <p className="text-lg font-black text-slate-900">1 Year (Renewable)</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Included Benefits</p>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedPlan.benefits.map(b => (
+                              <div key={b} className="flex items-center space-x-2 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl text-xs font-bold border border-emerald-100">
+                                <CheckCircle className="w-4 h-4" />
+                                <span>{b}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {purchaseStep === 2 && (
+                      <motion.div
+                        key="step2"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        className="space-y-8"
+                      >
+                        <div>
+                          <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">Terms of Service</h2>
+                          <p className="text-slate-500 font-bold uppercase text-[10px] tracking-widest mt-1">Step 2 of 3 • Legal Agreement</p>
+                        </div>
+
+                        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-inner h-64 overflow-y-auto text-sm text-slate-500 leading-relaxed space-y-4">
+                          <p className="font-bold text-slate-900">1. Acceptance of Terms</p>
+                          <p>By purchasing this insurance plan, you agree to provide accurate medical and personal history. Any misinformation may lead to rejection of future claims.</p>
+                          <p className="font-bold text-slate-900">2. Premium Payments</p>
+                          <p>Monthly premiums are due on the 1st of every month. A grace period of 15 days is provided, after which the policy may lapse.</p>
+                          <p className="font-bold text-slate-900">3. Waiting Period</p>
+                          <p>Please note that specific illnesses may have a waiting period of up to 2 years as per the standard industry regulations.</p>
+                          <p className="font-bold text-slate-900">4. Cancellation Policy</p>
+                          <p>You can cancel the policy within the first 15 days (Free Look Period) for a full refund of the premium paid.</p>
+                        </div>
+
+                        <label className="flex items-start space-x-4 cursor-pointer group">
+                          <div className={`shrink-0 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${isAgreed ? 'bg-emerald-500 border-emerald-500' : 'border-slate-300 group-hover:border-emerald-500'}`} onClick={() => setIsAgreed(!isAgreed)}>
+                            {isAgreed && <Check className="w-4 h-4 text-white" />}
+                          </div>
+                          <span className="text-xs font-bold text-slate-600 leading-tight">
+                            I have read and agree to the <span className="text-emerald-600 underline">Policy Terms</span>, <span className="text-emerald-600 underline">Privacy Policy</span> and confirm that all details provided are true to my knowledge.
+                          </span>
+                        </label>
+                      </motion.div>
+                    )}
+
+                    {purchaseStep === 3 && (
+                      <motion.div
+                        key="step3"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        className="space-y-8"
+                      >
+                        <div>
+                          <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">Payment Mode</h2>
+                          <p className="text-slate-500 font-bold uppercase text-[10px] tracking-widest mt-1">Step 3 of 3 • Secure Checkout</p>
+                        </div>
+
+                        <div className="space-y-4">
+                          {[
+                            { id: 'upi', label: 'UPI (PhonePe, Google Pay)', desc: 'Instant & Secure' },
+                            { id: 'card', label: 'Debit / Credit Card', desc: 'All major banks supported' },
+                            { id: 'netbanking', label: 'Net Banking', desc: 'Direct from your bank' }
+                          ].map((mode) => (
+                            <div 
+                              key={mode.id}
+                              onClick={() => setPaymentMethod(mode.id)}
+                              className={`p-6 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between ${paymentMethod === mode.id ? 'border-emerald-500 bg-white shadow-xl scale-[1.02]' : 'border-slate-200 hover:border-slate-300'}`}
+                            >
+                              <div className="flex items-center space-x-4">
+                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${paymentMethod === mode.id ? 'bg-emerald-500 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                  {mode.id === 'card' ? <CreditCard className="w-6 h-6" /> : mode.id === 'upi' ? <Zap className="w-6 h-6" /> : <Shield className="w-6 h-6" />}
+                                </div>
+                                <div>
+                                  <p className="font-black text-slate-900 uppercase tracking-tight">{mode.label}</p>
+                                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{mode.desc}</p>
+                                </div>
+                              </div>
+                              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${paymentMethod === mode.id ? 'border-emerald-500 bg-emerald-500' : 'border-slate-300'}`}>
+                                {paymentMethod === mode.id && <div className="w-2 h-2 bg-white rounded-full" />}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center space-x-2 text-[10px] font-black text-slate-400 uppercase tracking-widest justify-center">
+                          <Lock className="w-3 h-3" />
+                          <span>SSL Encrypted 256-bit Secure Transaction</span>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <div className="p-8 border-t border-slate-200 bg-white flex justify-between items-center">
+                  {purchaseStep > 1 ? (
+                    <button 
+                      onClick={() => setPurchaseStep(prev => prev - 1)}
+                      className="flex items-center space-x-2 text-slate-400 hover:text-slate-900 transition-all font-black uppercase text-xs tracking-widest"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      <span>Back</span>
+                    </button>
+                  ) : <div></div>}
+
+                  <button 
+                    disabled={isProcessing || (purchaseStep === 2 && !isAgreed) || (purchaseStep === 3 && !paymentMethod)}
+                    onClick={() => {
+                      if (purchaseStep < 3) setPurchaseStep(prev => prev + 1);
+                      else handleCompletePurchase();
+                    }}
+                    className={`px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-widest flex items-center space-x-3 transition-all ${isProcessing || (purchaseStep === 2 && !isAgreed) || (purchaseStep === 3 && !paymentMethod) ? 'bg-slate-100 text-slate-300' : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-xl shadow-emerald-900/20'}`}
+                  >
+                    {isProcessing ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                        <span>Processing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>{purchaseStep === 3 ? 'Confirm & Pay' : 'Continue'}</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

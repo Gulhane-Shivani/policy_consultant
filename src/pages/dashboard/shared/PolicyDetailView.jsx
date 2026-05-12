@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, ShieldCheck, DollarSign, Calendar, User, 
   MapPin, Activity, CreditCard, RefreshCw, X, Download,
-  Printer, Share2, Mail, ExternalLink, Shield
+  Printer, Share2, Mail, ExternalLink, Shield, Layers
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -94,7 +94,10 @@ const PolicyDetailView = () => {
       },
     ];
 
-    const found = mockData.find(p => p.id === parseInt(id));
+    const boughtPolicies = JSON.parse(localStorage.getItem('bought_policies') || '[]');
+    const combinedData = [...mockData, ...boughtPolicies];
+
+    const found = combinedData.find(p => p.id.toString() === id.toString());
     if (found) {
       setPolicy(found);
     } else {
@@ -103,212 +106,209 @@ const PolicyDetailView = () => {
     }
   }, [id, navigate]);
 
+  // Status Validation Helper
+  const getValidatedStatus = (p) => {
+    const now = new Date();
+    const end = new Date(p.end_date);
+    const diffDays = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return 'Expired';
+    if (diffDays <= 30) return 'Renewal Due';
+    return 'Active';
+  };
+
   if (!policy) return null;
 
+  const currentStatus = getValidatedStatus(policy);
+
   return (
-    <div className="pb-20">
+    <div className="pb-20 space-y-8">
       {/* Header Bar */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-2">
         <button 
           onClick={() => navigate(-1)}
           className="flex items-center space-x-2 text-slate-400 hover:text-emerald-600 font-bold transition-all group"
         >
-          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-emerald-50 transition-all">
-            <ArrowLeft className="w-5 h-5" />
+          <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center group-hover:bg-emerald-50 transition-all">
+            <ArrowLeft className="w-4 h-4" />
           </div>
-          <span className="uppercase text-[10px] tracking-widest">Back to Policies</span>
+          <span className="uppercase text-[9px] tracking-widest">Back to Overview</span>
         </button>
-
-        <div className="flex items-center space-x-4">
-          {user?.role !== 'user' && (
-            <>
-              <button className="p-3 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-emerald-600 transition-all shadow-sm">
-                <Download className="w-5 h-5" />
-              </button>
-              <button className="p-3 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-emerald-600 transition-all shadow-sm">
-                <Printer className="w-5 h-5" />
-              </button>
-              <button className="px-6 py-2 bg-emerald-600 text-white rounded-xl font-black text-[10px] uppercase tracking-tighter shadow-xl shadow-emerald-900/20 hover:bg-emerald-700 transition-all">
-                Edit Policy
-              </button>
-            </>
-          )}
-        </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Left Card: Summary & Visuals */}
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="w-full lg:w-1/3 space-y-8"
-        >
-          <div className="bg-emerald-600 p-10 rounded-[3rem] text-white overflow-hidden relative shadow-2xl shadow-emerald-900/20">
-            <ShieldCheck className="absolute -right-10 -bottom-10 w-64 h-64 text-white/10" />
-            
-            <div className="relative z-10">
-              <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mb-8 shadow-xl">
-                <img 
-                  src={`https://www.google.com/s2/favicons?sz=128&domain=${policy.domain}`} 
-                  alt={policy.provider}
-                  className="w-12 h-12 object-contain"
-                />
+      {/* Main Premium Header */}
+      <div className="bg-[#0f172a] rounded-[2.5rem] p-10 text-white relative overflow-hidden shadow-2xl shadow-slate-900/20">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-8 relative z-10">
+          <div className="flex items-center space-x-6">
+            <div className="w-20 h-20 bg-white backdrop-blur-xl rounded-3xl flex items-center justify-center border border-white/10 shadow-inner overflow-hidden p-3">
+              <img 
+                src={`https://www.google.com/s2/favicons?sz=128&domain=${policy.domain}`} 
+                alt={policy.provider}
+                className="w-full h-full object-contain"
+                onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+              />
+              <div className="hidden w-full h-full items-center justify-center font-black text-emerald-400 text-2xl">
+                {policy.provider?.substring(0, 1)}
               </div>
-              <p className="text-emerald-200 font-black uppercase text-[10px] tracking-widest mb-2">{policy.type}</p>
-              <h1 className="text-4xl font-black tracking-tighter mb-10 leading-none">{policy.policy_number}</h1>
-              
-              <div className="space-y-6">
-                <div className="bg-white/10 backdrop-blur-md p-6 rounded-[2rem] border border-white/10">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-200 mb-1">Current Status</p>
-                  <div className="flex items-center space-x-2">
-                    <div className={`w-2 h-2 rounded-full animate-pulse ${policy.status === 'Active' ? 'bg-emerald-400' : 'bg-amber-400'}`}></div>
-                    <p className="text-2xl font-black">{policy.status}</p>
-                  </div>
-                </div>
+            </div>
+            <div>
+              <h1 className="text-3xl md:text-4xl font-black tracking-tighter leading-none mb-2 uppercase">{policy.type}</h1>
+              <p className="text-slate-400 font-bold text-xs tracking-widest uppercase flex items-center">
+                {policy.policy_number} • {policy.provider}
+              </p>
+              <div className="mt-4">
+                <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${currentStatus === 'Active' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}`}>
+                  {currentStatus}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 w-full md:w-auto">
+            <button className="flex-grow md:flex-none px-10 py-4 bg-emerald-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/20">
+              Pay Now
+            </button>
+          </div>
+        </div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full -mr-48 -mt-48 blur-3xl" />
+      </div>
 
-                <div className="flex items-center space-x-4 px-2">
-                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-lg">
-                    <DollarSign className="w-7 h-7" />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Details */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Coverage Details */}
+          <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+            <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase mb-8 flex items-center">
+              <Layers className="w-5 h-5 mr-3 text-emerald-600" />
+              Coverage Details
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[
+                { icon: ShieldCheck, label: 'Death Benefit' },
+                { icon: Activity, label: 'Terminal Illness' },
+                { icon: ShieldCheck, label: 'Accidental Death Rider' },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center space-x-4 p-6 bg-slate-50 rounded-2xl border border-transparent hover:border-emerald-100 transition-all group">
+                  <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-emerald-500 shadow-sm group-hover:scale-110 transition-transform">
+                    <item.icon className="w-5 h-5" />
                   </div>
+                  <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest">{item.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Benefits & Features */}
+          <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+            <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase mb-8 flex items-center">
+              <Activity className="w-5 h-5 mr-3 text-emerald-600" />
+              Benefits & Features
+            </h2>
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
+              {[
+                'High sum assured at low premium',
+                'Tax benefits under 80C',
+                'Pure risk cover',
+                'Flexible premium payment terms'
+              ].map((text, i) => (
+                <li key={i} className="flex items-start space-x-3 group">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 group-hover:scale-150 transition-transform" />
+                  <span className="text-sm font-bold text-slate-600">{text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Maturity & Loan Details */}
+          <div className="bg-emerald-50/50 p-10 rounded-[2.5rem] border border-emerald-100 shadow-sm">
+            <h2 className="text-lg font-black text-emerald-900 tracking-tight uppercase mb-8">Maturity & Loan Details</h2>
+            <div className="grid grid-cols-3 gap-6">
+              {[
+                { label: 'Cash Value', value: '₹0' },
+                { label: 'Surrender Value', value: '₹0' },
+                { label: 'Loan Eligibility', value: '₹0' },
+              ].map((item, i) => (
+                <div key={i}>
+                  <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">{item.label}</p>
+                  <p className="text-sm font-black text-emerald-900 tracking-widest">{item.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Premium Payment History */}
+          <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+            <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase mb-8">Premium Payment History</h2>
+            <div className="space-y-4">
+              {policy.payment_history?.map((h, i) => (
+                <div key={i} className="flex items-center justify-between p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
                   <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-200">Annual Premium</p>
-                    <p className="text-3xl font-black tracking-tight">₹{policy.premium}</p>
+                    <p className="text-sm font-black text-slate-900">{h.date}</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">UPI • TXN-88291</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-black text-slate-900">₹{h.amount}</p>
+                    <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded-md">Success</span>
                   </div>
                 </div>
-              </div>
+              ))}
+              {!policy.payment_history?.length && (
+                <div className="text-center py-10 text-slate-400 font-bold uppercase text-[10px] tracking-widest">No payment records found</div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Sidebars */}
+        <div className="space-y-8">
+          {/* Policy Period */}
+          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+            <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Policy Period</h3>
+            <div className="space-y-4">
+              {[
+                { label: 'Start Date', value: policy.start_date },
+                { label: 'End Date', value: policy.end_date },
+                { label: 'Premium', value: `₹${policy.premium}/yr` },
+                { label: 'Due Date', value: policy.end_date },
+              ].map((item, i) => (
+                <div key={i} className="flex justify-between items-center py-1 border-b border-slate-50 last:border-0">
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-tighter">{item.label}</span>
+                  <span className="text-xs font-black text-slate-900">{item.value}</span>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Quick Stats Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-lg shadow-slate-200/50">
-              <Calendar className="w-6 h-6 text-emerald-500 mb-3" />
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Valid From</p>
-              <p className="text-sm font-black text-slate-900">{policy.start_date}</p>
-            </div>
-            <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-lg shadow-slate-200/50">
-              <RefreshCw className="w-6 h-6 text-amber-500 mb-3" />
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Expires On</p>
-              <p className="text-sm font-black text-slate-900">{policy.end_date}</p>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Right Section: Details & History */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full lg:w-2/3 space-y-8"
-        >
-          {/* Detailed Info Card */}
-          <div className="bg-white p-10 rounded-[3rem] border border-slate-200 shadow-xl shadow-slate-200/50">
-            <div className="flex justify-between items-start mb-12">
-              <div>
-                <h2 className="text-3xl font-black text-slate-900 tracking-tighter">Policy Information</h2>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Provider: {policy.provider}</p>
+          {/* Nominee Card */}
+          <div className="bg-emerald-50 p-8 rounded-[2.5rem] border border-emerald-100 shadow-sm space-y-6">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-emerald-600 shadow-sm">
+                <User className="w-5 h-5" />
               </div>
-              <div className="flex space-x-2">
-                <span className="px-4 py-2 bg-slate-100 rounded-xl text-[10px] font-black text-slate-500 uppercase">Policy ID: {policy.id}</span>
-              </div>
+              <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Nominee</h3>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div className="space-y-6">
-                <div>
-                  <div className="flex items-center space-x-2 text-slate-400 mb-2">
-                    <User className="w-4 h-4" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Primary Client</span>
-                  </div>
-                  <p className="text-xl font-black text-slate-900">{policy.client_name}</p>
-                </div>
-                <div>
-                  <div className="flex items-center space-x-2 text-slate-400 mb-2">
-                    <User className="w-4 h-4 text-emerald-500" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Nominee Details</span>
-                  </div>
-                  <p className="text-xl font-black text-slate-900">{policy.nominee_name}</p>
-                  <p className="text-xs font-bold text-slate-400 uppercase tracking-tighter">Relationship: {policy.nominee_relation}</p>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <div>
-                  <div className="flex items-center space-x-2 text-slate-400 mb-2">
-                    <Activity className="w-4 h-4 text-emerald-500" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">Core Benefits</span>
-                  </div>
-                  <p className="text-sm font-bold text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100 italic">
-                    "{policy.benefits}"
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick Actions Bar */}
-            <div className="mt-12 pt-12 border-t border-slate-100 flex flex-wrap gap-4">
-              <button className="flex items-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all">
-                <Mail className="w-4 h-4" />
-                <span>Email Policy</span>
-              </button>
-              <button className="flex items-center space-x-2 px-6 py-3 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all">
-                <Share2 className="w-4 h-4" />
-                <span>Share Access</span>
-              </button>
-              <button className="flex items-center space-x-2 px-6 py-3 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all ml-auto">
-                <ExternalLink className="w-4 h-4" />
-                <span>Carrier Portal</span>
-              </button>
+            <div>
+              <p className="text-lg font-black text-slate-900">{policy.nominee_name}</p>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-tighter">{policy.nominee_relation}</p>
             </div>
           </div>
 
-          {/* History Sections */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white p-8 rounded-[3rem] border border-slate-200 shadow-xl shadow-slate-200/50">
-              <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6 flex items-center">
-                <CreditCard className="w-5 h-5 mr-3 text-emerald-500" />
-                Payment Log
-              </h4>
-              <div className="space-y-4">
-                {policy.payment_history?.length > 0 ? policy.payment_history.map((h, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div>
-                      <p className="text-xs font-black text-slate-900">{h.date}</p>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Premium Installment</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-black text-slate-900">₹{h.amount}</p>
-                      <span className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Confirmed</span>
-                    </div>
-                  </div>
-                )) : (
-                  <div className="py-8 text-center text-xs font-bold text-slate-400 uppercase tracking-widest">No records found</div>
-                )}
-              </div>
-            </div>
-
-            <div className="bg-white p-8 rounded-[3rem] border border-slate-200 shadow-xl shadow-slate-200/50">
-              <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest mb-6 flex items-center">
-                <RefreshCw className="w-5 h-5 mr-3 text-amber-500" />
-                Renewal Log
-              </h4>
-              <div className="space-y-4">
-                {policy.renewal_history?.length > 0 ? policy.renewal_history.map((h, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <div>
-                      <p className="text-xs font-black text-slate-900">{h.date}</p>
-                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{h.type} Lifecycle Event</p>
-                    </div>
-                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-slate-300">
-                      <Shield className="w-5 h-5" />
-                    </div>
-                  </div>
-                )) : (
-                  <div className="py-8 text-center text-xs font-bold text-slate-400 uppercase tracking-widest">No records found</div>
-                )}
-              </div>
+          {/* Policy Documents */}
+          <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">
+            <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Policy Documents</h3>
+            <div className="space-y-4">
+              {[
+                'Policy Certificate',
+                'Premium Receipt',
+                'ID Card'
+              ].map((doc, i) => (
+                <button key={i} className="w-full flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-transparent hover:border-emerald-200 transition-all group">
+                  <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">{doc}</span>
+                  <Download className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 transition-colors" />
+                </button>
+              ))}
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
