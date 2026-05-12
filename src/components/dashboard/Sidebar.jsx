@@ -88,7 +88,7 @@ const Sidebar = ({ role }) => {
             items: [
               { label: 'Dashboard', icon: LayoutDashboard, path: '/agent/dashboard' },
               { label: 'My Leads', icon: Users, path: '/agent/customers' },
-              { label: 'Renewal , icon: RefreshCw, path: '/agent/renewals' },
+              { label: 'Renewal Follow-ups', icon: RefreshCw, path: '/agent/renewals' },
               { label: 'Communication Hub', icon: MessageSquare, path: '/agent/communication' },
             ]
           },

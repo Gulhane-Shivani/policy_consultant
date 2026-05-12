@@ -54,77 +54,77 @@ const PolicyPlans = () => {
         { 
           id: 1, plan_id: 'PLAN-H1', name: 'CARE SUPREME DISCOUNTED', category: 'Health', term: '1 Year', basePremium: '615', 
           benefits: '• No room rent limit\n• Unlimited restoration\n• Global Treatment\n• OPD Consultations', 
-          coverage: '5 Lakh', provider: 'Care Health', status: 'Active',
+          coverage: '5 Lakh', provider: 'Care Health', domain: 'careinsurance.com', status: 'Active',
           howToClaim: '1. Visit Network Hospital 2. Show Policy ID 3. Cashless approval in 2 hours.',
           verdict: 'Comprehensive health coverage designed for families with priority hospital networks.'
         },
         { 
           id: 2, plan_id: 'PLAN-H2', name: 'REASSURE 2.0 TITANIUM+', category: 'Health', term: '1 Year', basePremium: '628', 
           benefits: '• No room rent limit\n• 100% no claim bonus\n• Modern Treatment\n• Zero Room Limit', 
-          coverage: '5 Lakh', provider: 'Niva Bupa', status: 'Active',
+          coverage: '5 Lakh', provider: 'Niva Bupa', domain: 'nivabupa.com', status: 'Active',
           howToClaim: '1. Intimate via App 2. Upload Bills 3. Payout in 48 hours for non-network.',
           verdict: 'Elite medical protection with zero-deductibles and instant renewal discounts.'
         },
         { 
           id: 3, plan_id: 'PLAN-H3', name: 'COMPREHENSIVE INDIVIDUAL', category: 'Health', term: '1 Year', basePremium: '708', 
           benefits: '• Single Private A/C Room\n• 100% restoration\n• Air Ambulance\n• Second Opinion', 
-          coverage: '5 Lakh', provider: 'Star Health', status: 'Active',
+          coverage: '5 Lakh', provider: 'Star Health', domain: 'starhealth.in', status: 'Active',
           howToClaim: '1. Call 24/7 Helpline 2. Pre-auth in 1 hour 3. Treatment starts.',
           verdict: 'Reliable individual health insurance with a vast network of 10,000+ hospitals.'
         },
         { 
           id: 4, plan_id: 'PLAN-H4', name: 'ACTIVE ONE MAX', category: 'Health', term: '1 Year', basePremium: '517', 
           benefits: '• No room rent limit\n• 100% no claim bonus\n• Health Returns\n• Chronic Care', 
-          coverage: '5 Lakh', provider: 'Aditya Birla', status: 'Active',
+          coverage: '5 Lakh', provider: 'Aditya Birla', domain: 'adityabirlacapital.com', status: 'Active',
           howToClaim: '1. Simple QR scan at hospital 2. Verified via App 3. Automated Payout.',
           verdict: 'Modern insurance for the active generation, rewarding a healthy lifestyle.'
         },
         { 
           id: 5, plan_id: 'PLAN-L1', name: 'TERM SMART GUARD', category: 'Life', term: 'Whole Life', basePremium: '1200', 
           benefits: '• Whole life cover\n• Terminal illness benefit\n• Level Premium\n• Rider Options', 
-          coverage: '1 Crore', provider: 'HDFC Life', status: 'Active',
+          coverage: '1 Crore', provider: 'HDFC Life', domain: 'hdfclife.com', status: 'Active',
           howToClaim: '1. Family notifies company 2. Documents via Email 3. Fast-track Payout.',
           verdict: 'Maximum security for your family with flexible payouts and critical illness protection.'
         },
         { 
           id: 6, plan_id: 'PLAN-L2', name: 'IPROTECT SMART', category: 'Life', term: 'Up to 85 yrs', basePremium: '1150', 
           benefits: '• Accidental death cover\n• Critical illness rider\n• Life Stage Upgrades\n• Cancer Cover', 
-          coverage: '1 Crore', provider: 'ICICI Prudential', status: 'Active',
+          coverage: '1 Crore', provider: 'ICICI Prudential', domain: 'iciciprulife.com', status: 'Active',
           howToClaim: '1. One-click Claim 2. Physical audit 3. Full settlement guaranteed.',
           verdict: 'Intelligent term insurance that adjusts its coverage based on your life stages.'
         },
         { 
           id: 7, plan_id: 'PLAN-L3', name: 'STANDARD TERM PLAN', category: 'Life', term: '35 Years', basePremium: '900', 
           benefits: '• Government backed\n• Tax savings U/S 80C\n• High Trust\n• Low Rejection', 
-          coverage: '50 Lakh', provider: 'LIC of India', status: 'Active',
+          coverage: '50 Lakh', provider: 'LIC of India', domain: 'licindia.in', status: 'Active',
           howToClaim: '1. Visit nearest branch 2. Submit form 3. Cheque delivery.',
           verdict: 'Trust-backed government term plan providing simple and reliable life cover.'
         },
         { 
           id: 8, plan_id: 'PLAN-C1', name: 'ECO DRIVE COMPREHENSIVE', category: 'Car', term: '1 Year', basePremium: '450', 
           benefits: '• Zero depreciation\n• 24/7 Roadside support\n• Self Inspection\n• Zero Paper', 
-          coverage: 'IDV 8L', provider: 'Digit Insurance', status: 'Active',
+          coverage: 'IDV 8L', provider: 'Digit Insurance', domain: 'godigit.com', status: 'Active',
           howToClaim: '1. Upload Photo 2. Get Approval 3. Drive to Garage.',
           verdict: 'Paperless car insurance with 1-hour inspection and cashless repairs.'
         },
         { 
           id: 9, plan_id: 'PLAN-C2', name: 'MOTOR SECURE PLUS', category: 'Car', term: '1 Year', basePremium: '520', 
           benefits: '• Fast tag enabled\n• Cashless garage mesh\n• Key Replacement\n• Tyre Cover', 
-          coverage: 'IDV 10L', provider: 'ICICI Lombard', status: 'Active',
+          coverage: 'IDV 10L', provider: 'ICICI Lombard', domain: 'icicilombard.com', status: 'Active',
           howToClaim: '1. Call Towing 2. Workshop drop 3. Get Car back.',
           verdict: 'The standard for motor protection in India, offering comprehensive coverage.'
         },
         { 
           id: 10, plan_id: 'PLAN-B1', name: 'SMB LIABILITY PRO', category: 'Business', term: '1 Year', basePremium: '2500', 
           benefits: '• Professional indemnity\n• Cyber liability cover\n• Cyber Safe\n• Director Cover', 
-          coverage: '50 Lakh', provider: 'TATA AIG', status: 'Active',
+          coverage: '50 Lakh', provider: 'TATA AIG', domain: 'tataaig.com', status: 'Active',
           howToClaim: '1. Case Notification 2. Advisor assigned 3. Legal assist.',
           verdict: 'Protect your professional venture from legal liabilities and cyber threats.'
         },
         { 
           id: 11, plan_id: 'PLAN-B2', name: 'ASSET PROTECTION ELITE', category: 'Business', term: '1 Year', basePremium: '4200', 
           benefits: '• Fire & burglary cover\n• Public liability\n• Theft Cover\n• Machinery Breakdown', 
-          coverage: '1 Crore', provider: 'Bajaj Allianz', status: 'Active',
+          coverage: '1 Crore', provider: 'Bajaj Allianz', domain: 'bajajallianz.com', status: 'Active',
           howToClaim: '1. Loss assessment 2. Audit 3. Direct settlement.',
           verdict: 'Total management of your business risks, from fire to third-party liabilities.'
         }
@@ -210,23 +210,21 @@ const PolicyPlans = () => {
     }
   };
 
-  const getProviderLogo = (provider) => {
-    const colors = {
-      'Care Health': 'bg-amber-100 text-amber-600',
-      'Niva Bupa': 'bg-emerald-100 text-emerald-600',
-      'Star Health': 'bg-teal-100 text-teal-600',
-      'Aditya Birla': 'bg-rose-100 text-rose-600',
-      'HDFC Life': 'bg-indigo-100 text-indigo-600',
-      'ICICI Prudential': 'bg-violet-100 text-violet-600',
-      'LIC of India': 'bg-orange-100 text-orange-600',
-      'Digit Insurance': 'bg-amber-50 text-amber-500',
-      'ICICI Lombard': 'bg-blue-100 text-blue-600',
-      'TATA AIG': 'bg-slate-100 text-slate-600',
-      'Bajaj Allianz': 'bg-slate-50 text-slate-500'
-    };
+  const getProviderLogo = (provider, domain) => {
     return (
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-[10px] ${colors[provider] || 'bg-slate-100 text-slate-400'}`}>
-        {provider.split(' ').map(n => n[0]).join('').slice(0, 2)}
+      <div className="w-10 h-10 rounded-xl bg-white border border-slate-100 p-1 flex items-center justify-center shadow-sm">
+        <img 
+          src={`https://www.google.com/s2/favicons?sz=64&domain=${domain}`} 
+          alt={provider}
+          className="w-7 h-7 object-contain"
+          onError={(e) => {
+            e.target.style.display = 'none';
+            e.target.nextSibling.style.display = 'flex';
+          }}
+        />
+        <div className="hidden w-full h-full items-center justify-center font-black text-emerald-600 text-[10px] bg-emerald-50">
+          {provider.split(' ').map(n => n[0]).join('').slice(0, 2)}
+        </div>
       </div>
     );
   };
@@ -345,7 +343,7 @@ const PolicyPlans = () => {
                   </td>
                   <td className="px-8 py-6">
                     <div className="flex items-center space-x-3">
-                      {getProviderLogo(item.provider)}
+                      {getProviderLogo(item.provider, item.domain)}
                       <span className="font-bold text-slate-600">{item.provider}</span>
                     </div>
                   </td>

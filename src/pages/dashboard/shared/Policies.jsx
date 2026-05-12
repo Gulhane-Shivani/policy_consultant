@@ -3,7 +3,8 @@ import {
   ShieldCheck, FileText, Layers,
   ArrowUpRight, ArrowDownRight,
   MoreVertical, Trash2, CheckCircle, Search, Filter,
-  Plus, X, Eye, Edit3, Calendar, DollarSign, User, MapPin, Activity
+  Plus, X, Eye, Edit3, Calendar, DollarSign, User, MapPin, Activity,
+  CreditCard, RefreshCw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../../utils/api';

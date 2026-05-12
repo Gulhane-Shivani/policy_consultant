@@ -37,77 +37,77 @@ const PlanDetailView = () => {
       { 
         id: 1, plan_id: 'PLAN-H1', name: 'CARE SUPREME DISCOUNTED', category: 'Health', term: '1 Year', basePremium: '615', 
         benefits: '• No room rent limit\n• Unlimited restoration\n• Global Treatment\n• OPD Consultations', 
-        coverage: '5 Lakh', provider: 'Care Health', status: 'Active',
+        coverage: '5 Lakh', provider: 'Care Health', domain: 'careinsurance.com', status: 'Active',
         howToClaim: '1. Visit Network Hospital\n2. Show Policy ID\n3. Cashless approval in 2 hours.',
         verdict: 'Comprehensive health coverage designed for families with priority hospital networks.'
       },
       { 
         id: 2, plan_id: 'PLAN-H2', name: 'REASSURE 2.0 TITANIUM+', category: 'Health', term: '1 Year', basePremium: '628', 
         benefits: '• No room rent limit\n• 100% no claim bonus\n• Modern Treatment\n• Zero Room Limit', 
-        coverage: '5 Lakh', provider: 'Niva Bupa', status: 'Active',
+        coverage: '5 Lakh', provider: 'Niva Bupa', domain: 'nivabupa.com', status: 'Active',
         howToClaim: '1. Intimate via App\n2. Upload Bills\n3. Payout in 48 hours for non-network.',
         verdict: 'Elite medical protection with zero-deductibles and instant renewal discounts.'
       },
       { 
         id: 3, plan_id: 'PLAN-H3', name: 'COMPREHENSIVE INDIVIDUAL', category: 'Health', term: '1 Year', basePremium: '708', 
         benefits: '• Single Private A/C Room\n• 100% restoration\n• Air Ambulance\n• Second Opinion', 
-        coverage: '5 Lakh', provider: 'Star Health', status: 'Active',
+        coverage: '5 Lakh', provider: 'Star Health', domain: 'starhealth.in', status: 'Active',
         howToClaim: '1. Call 24/7 Helpline\n2. Pre-auth in 1 hour\n3. Treatment starts.',
         verdict: 'Reliable individual health insurance with a vast network of 10,000+ hospitals.'
       },
       { 
         id: 4, plan_id: 'PLAN-H4', name: 'ACTIVE ONE MAX', category: 'Health', term: '1 Year', basePremium: '517', 
         benefits: '• No room rent limit\n• 100% no claim bonus\n• Health Returns\n• Chronic Care', 
-        coverage: '5 Lakh', provider: 'Aditya Birla', status: 'Active',
+        coverage: '5 Lakh', provider: 'Aditya Birla', domain: 'adityabirlacapital.com', status: 'Active',
         howToClaim: '1. Simple QR scan at hospital\n2. Verified via App\n3. Automated Payout.',
         verdict: 'Modern insurance for the active generation, rewarding a healthy lifestyle.'
       },
       { 
         id: 5, plan_id: 'PLAN-L1', name: 'TERM SMART GUARD', category: 'Life', term: 'Whole Life', basePremium: '1200', 
         benefits: '• Whole life cover\n• Terminal illness benefit\n• Level Premium\n• Rider Options', 
-        coverage: '1 Crore', provider: 'HDFC Life', status: 'Active',
+        coverage: '1 Crore', provider: 'HDFC Life', domain: 'hdfclife.com', status: 'Active',
         howToClaim: '1. Family notifies company\n2. Documents via Email\n3. Fast-track Payout.',
         verdict: 'Maximum security for your family with flexible payouts and critical illness protection.'
       },
       { 
         id: 6, plan_id: 'PLAN-L2', name: 'IPROTECT SMART', category: 'Life', term: 'Up to 85 yrs', basePremium: '1150', 
         benefits: '• Accidental death cover\n• Critical illness rider\n• Life Stage Upgrades\n• Cancer Cover', 
-        coverage: '1 Crore', provider: 'ICICI Prudential', status: 'Active',
+        coverage: '1 Crore', provider: 'ICICI Prudential', domain: 'iciciprulife.com', status: 'Active',
         howToClaim: '1. One-click Claim\n2. Physical audit\n3. Full settlement guaranteed.',
         verdict: 'Intelligent term insurance that adjusts its coverage based on your life stages.'
       },
       { 
         id: 7, plan_id: 'PLAN-L3', name: 'STANDARD TERM PLAN', category: 'Life', term: '35 Years', basePremium: '900', 
         benefits: '• Government backed\n• Tax savings U/S 80C\n• High Trust\n• Low Rejection', 
-        coverage: '50 Lakh', provider: 'LIC of India', status: 'Active',
+        coverage: '50 Lakh', provider: 'LIC of India', domain: 'licindia.in', status: 'Active',
         howToClaim: '1. Visit nearest branch\n2. Submit form\n3. Cheque delivery.',
         verdict: 'Trust-backed government term plan providing simple and reliable life cover.'
       },
       { 
         id: 8, plan_id: 'PLAN-C1', name: 'ECO DRIVE COMPREHENSIVE', category: 'Car', term: '1 Year', basePremium: '450', 
         benefits: '• Zero depreciation\n• 24/7 Roadside support\n• Self Inspection\n• Zero Paper', 
-        coverage: 'IDV 8L', provider: 'Digit Insurance', status: 'Active',
+        coverage: 'IDV 8L', provider: 'Digit Insurance', domain: 'godigit.com', status: 'Active',
         howToClaim: '1. Upload Photo\n2. Get Approval\n3. Drive to Garage.',
         verdict: 'Paperless car insurance with 1-hour inspection and cashless repairs.'
       },
       { 
         id: 9, plan_id: 'PLAN-C2', name: 'MOTOR SECURE PLUS', category: 'Car', term: '1 Year', basePremium: '520', 
         benefits: '• Fast tag enabled\n• Cashless garage mesh\n• Key Replacement\n• Tyre Cover', 
-        coverage: 'IDV 10L', provider: 'ICICI Lombard', status: 'Active',
+        coverage: 'IDV 10L', provider: 'ICICI Lombard', domain: 'icicilombard.com', status: 'Active',
         howToClaim: '1. Call Towing\n2. Workshop drop\n3. Get Car back.',
         verdict: 'The standard for motor protection in India, offering comprehensive coverage.'
       },
       { 
         id: 10, plan_id: 'PLAN-B1', name: 'SMB LIABILITY PRO', category: 'Business', term: '1 Year', basePremium: '2500', 
         benefits: '• Professional indemnity\n• Cyber liability cover\n• Cyber Safe\n• Director Cover', 
-        coverage: '50 Lakh', provider: 'TATA AIG', status: 'Active',
+        coverage: '50 Lakh', provider: 'TATA AIG', domain: 'tataaig.com', status: 'Active',
         howToClaim: '1. Case Notification\n2. Advisor assigned\n3. Legal assist.',
         verdict: 'Protect your professional venture from legal liabilities and cyber threats.'
       },
       { 
         id: 11, plan_id: 'PLAN-B2', name: 'ASSET PROTECTION ELITE', category: 'Business', term: '1 Year', basePremium: '4200', 
         benefits: '• Fire & burglary cover\n• Public liability\n• Theft Cover\n• Machinery Breakdown', 
-        coverage: '1 Crore', provider: 'Bajaj Allianz', status: 'Active',
+        coverage: '1 Crore', provider: 'Bajaj Allianz', domain: 'bajajallianz.com', status: 'Active',
         howToClaim: '1. Loss assessment\n2. Audit\n3. Direct settlement.',
         verdict: 'Total management of your business risks, from fire to third-party liabilities.'
       }
@@ -159,9 +159,18 @@ const PlanDetailView = () => {
             animate={{ opacity: 1, y: 0 }}
             className="bg-white p-8 rounded-[3rem] border border-slate-200 shadow-xl shadow-slate-200/50 text-center"
           >
-            <div className={`w-24 h-24 mx-auto mb-6 rounded-3xl bg-${brand.color}-100 flex items-center justify-center relative overflow-hidden group`}>
+            <div className={`w-24 h-24 mx-auto mb-6 rounded-3xl bg-white border border-slate-100 shadow-sm flex items-center justify-center relative overflow-hidden group`}>
               <div className={`absolute inset-0 bg-${brand.color}-600 opacity-0 group-hover:opacity-10 transition-opacity`} />
-              <brand.icon className={`w-12 h-12 text-${brand.color}-600`} />
+              <img 
+                src={`https://www.google.com/s2/favicons?sz=128&domain=${plan.domain}`} 
+                alt={plan.provider}
+                className="w-16 h-16 object-contain relative z-10"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'block';
+                }}
+              />
+              <brand.icon className={`w-12 h-12 text-${brand.color}-600 hidden`} />
             </div>
             <h1 className="text-2xl font-black text-slate-900 leading-tight uppercase tracking-tighter">{plan.name}</h1>
             <p className={`text-[10px] font-black uppercase tracking-widest mt-2 text-${brand.color}-600`}>{plan.provider}</p>
