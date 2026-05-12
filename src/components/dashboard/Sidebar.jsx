@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, RefreshCw, CreditCard,
   Bell, Users, UserCheck, Shield, MessageSquare,
@@ -141,12 +141,14 @@ const Sidebar = ({ role }) => {
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
-      <div className="p-6 flex items-center space-x-3">
-        <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center font-black text-xl text-white shadow-lg shadow-emerald-200">
-          PC
+      <Link to="/" className="p-6 flex items-center space-x-3">
+        <div className="bg-emerald-600 p-2 rounded-xl">
+          <Shield className="w-6 h-6 text-white" />
         </div>
-        <span className="font-black text-xl tracking-tighter text-slate-900">Policy Consultant</span>
-      </div>
+        <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-emerald-800">
+          Policy Consultant
+        </span>
+      </Link>
 
       <nav className="flex-grow px-4 space-y-8 mt-4">
         {navItems.map((group, idx) => (
@@ -188,6 +190,7 @@ const Sidebar = ({ role }) => {
                     ) : (
                       <NavLink
                         to={item.path}
+                        end={item.label === 'Overview' || item.label === 'My Dashboard'}
                         className={({ isActive }) => `flex items-center space-x-3 px-4 py-3 rounded-xl transition-all group ${isActive ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' : 'text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'}`}
                       >
                         <item.icon className="w-5 h-5" />
