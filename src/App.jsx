@@ -57,6 +57,9 @@ import Notifications from './pages/dashboard/shared/Notifications';
 import Customers from './pages/dashboard/shared/Customers';
 import Communication from './pages/dashboard/shared/Communication';
 import PolicyDetailView from './pages/dashboard/shared/PolicyDetailView';
+import CustomerClaims from './pages/dashboard/customer/Claims';
+import CustomerProfile from './pages/dashboard/customer/Profile';
+import CustomerPayments from './pages/dashboard/customer/Payments';
 
 // Wrapper to conditionally show Navbar/Footer
 const AppLayout = ({ children }) => {
@@ -65,6 +68,7 @@ const AppLayout = ({ children }) => {
                       location.pathname.startsWith('/super-admin') || 
                       location.pathname.startsWith('/agent') ||
                       location.pathname.startsWith('/csr') ||
+                      location.pathname.startsWith('/dashboard') ||
                       location.pathname.startsWith('/staff');
 
   return (
@@ -93,12 +97,21 @@ function App() {
           <Route path="/business" element={<Business />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/support" element={<Support />} />
-          {/* User Dashboard */}
+          {/* Customer Dashboard Routes */}
           <Route path="/dashboard" element={
             <RoleProtectedRoute allowedRoles={['user']}>
-              <CustomerDashboard />
+              <DashboardLayout />
             </RoleProtectedRoute>
-          } />
+          }>
+            <Route index element={<CustomerDashboard />} />
+            <Route path="overview" element={<CustomerDashboard />} />
+            <Route path="policies" element={<Policies />} />
+            <Route path="policies/:id" element={<PolicyDetailView />} />
+            <Route path="claims" element={<CustomerClaims />} />
+            <Route path="payments" element={<CustomerPayments />} />
+            <Route path="support" element={<Support />} />
+            <Route path="profile" element={<CustomerProfile />} />
+          </Route>
           <Route path="/support" element={<Support />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />

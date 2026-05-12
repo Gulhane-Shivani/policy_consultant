@@ -14,6 +14,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const Policies = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [user] = useState(() => {
+    const saved = localStorage.getItem('user');
+    return saved && saved !== 'undefined' ? JSON.parse(saved) : null;
+  });
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -227,13 +231,15 @@ const Policies = () => {
           <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Policy Management</h1>
           <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Policy Consultant • Lifecycle Oversight</p>
         </div>
-        <button 
-          onClick={() => handleOpenModal()}
-          className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add New Policy</span>
-        </button>
+        {user?.role !== 'user' && (
+          <button 
+            onClick={() => handleOpenModal()}
+            className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add New Policy</span>
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -330,18 +336,22 @@ const Policies = () => {
                       >
                         <Eye className="w-5 h-5" />
                       </button>
-                      <button 
-                        onClick={() => handleOpenModal(item)}
-                        className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
-                      >
-                        <Edit3 className="w-5 h-5" />
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(item.id)}
-                        className="p-2 hover:bg-rose-50 text-rose-600 rounded-lg transition-all"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
+                      {user?.role !== 'user' && (
+                        <>
+                          <button 
+                            onClick={() => handleOpenModal(item)}
+                            className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
+                          >
+                            <Edit3 className="w-5 h-5" />
+                          </button>
+                          <button 
+                            onClick={() => handleDelete(item.id)}
+                            className="p-2 hover:bg-rose-50 text-rose-600 rounded-lg transition-all"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

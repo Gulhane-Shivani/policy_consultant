@@ -4,7 +4,8 @@ import {
   LayoutDashboard, FileText, RefreshCw, CreditCard,
   Bell, Users, UserCheck, Shield, MessageSquare,
   Settings, Database, BarChart3, HelpCircle, ChevronRight,
-  UserCircle2, PieChart, LifeBuoy, LogOut, ChevronDown, ShieldCheck
+  UserCircle2, PieChart, LifeBuoy, LogOut, ChevronDown, ShieldCheck,
+  ShieldAlert, User
 } from 'lucide-react';
 
 const Sidebar = ({ role }) => {
@@ -119,9 +120,12 @@ const Sidebar = ({ role }) => {
           {
             group: 'Customer Portal',
             items: [
-              { label: 'My Dashboard', icon: LayoutDashboard, path: '/dashboard' },
+              { label: 'Overview', icon: LayoutDashboard, path: '/dashboard' },
               { label: 'My Policies', icon: Shield, path: '/dashboard/policies' },
-              { label: 'Personal Profile', icon: UserCircle2, path: '/dashboard/profile' }
+              { label: 'Claims Center', icon: ShieldAlert, path: '/dashboard/claims' },
+              { label: 'Payments', icon: CreditCard, path: '/dashboard/payments' },
+              { label: 'Profile', icon: User, path: '/dashboard/profile' },
+              { label: 'Help & Support', icon: HelpCircle, path: '/dashboard/support' }
             ]
           }
         ];

@@ -11,6 +11,10 @@ import { toast } from 'react-hot-toast';
 const PolicyDetailView = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [user] = useState(() => {
+    const saved = localStorage.getItem('user');
+    return saved && saved !== 'undefined' ? JSON.parse(saved) : null;
+  });
   const [policy, setPolicy] = useState(null);
 
   useEffect(() => {
@@ -116,15 +120,19 @@ const PolicyDetailView = () => {
         </button>
 
         <div className="flex items-center space-x-4">
-          <button className="p-3 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-emerald-600 transition-all shadow-sm">
-            <Download className="w-5 h-5" />
-          </button>
-          <button className="p-3 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-emerald-600 transition-all shadow-sm">
-            <Printer className="w-5 h-5" />
-          </button>
-          <button className="px-6 py-2 bg-emerald-600 text-white rounded-xl font-black text-[10px] uppercase tracking-tighter shadow-xl shadow-emerald-900/20 hover:bg-emerald-700 transition-all">
-            Edit Policy
-          </button>
+          {user?.role !== 'user' && (
+            <>
+              <button className="p-3 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-emerald-600 transition-all shadow-sm">
+                <Download className="w-5 h-5" />
+              </button>
+              <button className="p-3 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-emerald-600 transition-all shadow-sm">
+                <Printer className="w-5 h-5" />
+              </button>
+              <button className="px-6 py-2 bg-emerald-600 text-white rounded-xl font-black text-[10px] uppercase tracking-tighter shadow-xl shadow-emerald-900/20 hover:bg-emerald-700 transition-all">
+                Edit Policy
+              </button>
+            </>
+          )}
         </div>
       </div>
 

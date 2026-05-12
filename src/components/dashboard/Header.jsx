@@ -33,7 +33,7 @@ const Header = ({ role }) => {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
           <input 
             type="text" 
-            placeholder="Search for policies, customers, or transactions..." 
+            placeholder={role === 'user' ? "Search for policies or support..." : "Search for policies, customers, or transactions..."}
             className="w-full pl-12 pr-4 py-3 bg-slate-100 border-none rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-medium text-slate-900 placeholder:text-slate-400"
           />
         </div>
