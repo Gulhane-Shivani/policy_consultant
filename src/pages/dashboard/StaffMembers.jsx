@@ -23,7 +23,7 @@ const StaffMembers = () => {
   });
 
   const [stats, setStats] = useState([
-    { label: 'Total Staff', value: '0', change: 'Live', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+    { label: 'Total Staff', value: '0', change: 'Live', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
     { label: 'Advisors', value: '0', change: 'Live', icon: UserCog, color: 'text-emerald-600', bg: 'bg-emerald-50' },
     { label: 'Admins', value: '0', change: 'Live', icon: Shield, color: 'text-amber-600', bg: 'bg-amber-50' },
   ]);
@@ -34,7 +34,7 @@ const StaffMembers = () => {
     const adminCount = data.filter(u => u.role === 'admin' || u.role === 'super_admin').length;
     
     setStats([
-      { label: 'Total Staff', value: data.length.toString(), change: 'Live', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+      { label: 'Total Staff', value: data.length.toString(), change: 'Live', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
       { label: 'Advisors', value: advisorCount.toString(), change: 'Live', icon: UserCog, color: 'text-emerald-600', bg: 'bg-emerald-50' },
       { label: 'Admins', value: adminCount.toString(), change: 'Live', icon: Shield, color: 'text-amber-600', bg: 'bg-amber-50' },
     ]);
@@ -59,6 +59,10 @@ const StaffMembers = () => {
 
   const handleAddStaff = async (e) => {
     e.preventDefault();
+    if (newStaff.mobile.length !== 10) {
+      toast.error('Mobile number must be exactly 10 digits');
+      return;
+    }
     try {
       await api.post('/admin/users', newStaff);
       toast.success('Staff member added successfully');
@@ -102,11 +106,11 @@ const StaffMembers = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Staff Management</h1>
-          <p className="text-slate-500 font-bold">Manage system administrators, advisors, and CSR staff.</p>
+          <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Policy Consultant • Team Directory</p>
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center space-x-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-900/20"
+          className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
         >
           <Plus className="w-4 h-4" />
           <span>Add New Staff</span>
@@ -135,7 +139,7 @@ const StaffMembers = () => {
         ))}
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-indigo-900/5 overflow-hidden">
+      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-emerald-900/5 overflow-hidden">
         <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
           <div>
             <h2 className="text-xl font-black text-slate-900 tracking-tight">Staff Directory</h2>
@@ -151,7 +155,7 @@ const StaffMembers = () => {
                 placeholder="Search staff..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-600/20 transition-all" 
+                className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all" 
               />
             </div>
           </div>
@@ -183,8 +187,8 @@ const StaffMembers = () => {
                   </td>
                   <td className="px-8 py-6">
                     <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${
-                      item.role === 'super_admin' ? 'bg-purple-50 text-purple-600' :
-                      item.role === 'admin' ? 'bg-indigo-50 text-indigo-600' :
+                      item.role === 'super_admin' ? 'bg-emerald-50 text-emerald-600' :
+                      item.role === 'admin' ? 'bg-emerald-50 text-emerald-600' :
                       'bg-slate-100 text-slate-500'
                     }`}>
                       {item.role.replace('_', ' ')}
@@ -251,7 +255,7 @@ const StaffMembers = () => {
                       placeholder="Full Name" 
                       value={newStaff.full_name}
                       onChange={(e) => setNewStaff({...newStaff, full_name: e.target.value})}
-                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600/20 font-bold text-slate-900"
+                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 font-bold text-slate-900"
                     />
                   </div>
 
@@ -263,7 +267,7 @@ const StaffMembers = () => {
                       placeholder="Email Address" 
                       value={newStaff.email}
                       onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
-                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600/20 font-bold text-slate-900"
+                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 font-bold text-slate-900"
                     />
                   </div>
 
@@ -275,7 +279,7 @@ const StaffMembers = () => {
                       placeholder="Temporary Password" 
                       value={newStaff.password}
                       onChange={(e) => setNewStaff({...newStaff, password: e.target.value})}
-                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600/20 font-bold text-slate-900"
+                      className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 font-bold text-slate-900"
                     />
                   </div>
 
@@ -286,8 +290,14 @@ const StaffMembers = () => {
                         type="text" 
                         placeholder="Mobile" 
                         value={newStaff.mobile}
-                        onChange={(e) => setNewStaff({...newStaff, mobile: e.target.value})}
-                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600/20 font-bold text-slate-900"
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, ''); // Only digits
+                          if (val.startsWith('0')) return; // Cannot start with 0
+                          if (val.length <= 10) {
+                            setNewStaff({...newStaff, mobile: val});
+                          }
+                        }}
+                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 font-bold text-slate-900"
                       />
                     </div>
                     <div className="relative">
@@ -295,7 +305,7 @@ const StaffMembers = () => {
                       <select 
                         value={newStaff.role}
                         onChange={(e) => setNewStaff({...newStaff, role: e.target.value})}
-                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-indigo-600/20 font-bold text-slate-900 appearance-none"
+                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 font-bold text-slate-900 appearance-none"
                       >
                         <option value="admin">Admin</option>
                         <option value="agent">Agent</option>
@@ -306,7 +316,7 @@ const StaffMembers = () => {
                   </div>
                 </div>
 
-                <button className="w-full py-5 bg-indigo-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-2xl shadow-indigo-900/20 mt-4">
+                <button className="w-full py-5 bg-emerald-600 text-white rounded-3xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-2xl shadow-emerald-900/20 mt-4">
                   Confirm Staff Registration
                 </button>
               </form>

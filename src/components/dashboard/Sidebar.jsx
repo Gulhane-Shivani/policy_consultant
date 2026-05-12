@@ -1,15 +1,23 @@
-import React from 'react';
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, FileText, RefreshCw, CreditCard, 
   Bell, Users, UserCheck, Shield, MessageSquare, 
   Settings, Database, BarChart3, HelpCircle, ChevronRight,
-  UserCircle2, PieChart, LifeBuoy, LogOut
+  UserCircle2, PieChart, LifeBuoy, LogOut, ChevronDown
 } from 'lucide-react';
 
 const Sidebar = ({ role }) => {
+  const [openMenus, setOpenMenus] = useState({});
   const userStr = localStorage.getItem('user');
   const user = userStr ? JSON.parse(userStr) : { full_name: 'John Doe', role: 'user' };
+
+  const toggleMenu = (label) => {
+    setOpenMenus(prev => ({
+      ...prev,
+      [label]: !prev[label]
+    }));
+  };
   
   const getNavItems = () => {
     // Shared items
@@ -50,13 +58,8 @@ const Sidebar = ({ role }) => {
               { label: 'Renewals', icon: RefreshCw, path: '/super-admin/renewals' },
               { label: 'Payments', icon: CreditCard, path: '/super-admin/payments' },
               { label: 'Reports', icon: PieChart, path: '/super-admin/reports' },
-              { label: 'Master Settings', icon: Settings, path: '/super-admin/settings' },
               { label: 'System Config', icon: Database, path: '/super-admin/config' },
             ]
-          },
-          {
-            group: 'Account',
-            items: [profileItem]
           }
         ];
       case 'admin':
@@ -110,12 +113,16 @@ const Sidebar = ({ role }) => {
   const navItems = getNavItems();
 
   return (
-    <div className="w-64 h-screen bg-slate-900 text-white flex flex-col fixed left-0 top-0 overflow-y-auto scrollbar-hide">
+    <div className="w-64 h-screen bg-white border-r border-slate-100 flex flex-col fixed left-0 top-0 overflow-y-auto scrollbar-hide no-scrollbar">
+      <style>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
       <div className="p-6 flex items-center space-x-3">
-        <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center font-black text-xl text-white">
-          IA
+        <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center font-black text-xl text-white shadow-lg shadow-emerald-200">
+          PC
         </div>
-        <span className="font-black text-xl tracking-tighter">Insurance Advisor</span>
+        <span className="font-black text-xl tracking-tighter text-slate-900">Policy Consultant</span>
       </div>
 
       <nav className="flex-grow px-4 space-y-8 mt-4">
@@ -125,40 +132,48 @@ const Sidebar = ({ role }) => {
               {group.group}
             </h3>
             <div className="space-y-1">
-              {group.items.map((item, itemIdx) => (
-                <div key={itemIdx}>
-                  {item.subItems ? (
-                    <div className="space-y-1">
-                      <button className="w-full flex items-center justify-between px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl transition-all group">
-                        <div className="flex items-center space-x-3">
-                          <item.icon className="w-5 h-5" />
-                          <span className="font-bold text-sm">{item.label}</span>
-                        </div>
-                        <ChevronRight className="w-4 h-4" />
-                      </button>
-                      <div className="pl-12 space-y-1">
-                        {item.subItems.map((sub, subIdx) => (
-                          <NavLink
-                            key={subIdx}
-                            to={sub.path}
-                            className={({ isActive }) => `block py-2 text-sm font-medium transition-all ${isActive ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'}`}
-                          >
-                            {sub.label}
-                          </NavLink>
-                        ))}
+              {group.items.map((item, itemIdx) => {
+                const isOpen = openMenus[item.label];
+                return (
+                  <div key={itemIdx}>
+                    {item.subItems ? (
+                      <div className="space-y-1">
+                        <button 
+                          onClick={() => toggleMenu(item.label)}
+                          className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all group ${isOpen ? 'bg-emerald-50 text-emerald-600' : 'text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'}`}
+                        >
+                          <div className="flex items-center space-x-3">
+                            <item.icon className="w-5 h-5" />
+                            <span className="font-bold text-sm">{item.label}</span>
+                          </div>
+                          {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                        </button>
+                        {isOpen && (
+                          <div className="pl-12 space-y-1">
+                            {item.subItems.map((sub, subIdx) => (
+                              <NavLink
+                                key={subIdx}
+                                to={sub.path}
+                                className={({ isActive }) => `block py-2 text-sm font-bold transition-all ${isActive ? 'text-emerald-600' : 'text-slate-400 hover:text-emerald-500'}`}
+                              >
+                                {sub.label}
+                              </NavLink>
+                            ))}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ) : (
-                    <NavLink
-                      to={item.path}
-                      className={({ isActive }) => `flex items-center space-x-3 px-4 py-3 rounded-xl transition-all group ${isActive ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
-                    >
-                      <item.icon className="w-5 h-5" />
-                      <span className="font-bold text-sm">{item.label}</span>
-                    </NavLink>
-                  )}
-                </div>
-              ))}
+                    ) : (
+                      <NavLink
+                        to={item.path}
+                        className={({ isActive }) => `flex items-center space-x-3 px-4 py-3 rounded-xl transition-all group ${isActive ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' : 'text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'}`}
+                      >
+                        <item.icon className="w-5 h-5" />
+                        <span className="font-bold text-sm">{item.label}</span>
+                      </NavLink>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         ))}
@@ -173,14 +188,14 @@ const Sidebar = ({ role }) => {
         </div>
       )}
 
-      <div className="p-6 border-t border-slate-800 space-y-4">
+      <div className="p-6 border-t border-slate-100 space-y-4">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center font-bold text-indigo-400 border border-slate-700">
+          <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center font-bold text-emerald-600 border border-slate-100">
             {user.full_name?.charAt(0) || 'U'}
           </div>
           <div className="flex-grow overflow-hidden">
-            <p className="text-sm font-bold truncate text-slate-200">{user.full_name || 'User'}</p>
-            <p className="text-[10px] text-slate-500 font-bold uppercase truncate">
+            <p className="text-sm font-bold truncate text-slate-900">{user.full_name || 'User'}</p>
+            <p className="text-[10px] text-slate-400 font-bold uppercase truncate">
               {role.replace('-', ' ')}
             </p>
           </div>
@@ -192,7 +207,7 @@ const Sidebar = ({ role }) => {
             localStorage.removeItem('access_token');
             window.location.href = '/login';
           }}
-          className="w-full flex items-center justify-center space-x-2 py-3 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all group"
+          className="w-full flex items-center justify-center space-x-2 py-3 bg-rose-50 text-rose-600 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-rose-600 hover:text-white transition-all group"
         >
           <LogOut className="w-4 h-4 group-hover:rotate-12 transition-transform" />
           <span>Sign Out</span>

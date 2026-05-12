@@ -59,7 +59,7 @@ const AgentPortal = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40">
           <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
+            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
               <Target className="w-6 h-6" />
             </div>
             <span className="text-xs font-black text-emerald-500 flex items-center">
@@ -85,7 +85,7 @@ const AgentPortal = () => {
 
         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40">
           <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl">
+            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
               <FileText className="w-6 h-6" />
             </div>
             <span className="text-xs font-black text-slate-400 uppercase tracking-widest">Target: 20</span>
@@ -115,7 +115,7 @@ const AgentPortal = () => {
               <h3 className="text-xl font-black text-slate-900 tracking-tight">Sales vs Leads</h3>
               <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Weekly Performance Overview</p>
             </div>
-            <select className="bg-slate-50 border-none rounded-xl px-4 py-2 text-xs font-bold text-slate-600 outline-none focus:ring-2 focus:ring-indigo-600/20">
+            <select className="bg-slate-50 border-none rounded-xl px-4 py-2 text-xs font-bold text-slate-600 outline-none focus:ring-2 focus:ring-emerald-600/20">
               <option>Last 7 Days</option>
               <option>Last 30 Days</option>
             </select>
@@ -125,8 +125,8 @@ const AgentPortal = () => {
               <AreaChart data={performanceData}>
                 <defs>
                   <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.1}/>
-                    <stop offset="95%" stopColor="#4F46E5" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#10B981" stopOpacity={0.1}/>
@@ -144,8 +144,8 @@ const AgentPortal = () => {
                 <Tooltip 
                   contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
                 />
-                <Area type="monotone" dataKey="sales" stroke="#4F46E5" strokeWidth={3} fillOpacity={1} fill="url(#colorSales)" />
-                <Area type="monotone" dataKey="leads" stroke="#10B981" strokeWidth={3} fillOpacity={1} fill="url(#colorLeads)" />
+                <Area type="monotone" dataKey="sales" stroke="#10B981" strokeWidth={3} fillOpacity={1} fill="url(#colorSales)" />
+                <Area type="monotone" dataKey="leads" stroke="#059669" strokeWidth={3} fillOpacity={1} fill="url(#colorLeads)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -155,22 +155,22 @@ const AgentPortal = () => {
         <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-200/50 flex flex-col">
           <div className="p-8 border-b border-slate-100 flex justify-between items-center">
             <h3 className="font-black text-slate-900 uppercase tracking-widest text-xs">Hot Leads</h3>
-            <button className="text-indigo-600 font-black text-xs uppercase tracking-tighter hover:underline">View All</button>
+            <button className="text-emerald-600 font-black text-xs uppercase tracking-tighter hover:underline">View All</button>
           </div>
           <div className="flex-grow divide-y divide-slate-100">
             {recentLeads.map((lead) => (
               <div key={lead.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-all group cursor-pointer">
                 <div className="flex items-center space-x-4">
-                  <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center border border-slate-200 group-hover:bg-white group-hover:border-indigo-200 transition-all">
-                    <UserCheck className="w-5 h-5 text-slate-400 group-hover:text-indigo-600" />
+                  <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center border border-slate-200 group-hover:bg-white group-hover:border-emerald-200 transition-all">
+                    <UserCheck className="w-5 h-5 text-slate-400 group-hover:text-emerald-600" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">{lead.name}</h4>
+                    <h4 className="font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">{lead.name}</h4>
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{lead.type}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${lead.status === 'Hot Lead' ? 'bg-red-50 text-red-500' : 'bg-slate-100 text-slate-500'}`}>
+                  <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${lead.status === 'Hot Lead' ? 'bg-rose-50 text-rose-500' : 'bg-slate-100 text-slate-500'}`}>
                     {lead.status}
                   </span>
                   <p className="text-[10px] font-bold text-slate-300 mt-1">{lead.date}</p>
@@ -179,9 +179,9 @@ const AgentPortal = () => {
             ))}
           </div>
           <div className="p-6">
-            <button className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-indigo-900/10 flex items-center justify-center space-x-2">
+            <button className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-emerald-900/10 flex items-center justify-center space-x-2">
               <span>Add New Lead</span>
-              <ArrowUpRight className="w-4 h-4 text-indigo-400" />
+              <ArrowUpRight className="w-4 h-4 text-emerald-400" />
             </button>
           </div>
         </div>
@@ -189,14 +189,14 @@ const AgentPortal = () => {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-6 bg-indigo-600 rounded-3xl text-white flex items-center justify-between group cursor-pointer hover:bg-indigo-700 transition-all">
+        <div className="p-6 bg-emerald-600 rounded-3xl text-white flex items-center justify-between group cursor-pointer hover:bg-emerald-700 transition-all">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
               <Calendar className="w-6 h-6 text-white" />
             </div>
             <div>
               <h4 className="font-black tracking-tight">Schedule Meeting</h4>
-              <p className="text-xs text-indigo-100">Set follow-up reminders</p>
+              <p className="text-xs text-emerald-100">Set follow-up reminders</p>
             </div>
           </div>
           <ChevronRight className="w-5 h-5 text-white/50 group-hover:translate-x-1 transition-transform" />
@@ -205,7 +205,7 @@ const AgentPortal = () => {
         <div className="p-6 bg-slate-900 rounded-3xl text-white flex items-center justify-between group cursor-pointer hover:bg-slate-800 transition-all">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
-              <Phone className="w-6 h-6 text-indigo-400" />
+              <Phone className="w-6 h-6 text-emerald-400" />
             </div>
             <div>
               <h4 className="font-black tracking-tight">Call Center</h4>
@@ -215,7 +215,7 @@ const AgentPortal = () => {
           <ChevronRight className="w-5 h-5 text-white/50 group-hover:translate-x-1 transition-transform" />
         </div>
 
-        <div className="p-6 bg-white border border-slate-200 rounded-3xl text-slate-900 flex items-center justify-between group cursor-pointer hover:border-indigo-600 transition-all">
+        <div className="p-6 bg-white border border-slate-200 rounded-3xl text-slate-900 flex items-center justify-between group cursor-pointer hover:border-emerald-600 transition-all">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
               <Briefcase className="w-6 h-6 text-slate-400" />
@@ -225,7 +225,7 @@ const AgentPortal = () => {
               <p className="text-xs text-slate-500">Sales decks & materials</p>
             </div>
           </div>
-          <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-indigo-600 transition-transform" />
+          <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-emerald-600 transition-transform" />
         </div>
       </div>
     </div>

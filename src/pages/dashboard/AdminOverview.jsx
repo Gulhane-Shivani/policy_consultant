@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import { 
   Users, MessageSquare, FileCheck, 
   ArrowUpRight, ArrowDownRight,
-  MoreVertical, Trash2, CheckCircle, Search, Filter
+  MoreVertical, Trash2, CheckCircle, Search, Filter,
+  Clock, AlertCircle, DollarSign, Activity
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const AdminOverview = () => {
   const [stats] = useState([
-    { label: 'Total Applications', value: '1,284', change: '+12.5%', icon: FileCheck, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { label: 'Active Users', value: '8,432', change: '+8.2%', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'New Messages', value: '156', change: '-3.1%', icon: MessageSquare, color: 'text-orange-600', bg: 'bg-orange-50' },
+    { label: 'Total Customer', value: '1,284', change: '+12.5%', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Active Policies', value: '842', change: '+8.2%', icon: FileCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Renewal Due', value: '45', change: '+2.1%', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { label: 'Expired Policies', value: '12', change: '-5.4%', icon: AlertCircle, color: 'text-rose-600', bg: 'bg-rose-50' },
+    { label: 'Total Revenue', value: '$84,230', change: '+15.4%', icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Pending Requests', value: '18', change: '+1.2%', icon: Activity, color: 'text-emerald-600', bg: 'bg-emerald-50' },
   ]);
 
   const [recentMessages] = useState([
@@ -21,37 +25,37 @@ const AdminOverview = () => {
   ]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-12">
       <div>
         <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Operations Overview</h1>
-        <p className="text-slate-500 font-bold">Welcome back, here's what's happening today.</p>
+        <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Policy Consultant • Admin Dashboard</p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
         {stats.map((stat, idx) => (
           <motion.div 
             key={idx}
             whileHover={{ y: -5 }}
-            className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/50 flex items-center justify-between"
+            className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/50 flex flex-col justify-between"
           >
-            <div className="space-y-2">
-              <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
-              <h3 className="text-3xl font-black text-slate-900">{stat.value}</h3>
-              <div className={`flex items-center space-x-1 text-xs font-black ${stat.change.startsWith('+') ? 'text-emerald-500' : 'text-red-500'}`}>
-                {stat.change.startsWith('+') ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                <span>{stat.change} vs last month</span>
-              </div>
+            <div className={`w-12 h-12 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-4`}>
+              <stat.icon className="w-6 h-6" />
             </div>
-            <div className={`w-16 h-16 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center`}>
-              <stat.icon className="w-8 h-8" />
+            <div>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
+              <h3 className="text-2xl font-black text-slate-900">{stat.value}</h3>
+              <div className={`flex items-center space-x-1 text-[10px] font-black ${stat.change.startsWith('+') ? 'text-emerald-500' : 'text-rose-500'} mt-1`}>
+                {stat.change.startsWith('+') ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                <span>{stat.change}</span>
+              </div>
             </div>
           </motion.div>
         ))}
       </div>
 
       {/* Main Content Table */}
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-indigo-900/5 overflow-hidden">
+      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-slate-200/50 overflow-hidden">
         <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
           <div>
             <h2 className="text-xl font-black text-slate-900 tracking-tight">Recent Inquiries</h2>
@@ -63,7 +67,7 @@ const AdminOverview = () => {
               <input 
                 type="text" 
                 placeholder="Search..." 
-                className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all"
+                className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-600/20 outline-none transition-all"
               />
             </div>
             <button className="flex items-center space-x-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all">
@@ -89,14 +93,14 @@ const AdminOverview = () => {
                 <tr key={msg.id} className="hover:bg-slate-50/50 transition-colors group">
                   <td className="px-8 py-6">
                     <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center text-slate-700 font-black text-sm">
+                      <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 font-black text-sm">
                         {msg.sender.charAt(0)}
                       </div>
                       <p className="font-bold text-slate-900">{msg.sender}</p>
                     </div>
                   </td>
                   <td className="px-8 py-6">
-                    <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-xs font-black uppercase tracking-tighter">
+                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-tighter">
                       {msg.type}
                     </span>
                   </td>
@@ -104,7 +108,7 @@ const AdminOverview = () => {
                     {msg.date}
                   </td>
                   <td className="px-8 py-6">
-                    <span className={`px-3 py-1 rounded-lg text-xs font-black uppercase tracking-tighter ${msg.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'}`}>
+                    <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter ${msg.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
                       {msg.status}
                     </span>
                   </td>
@@ -113,7 +117,7 @@ const AdminOverview = () => {
                       <button className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all" title="Resolve">
                         <CheckCircle className="w-5 h-5" />
                       </button>
-                      <button className="p-2 hover:bg-red-50 text-red-600 rounded-lg transition-all" title="Delete">
+                      <button className="p-2 hover:bg-rose-50 text-rose-600 rounded-lg transition-all" title="Delete">
                         <Trash2 className="w-5 h-5" />
                       </button>
                       <button className="p-2 hover:bg-slate-100 text-slate-400 rounded-lg transition-all">
@@ -128,7 +132,7 @@ const AdminOverview = () => {
         </div>
 
         <div className="p-6 border-t border-slate-100 bg-slate-50/30 flex justify-center">
-          <button className="text-xs font-black text-indigo-600 uppercase tracking-widest hover:underline">
+          <button className="text-xs font-black text-emerald-600 uppercase tracking-widest hover:underline">
             View All Inquiries
           </button>
         </div>
