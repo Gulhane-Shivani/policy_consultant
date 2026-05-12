@@ -20,35 +20,19 @@ const Login = () => {
       // I'll stick to JSON for now as per the request, but FastAPI often uses form-data.
       // If the backend uses OAuth2, this might need Adjustment.
       // Based on conversation history, it's a FastAPI backend.
-      
+
       const data = await api.post('/login', formData);
-      
+
       if (data.access_token) {
         localStorage.setItem('access_token', data.access_token);
         if (data.user) {
           localStorage.setItem('user', JSON.stringify(data.user));
           toast.success('Login successful!');
-          
+
           // Role-based redirection logic
           const role = data.user.role;
-          switch (role) {
-            case 'super_admin':
-              navigate('/super-admin');
-              break;
-            case 'admin':
-              navigate('/admin');
-              break;
-            case 'agent':
-              navigate('/agent');
-              break;
-            case 'csr':
-              navigate('/csr');
-              break;
-            case 'user':
-            default:
-              navigate('/dashboard');
-              break;
-          }
+          // User requested that everyone goes to home page after login
+          navigate('/', { replace: true });
         } else {
           console.error('User data missing in login response:', data);
           toast.error('Login response incomplete');
@@ -65,7 +49,7 @@ const Login = () => {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center py-12 px-6">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="max-w-md w-full"

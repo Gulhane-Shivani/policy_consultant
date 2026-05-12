@@ -84,16 +84,13 @@ function App() {
       <AppLayout>
         <Routes>
           {/* Main Website Routes */}
-          <Route path="/" element={
-            <PublicRoute>
-              <Home />
-            </PublicRoute>
-          } />
+          <Route path="/" element={<Home />} />
           <Route path="/life" element={<Life />} />
           <Route path="/health" element={<Health />} />
           <Route path="/car" element={<Car />} />
           <Route path="/business" element={<Business />} />
           <Route path="/plans" element={<Plans />} />
+          <Route path="/support" element={<Support />} />
           {/* User Dashboard */}
           <Route path="/dashboard" element={
             <RoleProtectedRoute allowedRoles={['user']}>

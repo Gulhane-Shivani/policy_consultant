@@ -7,15 +7,8 @@ const PublicRoute = ({ children }) => {
   const token = localStorage.getItem('access_token');
 
   if (token && user) {
-    // If already logged in, redirect to their respective dashboard
-    const dashboardMap = {
-      super_admin: '/super-admin',
-      admin: '/admin',
-      agent: '/staff',
-      csr: '/staff',
-      user: '/dashboard'
-    };
-    return <Navigate to={dashboardMap[user.role] || '/dashboard'} replace />;
+    // If already logged in, redirect to the home page as requested
+    return <Navigate to="/" replace />;
   }
 
   return children;

@@ -77,15 +77,18 @@ const Navbar = () => {
             ))}
             {user ? (
               <div className="flex items-center space-x-4">
-                {user.role === 'admin' && (
-                  <Link to="/admin" className="text-sm font-bold text-slate-600 hover:text-emerald-600 flex items-center space-x-1">
-                    <ShieldAlert className="w-4 h-4" />
-                    <span>Admin</span>
-                  </Link>
-                )}
-                <Link to="/dashboard" className="btn-primary flex items-center space-x-2 py-2 px-4 whitespace-nowrap">
+                <Link 
+                  to={
+                    user.role === 'super_admin' ? '/super-admin' : 
+                    user.role === 'admin' ? '/admin' : 
+                    user.role === 'agent' ? '/agent' : 
+                    user.role === 'csr' ? '/csr' : 
+                    '/dashboard'
+                  } 
+                  className="btn-primary flex items-center space-x-2 py-2 px-4 whitespace-nowrap shadow-lg shadow-emerald-900/10"
+                >
                   <User className="w-4 h-4" />
-                  <span>{user.full_name?.split(' ')[0]}</span>
+                  <span>{user.full_name?.split(' ')[0]}'s Workspace</span>
                 </Link>
                 <button onClick={handleLogout} className="p-2 text-slate-400 hover:text-red-500 transition-colors" title="Logout">
                   <LogOut className="w-5 h-5" />
@@ -131,23 +134,19 @@ const Navbar = () => {
               <div className="pt-4 border-t border-slate-50 space-y-3">
                 {user ? (
                   <>
-                    {user.role === 'admin' && (
-                      <Link
-                        to="/admin"
-                        className="flex items-center justify-center space-x-2 w-full py-4 text-lg font-bold text-slate-600 border border-slate-100 rounded-2xl hover:bg-slate-50"
-                        onClick={() => setIsOpen(false)}
-                      >
-                        <ShieldAlert className="w-5 h-5" />
-                        <span>Admin Panel</span>
-                      </Link>
-                    )}
                     <Link
-                      to="/dashboard"
+                      to={
+                        user.role === 'super_admin' ? '/super-admin' : 
+                        user.role === 'admin' ? '/admin' : 
+                        user.role === 'agent' ? '/agent' : 
+                        user.role === 'csr' ? '/csr' : 
+                        '/dashboard'
+                      }
                       className="btn-primary flex items-center justify-center space-x-2 w-full py-4 text-lg"
                       onClick={() => setIsOpen(false)}
                     >
                       <User className="w-5 h-5" />
-                      <span>{user.full_name}</span>
+                      <span>{user.full_name}'s Workspace</span>
                     </Link>
                     <button
                       onClick={() => { handleLogout(); setIsOpen(false); }}

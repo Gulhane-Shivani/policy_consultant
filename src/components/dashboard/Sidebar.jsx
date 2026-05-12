@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  LayoutDashboard, FileText, RefreshCw, CreditCard, 
-  Bell, Users, UserCheck, Shield, MessageSquare, 
+import {
+  LayoutDashboard, FileText, RefreshCw, CreditCard,
+  Bell, Users, UserCheck, Shield, MessageSquare,
   Settings, Database, BarChart3, HelpCircle, ChevronRight,
   UserCircle2, PieChart, LifeBuoy, LogOut, ChevronDown
 } from 'lucide-react';
@@ -18,14 +18,14 @@ const Sidebar = ({ role }) => {
       [label]: !prev[label]
     }));
   };
-  
+
   const getNavItems = () => {
     // Determine the path prefix based on role
     const rolePrefix = role === 'super_admin' ? '/super-admin' : role === 'admin' ? '/admin' : `/${role}`;
-    
+
     // Shared items
     const profileItem = { label: 'Personal Profile', icon: UserCircle2, path: `${rolePrefix}/profile` };
-    
+
     // Role-specific nav generation
     switch (role) {
       case 'super_admin':
@@ -34,21 +34,21 @@ const Sidebar = ({ role }) => {
             group: 'Master Console',
             items: [
               { label: 'Dashboard', icon: LayoutDashboard, path: '/super-admin/dashboard' },
-              { 
-                label: 'User Management', 
-                icon: Shield, 
+              {
+                label: 'User Management',
+                icon: Shield,
                 subItems: [
                   { label: 'Staff Members', path: '/super-admin/staff' },
                   { label: 'Customers', path: '/super-admin/customers' }
-                ] 
+                ]
               },
-              { 
-                label: 'Policy Management', 
-                icon: FileText, 
+              {
+                label: 'Policy Management',
+                icon: FileText,
                 subItems: [
                   { label: 'Policies', path: '/super-admin/policies' },
                   { label: 'Policy Plan', path: '/super-admin/plans' }
-                ] 
+                ]
               },
               { label: 'Renewals', icon: RefreshCw, path: '/super-admin/renewals' },
               { label: 'Payments', icon: CreditCard, path: '/super-admin/payments' },
@@ -157,7 +157,7 @@ const Sidebar = ({ role }) => {
                   <div key={itemIdx}>
                     {item.subItems ? (
                       <div className="space-y-1">
-                        <button 
+                        <button
                           onClick={() => toggleMenu(item.label)}
                           className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all group ${isOpen ? 'bg-emerald-50 text-emerald-600' : 'text-slate-500 hover:bg-emerald-50 hover:text-emerald-600'}`}
                         >
@@ -219,8 +219,8 @@ const Sidebar = ({ role }) => {
             </p>
           </div>
         </div>
-        
-        <button 
+
+        <button
           onClick={() => {
             localStorage.removeItem('user');
             localStorage.removeItem('access_token');
