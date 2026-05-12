@@ -56,6 +56,7 @@ import Payments from './pages/dashboard/shared/Payments';
 import Notifications from './pages/dashboard/shared/Notifications';
 import Customers from './pages/dashboard/shared/Customers';
 import Communication from './pages/dashboard/shared/Communication';
+import PolicyDetailView from './pages/dashboard/shared/PolicyDetailView';
 
 // Wrapper to conditionally show Navbar/Footer
 const AppLayout = ({ children }) => {
@@ -122,6 +123,7 @@ function App() {
             <Route index element={<AdminDashboard />} />
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="policies" element={<Policies />} />
+            <Route path="policies/:id" element={<PolicyDetailView />} />
             <Route path="renewals" element={<Renewals />} />
             <Route path="payments" element={<Payments />} />
             <Route path="notifications" element={<Notifications />} />
@@ -142,6 +144,7 @@ function App() {
             <Route path="staff" element={<StaffMembers />} />
             <Route path="customers" element={<CustomerManagement />} />
             <Route path="policies" element={<Policies />} />
+            <Route path="policies/:id" element={<PolicyDetailView />} />
             <Route path="plans" element={<PolicyPlans />} />
             <Route path="plans/:id" element={<PlanDetailView />} />
             <Route path="renewals" element={<Renewals />} />

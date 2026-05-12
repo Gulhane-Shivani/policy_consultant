@@ -9,8 +9,11 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../../utils/api';
 import { toast } from 'react-hot-toast';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Policies = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -60,6 +63,8 @@ const Policies = () => {
           nominee_name: 'Mary Doe',
           nominee_relation: 'Spouse',
           benefits: 'Death cover, Critical illness',
+          provider: 'HDFC Life',
+          domain: 'hdfclife.com',
           payment_history: [
             { date: '2023-01-15', amount: '1200', status: 'Paid' }
           ],
@@ -79,6 +84,8 @@ const Policies = () => {
           nominee_name: 'Sarah Smith',
           nominee_relation: 'Daughter',
           benefits: 'In-patient, Out-patient coverage',
+          provider: 'Niva Bupa',
+          domain: 'nivabupa.com',
           payment_history: [],
           renewal_history: []
         },
@@ -94,6 +101,8 @@ const Policies = () => {
           nominee_name: 'Linda Brown',
           nominee_relation: 'Wife',
           benefits: 'Collision, Comprehensive',
+          provider: 'ICICI Lombard',
+          domain: 'icicilombard.com',
           payment_history: [],
           renewal_history: []
         },
@@ -109,6 +118,8 @@ const Policies = () => {
           nominee_name: 'Mark Davis',
           nominee_relation: 'Partner',
           benefits: 'Property, Liability',
+          provider: 'TATA AIG',
+          domain: 'tataaig.com',
           payment_history: [],
           renewal_history: []
         },
@@ -181,6 +192,25 @@ const Policies = () => {
       updateStats(newData);
       toast.success('Policy deleted');
     }
+  };
+
+  const getProviderLogo = (provider, domain) => {
+    return (
+      <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 p-1 flex items-center justify-center shadow-sm">
+        <img 
+          src={`https://www.google.com/s2/favicons?sz=64&domain=${domain}`} 
+          alt={provider}
+          className="w-5 h-5 object-contain"
+          onError={(e) => {
+            e.target.style.display = 'none';
+            e.target.nextSibling.style.display = 'flex';
+          }}
+        />
+        <div className="hidden w-full h-full items-center justify-center font-black text-emerald-600 text-[8px] bg-emerald-50 uppercase">
+          {provider?.substring(0, 2)}
+        </div>
+      </div>
+    );
   };
 
   const filteredData = data.filter(p => {
@@ -264,6 +294,7 @@ const Policies = () => {
             <thead>
               <tr className="bg-slate-50/50">
                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Policy ID</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Provider</th>
                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Client</th>
                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Premium</th>
@@ -275,6 +306,12 @@ const Policies = () => {
               {filteredData.map((item) => (
                 <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
                   <td className="px-8 py-6 font-bold text-slate-900">{item.policy_number}</td>
+                  <td className="px-8 py-6">
+                    <div className="flex items-center space-x-2">
+                      {getProviderLogo(item.provider, item.domain)}
+                      <span className="font-bold text-slate-600 text-xs">{item.provider}</span>
+                    </div>
+                  </td>
                   <td className="px-8 py-6 font-bold text-slate-700">{item.client_name}</td>
                   <td className="px-8 py-6">
                     <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-tighter">{item.type}</span>
@@ -288,10 +325,7 @@ const Policies = () => {
                   <td className="px-8 py-6 text-right">
                     <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-all">
                       <button 
-                        onClick={() => {
-                          setSelectedPolicy(item);
-                          setIsDetailModalOpen(true);
-                        }}
+                        onClick={() => navigate(`${location.pathname}/${item.id}`)}
                         className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
                       >
                         <Eye className="w-5 h-5" />
