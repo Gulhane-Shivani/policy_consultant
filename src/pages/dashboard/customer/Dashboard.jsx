@@ -3,15 +3,17 @@ import { Link } from 'react-router-dom';
 import { 
   Shield, CreditCard, PieChart, 
   ChevronRight, Download, MessageSquare, 
-  ShieldAlert, Zap, Bell
+  ShieldAlert, Zap, Bell, ShieldCheck, X
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const CustomerOverview = () => {
   const [user] = useState(() => {
     const saved = localStorage.getItem('user');
     return saved && saved !== 'undefined' ? JSON.parse(saved) : { full_name: 'User' };
   });
+
+  const [showHealthScore, setShowHealthScore] = useState(false);
 
   // Status Validation Helper
   const getValidatedStatus = (p) => {
@@ -183,7 +185,10 @@ const CustomerOverview = () => {
               </div>
               <p className="text-slate-400 text-[10px] font-bold leading-relaxed">Upgrade your health plan to include OPD for a 100% score.</p>
             </div>
-            <button className="w-full py-5 bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-700 transition-all relative z-10 shadow-xl shadow-emerald-900/40">
+            <button 
+              onClick={() => setShowHealthScore(true)}
+              className="w-full py-5 bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-700 transition-all relative z-10 shadow-xl shadow-emerald-900/40"
+            >
               Improve Score
             </button>
             <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full -mr-24 -mt-24 blur-3xl" />
@@ -216,6 +221,89 @@ const CustomerOverview = () => {
           </div>
         </div>
       </div>
+      <AnimatePresence>
+        {showHealthScore && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowHealthScore(false)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg bg-white rounded-[3rem] shadow-2xl overflow-hidden"
+            >
+              <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-emerald-600 text-white">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
+                    <Zap className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black tracking-tight">Portfolio Health</h3>
+                    <p className="text-[10px] font-bold uppercase opacity-80 tracking-widest">Analysis Report</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setShowHealthScore(false)}
+                  className="p-3 bg-white/10 text-white rounded-2xl hover:bg-white/20 transition-all"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="p-10 space-y-8">
+                <div className="text-center space-y-4">
+                  <div className="relative inline-block">
+                    <svg className="w-32 h-32 transform -rotate-90">
+                      <circle cx="64" cy="64" r="56" stroke="currentColor" strokeWidth="8" fill="transparent" className="text-slate-100" />
+                      <circle cx="64" cy="64" r="56" stroke="currentColor" strokeWidth="8" fill="transparent" strokeDasharray={351.8} strokeDashoffset={351.8 * 0.25} className="text-emerald-500" />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-3xl font-black text-slate-900">75%</span>
+                    </div>
+                  </div>
+                  <p className="text-sm font-black text-slate-900 uppercase tracking-widest">Healthy Portfolio</p>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Coverage Gap Analysis</h4>
+                  {[
+                    { label: 'Health Insurance', status: 'Optimal', color: 'emerald' },
+                    { label: 'Life Insurance', status: 'Critical', color: 'rose' },
+                    { label: 'Vehicle Protection', status: 'Moderate', color: 'amber' },
+                    { label: 'Critical Illness', status: 'Missing', color: 'slate' },
+                  ].map((item, i) => (
+                    <div key={i} className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                      <span className="text-xs font-bold text-slate-700">{item.label}</span>
+                      <span className={`text-[9px] font-black uppercase px-2 py-1 rounded-md bg-${item.color}-50 text-${item.color}-600`}>
+                        {item.status}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="p-6 bg-blue-50 rounded-3xl border border-blue-100">
+                  <p className="text-[9px] font-black text-blue-600 uppercase tracking-widest mb-2">Recommendation</p>
+                  <p className="text-xs text-slate-700 font-medium leading-relaxed">
+                    Based on your profile, you are under-insured for Life Protection. Consider adding a ₹1 Cr Term Plan to secure your family's future.
+                  </p>
+                </div>
+
+                <button 
+                   onClick={() => setShowHealthScore(false)}
+                   className="w-full py-5 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-slate-900/20 hover:bg-slate-800 transition-all"
+                >
+                  Get Detailed Audit
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
