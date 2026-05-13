@@ -112,6 +112,7 @@ function App() {
             <Route path="overview" element={<CustomerDashboard />} />
             <Route path="policies" element={<Policies />} />
             <Route path="policies/new" element={<AddPolicyForm />} />
+            <Route path="policies/edit/:id" element={<AddPolicyForm />} />
             <Route path="policies/:id" element={<PolicyDetailView />} />
             <Route path="claims" element={<CustomerClaims />} />
             <Route path="payments" element={<CustomerPayments />} />
@@ -146,6 +147,7 @@ function App() {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="policies" element={<Policies />} />
             <Route path="policies/new" element={<AddPolicyForm />} />
+            <Route path="policies/edit/:id" element={<AddPolicyForm />} />
             <Route path="policies/:id" element={<PolicyDetailView />} />
             <Route path="renewals" element={<Renewals />} />
             <Route path="payments" element={<Payments />} />
@@ -168,6 +170,7 @@ function App() {
             <Route path="customers" element={<CustomerManagement />} />
             <Route path="policies" element={<Policies />} />
             <Route path="policies/new" element={<AddPolicyForm />} />
+            <Route path="policies/edit/:id" element={<AddPolicyForm />} />
             <Route path="policies/:id" element={<PolicyDetailView />} />
             <Route path="plans" element={<PolicyPlans />} />
             <Route path="plans/:id" element={<PlanDetailView />} />

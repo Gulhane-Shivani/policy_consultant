@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { 
   ArrowLeft, ShieldCheck, User, Phone, Mail, MapPin, 
   Calendar, FileText, CheckCircle, ChevronRight, Check
@@ -23,6 +23,11 @@ const POLICY_CATALOG = [
 
 const AddPolicyForm = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const location = useLocation();
+  const isEditMode = !!id;
+  const existingPolicy = location.state?.policy || null;
+
   const [user] = useState(() => {
     const s = localStorage.getItem('user');
     return s && s !== 'undefined' ? JSON.parse(s) : null;
@@ -41,6 +46,30 @@ const AddPolicyForm = () => {
     plan_id: '',
     start_date: '', end_date: '', policy_period: ''
   });
+
+  // Pre-fill form in edit mode
+  useEffect(() => {
+    if (isEditMode && existingPolicy) {
+      const catFromType = existingPolicy.type?.replace(' Insurance', '') || '';
+      const matchedPlan = POLICY_CATALOG.find(p => p.provider === existingPolicy.provider) || null;
+      setForm({
+        client_name: existingPolicy.client_name || '',
+        email: existingPolicy.email || '',
+        contact: existingPolicy.contact || '',
+        address: existingPolicy.address || '',
+        nominee_name: existingPolicy.nominee_name || '',
+        nominee_relation: existingPolicy.nominee_relation || '',
+        nominee_contact: existingPolicy.nominee_contact || '',
+        policy_type: catFromType,
+        plan_id: existingPolicy.plan_id || matchedPlan?.id || '',
+        start_date: existingPolicy.start_date || '',
+        end_date: existingPolicy.end_date || '',
+        policy_period: existingPolicy.start_date && existingPolicy.end_date
+          ? String(new Date(existingPolicy.end_date).getFullYear() - new Date(existingPolicy.start_date).getFullYear())
+          : ''
+      });
+    }
+  }, [isEditMode]);
 
   const backPath = user?.role === 'super_admin' ? '/super-admin/policies'
     : user?.role === 'admin' ? '/admin/policies' : '/dashboard/policies';
@@ -66,11 +95,42 @@ const AddPolicyForm = () => {
     }
     if (step === 4) {
       if (!form.start_date || !form.end_date) { toast.error('Start and End dates required.'); return; }
+      // In edit mode, step 4 is the last step — no payment needed
+      if (isEditMode) { handleUpdate(); return; }
     }
     setStep(prev => Math.min(prev + 1, 5));
   };
 
   const handleBack = () => setStep(prev => Math.max(prev - 1, 1));
+
+  const handleUpdate = () => {
+    const updated = {
+      ...existingPolicy,
+      client_name: form.client_name,
+      email: form.email,
+      contact: form.contact,
+      address: form.address,
+      nominee_name: form.nominee_name,
+      nominee_relation: form.nominee_relation,
+      nominee_contact: form.nominee_contact,
+      type: selectedPlan ? selectedPlan.category + ' Insurance' : existingPolicy?.type,
+      provider: selectedPlan?.provider || existingPolicy?.provider,
+      domain: selectedPlan?.domain || existingPolicy?.domain,
+      premium: selectedPlan?.premium || existingPolicy?.premium,
+      coverage: selectedPlan?.coverage || existingPolicy?.coverage,
+      benefits: selectedPlan?.benefits || existingPolicy?.benefits,
+      plan_id: form.plan_id,
+      plan_name: selectedPlan?.name || existingPolicy?.plan_name,
+      start_date: form.start_date,
+      end_date: form.end_date,
+    };
+    // Update in bought_policies localStorage
+    const bought = JSON.parse(localStorage.getItem('bought_policies') || '[]');
+    const updatedBought = bought.map(p => p.id === updated.id ? updated : p);
+    localStorage.setItem('bought_policies', JSON.stringify(updatedBought));
+    toast.success('Policy updated successfully!');
+    navigate(backPath);
+  };
 
   const processPayment = () => {
     if (!payment.method) { toast.error('Select a payment method.'); return; }
@@ -123,7 +183,7 @@ const AddPolicyForm = () => {
     { num: 2, title: 'Policy Type' },
     { num: 3, title: 'Plan' },
     { num: 4, title: 'Duration' },
-    { num: 5, title: 'Payment' },
+    ...(isEditMode ? [] : [{ num: 5, title: 'Payment' }]),
   ];
 
   return (
@@ -136,8 +196,8 @@ const AddPolicyForm = () => {
       </div>
 
       <div>
-        <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Issue New Policy</h1>
-        <p className="text-slate-400 font-bold uppercase text-xs tracking-widest mt-1">Multi-step Issuance Process</p>
+        <h1 className="text-3xl font-black text-slate-900 tracking-tighter">{isEditMode ? 'Edit Policy' : 'Issue New Policy'}</h1>
+        <p className="text-slate-400 font-bold uppercase text-xs tracking-widest mt-1">{isEditMode ? 'Update policyholder details' : 'Multi-step Issuance Process'}</p>
       </div>
 
       {/* Stepper */}
@@ -418,13 +478,18 @@ const AddPolicyForm = () => {
             Back
           </button>
           
-          {step < 5 ? (
+          {/* Edit mode: step 4 is last — show Save Changes on Continue */}
+          {step < (isEditMode ? 4 : 5) ? (
             <button onClick={handleNext} className="flex items-center px-8 py-3 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg">
-              Continue <ChevronRight className="w-4 h-4 ml-2" />
+              {isEditMode && step === 3 ? 'Next' : 'Continue'} <ChevronRight className="w-4 h-4 ml-2" />
+            </button>
+          ) : isEditMode && step === 4 ? (
+            <button onClick={handleUpdate} className="flex items-center px-10 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20">
+              Save Changes <CheckCircle className="w-4 h-4 ml-2" />
             </button>
           ) : !payProcessing && !paySuccess ? (
             <button onClick={processPayment} className="flex items-center px-10 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20">
-              Pay &amp; Issue Policy <CheckCircle className="w-4 h-4 ml-2" />
+              Pay & Issue Policy <CheckCircle className="w-4 h-4 ml-2" />
             </button>
           ) : null}
         </div>

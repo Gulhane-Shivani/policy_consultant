@@ -239,7 +239,7 @@ const Policies = () => {
                   <td className="px-8 py-6 text-right">
                     <div className="flex items-center justify-end space-x-2">
                       <button onClick={() => navigate(`${user?.role === 'super_admin' ? '/super-admin' : user?.role === 'admin' ? '/admin' : '/dashboard'}/policies/${item.id}`)} className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all" title="View Details"><Eye className="w-5 h-5" /></button>
-                      <button onClick={() => handleOpenModal(item)} className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"><Edit3 className="w-5 h-5" /></button>
+                      <button onClick={() => { const base = user?.role === 'super_admin' ? '/super-admin' : user?.role === 'admin' ? '/admin' : '/dashboard'; navigate(`${base}/policies/edit/${item.id}`, { state: { policy: item } }); }} className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"><Edit3 className="w-5 h-5" /></button>
                       <button onClick={() => handleDelete(item.id)} className="p-2 hover:bg-rose-50 text-rose-600 rounded-lg transition-all"><Trash2 className="w-5 h-5" /></button>
                     </div>
                   </td>
