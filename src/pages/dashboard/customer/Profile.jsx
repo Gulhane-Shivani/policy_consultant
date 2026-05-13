@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   User, Mail, Phone, MapPin, Shield, 
   Settings, Gift, Heart, Zap, Camera,
-  Edit3, Lock, Bell, MessageSquare
+  Edit3, Lock, Bell, MessageSquare, Landmark, Plus, LogOut, ShieldCheck
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -121,13 +121,67 @@ const CustomerProfile = () => {
 
             <div className="pt-12 border-t border-slate-100">
               <div className="flex justify-between items-center mb-8">
-                <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Preferences</h4>
+                <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Nominee & Family</h4>
+                <button className="text-[10px] font-black text-emerald-600 uppercase tracking-widest hover:underline">Manage Nominees</button>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-emerald-600">
+                      <User className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Primary Nominee</p>
+                      <p className="text-sm font-black text-slate-900">Jane Doe (Spouse)</p>
+                    </div>
+                  </div>
+                  <div className="flex justify-between text-[10px] font-bold text-slate-500 uppercase">
+                    <span>Allocation: 100%</span>
+                    <span>Verified: Yes</span>
+                  </div>
+                </div>
+                <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 border-dashed flex items-center justify-center cursor-pointer hover:bg-white hover:border-emerald-200 transition-all group">
+                   <div className="flex items-center space-x-2 text-slate-400 group-hover:text-emerald-600">
+                     <Plus className="w-4 h-4" />
+                     <span className="text-[10px] font-black uppercase tracking-widest">Add Contingent Nominee</span>
+                   </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-12 border-t border-slate-100">
+              <div className="flex justify-between items-center mb-8">
+                <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Bank Account Details</h4>
+                <button className="text-[10px] font-black text-emerald-600 uppercase tracking-widest hover:underline">Change Account</button>
+              </div>
+              <div className="p-8 bg-slate-50 rounded-[2.5rem] border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex items-center space-x-6">
+                  <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-slate-900 shadow-sm">
+                    <Landmark className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <h5 className="text-lg font-black text-slate-900">HDFC Bank Limited</h5>
+                    <p className="text-sm font-bold text-slate-500 tracking-widest">**** **** 4242</p>
+                  </div>
+                </div>
+                <div className="flex space-x-4">
+                  <div className="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-xl text-[9px] font-black uppercase tracking-widest">Primary</div>
+                  <div className="px-4 py-2 bg-white text-slate-400 border border-slate-100 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center">
+                    <Shield className="w-3 h-3 mr-1" /> E-Mandate Active
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-12 border-t border-slate-100">
+              <div className="flex justify-between items-center mb-8">
+                <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Communication Preferences</h4>
               </div>
               <div className="space-y-4">
                 {[
                   { label: 'Email Notifications', status: 'Enabled', icon: Mail, color: 'blue' },
                   { label: 'WhatsApp Updates', status: 'Enabled', icon: MessageSquare, color: 'emerald' },
-                  { label: 'Security Alerts', status: 'Enabled', icon: Lock, color: 'rose' },
+                  { label: 'SMS Alerts', status: 'Enabled', icon: Phone, color: 'purple' },
                 ].map((pref, i) => (
                   <div key={i} className="flex justify-between items-center p-6 bg-slate-50 rounded-[2rem] border border-slate-100 hover:border-emerald-200 transition-all group">
                     <div className="flex items-center space-x-4">
@@ -143,6 +197,59 @@ const CustomerProfile = () => {
                     </div>
                   </div>
                 ))}
+                
+                {/* 2FA Toggle */}
+                <div className="flex justify-between items-center p-6 bg-slate-900 rounded-[2rem] border border-slate-800 hover:border-emerald-500/30 transition-all group">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                      <Shield className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-black text-white uppercase tracking-tight">Two-Factor Authentication</span>
+                      <p className="text-[10px] text-slate-400 font-bold">Extra layer of security for your account</p>
+                    </div>
+                  </div>
+                  <div className="w-12 h-6 bg-emerald-600 rounded-full flex items-center px-1 cursor-pointer">
+                    <div className="w-4 h-4 bg-white rounded-full ml-auto"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-12 border-t border-slate-100">
+              <div className="flex justify-between items-center mb-8">
+                <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Security & Privacy</h4>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <button className="p-6 bg-white border border-slate-100 rounded-[2rem] hover:border-emerald-200 transition-all text-left flex items-center space-x-4 group">
+                  <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-600 group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-all">
+                    <Lock className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black text-slate-900 uppercase tracking-tight">Change Password / PIN</p>
+                    <p className="text-[10px] text-slate-400 font-bold mt-0.5">Last changed 3 months ago</p>
+                  </div>
+                </button>
+                <button className="p-6 bg-white border border-slate-100 rounded-[2rem] hover:border-rose-200 transition-all text-left flex items-center space-x-4 group">
+                  <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-600 group-hover:bg-rose-50 group-hover:text-rose-600 transition-all">
+                    <LogOut className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-black text-slate-900 uppercase tracking-tight">Logout from all devices</p>
+                    <p className="text-[10px] text-slate-400 font-bold mt-0.5">Protect your account from intrusion</p>
+                  </div>
+                </button>
+              </div>
+
+              <div className="p-6 bg-slate-50 rounded-2xl border border-slate-100 flex items-start space-x-4">
+                <ShieldCheck className="w-5 h-5 text-emerald-600 mt-0.5" />
+                <div>
+                  <p className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-1">Data Privacy Commitment</p>
+                  <p className="text-[10px] text-slate-500 font-medium leading-relaxed">
+                    Your personal information is encrypted and never shared with third parties without your explicit consent. 
+                    We comply with global data protection standards (GDPR & CCPA).
+                  </p>
+                </div>
               </div>
             </div>
           </div>

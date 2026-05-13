@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Home, User, LogOut, Settings, ChevronDown } from 'lucide-react';
+import { Search, Home, User, LogOut, Settings, ChevronDown, Bell } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const Header = ({ role }) => {
@@ -47,6 +47,11 @@ const Header = ({ role }) => {
         >
           <Home className="w-5 h-5 group-hover:scale-110 transition-transform" />
         </Link>
+
+        <button className="p-2.5 bg-slate-100 rounded-xl text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all group relative">
+          <Bell className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+          <span className="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full border-2 border-white shadow-sm"></span>
+        </button>
 
         <div className="relative">
           <button 

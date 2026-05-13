@@ -13,14 +13,18 @@ const CustomerOverview = () => {
     return saved && saved !== 'undefined' ? JSON.parse(saved) : { full_name: 'User' };
   });
 
-  const stats = [
-    { label: 'Total Policies', value: '3', icon: Shield, color: 'blue' },
-    { label: 'Sum Assured', value: '₹1.5 Cr', icon: PieChart, color: 'emerald' },
-    { label: 'Next Premium', value: '₹4,200', icon: CreditCard, color: 'amber' },
-    { label: 'Pending Claims', value: '1', icon: ShieldAlert, color: 'rose' },
-  ];
+  // Status Validation Helper
+  const getValidatedStatus = (p) => {
+    const now = new Date();
+    const end = new Date(p.end_date);
+    const diffDays = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return 'Expired';
+    if (diffDays <= 30) return 'Renewal Due';
+    return 'Active';
+  };
 
-  const policies = [
+  const initialPolicies = [
     { 
       id: 1, 
       name: 'Care Supreme Discounted', 
@@ -29,6 +33,7 @@ const CustomerOverview = () => {
       type: 'Health Insurance', 
       premium: '615', 
       status: 'Active',
+      end_date: '2025-05-20',
       color: 'emerald'
     },
     { 
@@ -39,8 +44,33 @@ const CustomerOverview = () => {
       type: 'Life Insurance', 
       premium: '1200', 
       status: 'Renewal Due',
+      end_date: '2024-06-15',
       color: 'blue'
     },
+  ];
+
+  const [policies] = useState(() => {
+    const bought = JSON.parse(localStorage.getItem('bought_policies') || '[]');
+    // Transform bought policies to match dashboard format if needed
+    const formattedBought = bought.map(p => ({
+      id: p.id,
+      name: p.type.split(' Insurance')[0] + ' Protection',
+      provider: p.provider,
+      domain: p.domain,
+      type: p.type,
+      premium: p.premium,
+      status: getValidatedStatus(p),
+      end_date: p.end_date,
+      color: p.type.includes('Health') ? 'emerald' : p.type.includes('Life') ? 'blue' : 'amber'
+    }));
+    return [...formattedBought, ...initialPolicies];
+  });
+
+  const stats = [
+    { label: 'Total Policies', value: policies.length.toString(), icon: Shield, color: 'blue' },
+    { label: 'Sum Assured', value: '₹1.5 Cr', icon: PieChart, color: 'emerald' },
+    { label: 'Next Premium', value: `₹${policies.reduce((acc, curr) => acc + parseInt(curr.premium), 0).toLocaleString()}`, icon: CreditCard, color: 'amber' },
+    { label: 'Pending Claims', value: '1', icon: ShieldAlert, color: 'rose' },
   ];
 
   return (

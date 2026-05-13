@@ -60,6 +60,10 @@ import PolicyDetailView from './pages/dashboard/shared/PolicyDetailView';
 import CustomerClaims from './pages/dashboard/customer/Claims';
 import CustomerProfile from './pages/dashboard/customer/Profile';
 import CustomerPayments from './pages/dashboard/customer/Payments';
+import ServiceRequests from './pages/dashboard/customer/ServiceRequests';
+import PolicyLoan from './pages/dashboard/customer/PolicyLoan';
+import DocumentVault from './pages/dashboard/customer/DocumentVault';
+import CustomerSupport from './pages/dashboard/customer/Support';
 
 // Wrapper to conditionally show Navbar/Footer
 const AppLayout = ({ children }) => {
@@ -109,10 +113,10 @@ function App() {
             <Route path="policies/:id" element={<PolicyDetailView />} />
             <Route path="claims" element={<CustomerClaims />} />
             <Route path="payments" element={<CustomerPayments />} />
-            <Route path="requests" element={<Support />} />
-            <Route path="documents" element={<Policies />} />
-            <Route path="loan" element={<CustomerDashboard />} />
-            <Route path="support" element={<Support />} />
+            <Route path="requests" element={<ServiceRequests />} />
+            <Route path="documents" element={<DocumentVault />} />
+            <Route path="loan" element={<PolicyLoan />} />
+            <Route path="support" element={<CustomerSupport />} />
             <Route path="profile" element={<CustomerProfile />} />
           </Route>
           <Route path="/support" element={<Support />} />

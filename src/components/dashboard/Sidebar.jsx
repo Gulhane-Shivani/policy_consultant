@@ -105,10 +105,10 @@ const Sidebar = ({ role }) => {
               { label: 'My Policies', icon: Shield, path: '/dashboard/policies' },
               { label: 'Payments', icon: CreditCard, path: '/dashboard/payments' },
               { label: 'Claims', icon: ShieldAlert, path: '/dashboard/claims' },
-              { label: 'Service Requests', icon: Settings, path: '/dashboard/requests' },
-              { label: 'Document Vault', icon: CloudDownload, path: '/dashboard/documents' },
+              { label: 'Service Requests', icon: Wrench, path: '/dashboard/requests' },
+              { label: 'Document Vault', icon: Database, path: '/dashboard/documents' },
               { label: 'Policy Loan', icon: Landmark, path: '/dashboard/loan' },
-              { label: 'Profile', icon: User, path: '/dashboard/profile' },
+              { label: 'Profile', icon: UserCircle2, path: '/dashboard/profile' },
               { label: 'Support', icon: HelpCircle, path: '/dashboard/support' }
             ]
           }
