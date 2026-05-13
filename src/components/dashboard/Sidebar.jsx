@@ -80,7 +80,7 @@ const Sidebar = ({ role }) => {
             items: [
               { label: 'Dashboard', icon: LayoutDashboard, path: '/agent/dashboard' },
               { label: 'My Leads', icon: Users, path: '/agent/leads' },
-              { label: 'My Customers', icon: UserCheck, path: '/agent/customers' },
+              { label: 'My Policies', icon: UserCheck, path: '/agent/customers' },
               { label: 'Quote & Proposal', icon: Zap, path: '/agent/quotes' },
               { label: 'Tasks & Calendar', icon: ListTodo, path: '/agent/tasks' },
               { label: 'Activity Log', icon: Activity, path: '/agent/activity' },

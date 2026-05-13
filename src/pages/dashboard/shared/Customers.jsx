@@ -1,144 +1,96 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Users, UserCheck, Contact,
+  ShieldCheck, FileText, Layers,
   ArrowUpRight, ArrowDownRight,
-  MoreVertical, Trash2, CheckCircle, Search, Filter,
-  Eye, X, Mail, Phone as PhoneIcon, MapPin, User, Shield, Briefcase, FileText, FilePlus
+  Trash2, Search, Filter,
+  Eye, X, Mail, Phone as PhoneIcon, MapPin, User, Shield, Briefcase, FilePlus, Edit3, Activity
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { api } from '../../../utils/api';
 import { toast } from 'react-hot-toast';
 
 const Customers = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
-  const [allPolicies, setAllPolicies] = useState([]);
-  const [allStaff, setAllStaff] = useState([]);
+  const [policies, setPolicies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [filterStatus, setFilterStatus] = useState('All');
   const [user] = useState(() => {
     const saved = localStorage.getItem('user');
     return saved && saved !== 'undefined' ? JSON.parse(saved) : null;
   });
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
-
-  const [stats, setStats] = useState([
-    { label: 'Total Customers', value: '0', change: '+8.4%', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { label: 'Active Clients', value: '0', change: '+12.5%', icon: UserCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-  ]);
-
-  const fetchCustomers = async () => {
-    try {
-      setLoading(true);
-      const res = await api.get('/admin/users');
-      const customersOnly = (res.users || []).filter(u => u.role === 'user');
-      const staffOnly = (res.users || []).filter(u => u.role !== 'user');
-      
-      // Filter customers if user is an agent
-      let finalCustomers = customersOnly;
-      if (user?.role === 'agent') {
-        // In a real app, we filter by agent_id. 
-        // For demonstration, we'll show a subset assigned to the current agent
-        finalCustomers = customersOnly.filter((_, index) => index % 2 === 0); 
-      }
-
-      setData(finalCustomers);
-      setAllStaff(staffOnly);
-      
-      // Fetch policies for stats
-      const mockData = [
-        { id: 1, policy_number: 'POL-8901', client_name: 'Shivani Ashok Gulhane', status: 'Active', end_date: '2026-06-10' },
-        { id: 2, policy_number: 'POL-8902', client_name: 'Jane Smith', status: 'Renewal Due', end_date: '2024-05-20' },
-      ];
-      const bought = JSON.parse(localStorage.getItem('bought_policies') || '[]');
-      setAllPolicies([...bought, ...mockData]);
-
-      setStats([
-        { label: 'Total Customers', value: finalCustomers.length.toString(), change: '+8.4%', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-        { label: 'Active Clients', value: finalCustomers.filter(u => u.is_active).length.toString(), change: '+12.5%', icon: UserCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-      ]);
-
-    } catch (error) {
-      toast.error('Failed to load customers');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCustomers();
-  }, []);
 
   const getValidatedStatus = (p) => {
     const now = new Date();
     const end = new Date(p.end_date);
     const diffDays = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
     if (diffDays < 0) return 'Expired';
+    if (diffDays <= 30) return 'Renewal Due';
     return 'Active';
   };
 
-  const getCustomerStats = (customer) => {
-    const customerPolicies = allPolicies.filter(p => p.client_name === customer.full_name);
-    const active = customerPolicies.filter(p => getValidatedStatus(p) === 'Active').length;
-    const expired = customerPolicies.filter(p => getValidatedStatus(p) === 'Expired').length;
-    const agent = allStaff.find(s => s.role === 'agent');
-
-    return {
-      total: customerPolicies.length,
-      active,
-      expired,
-      agentName: customerPolicies.length > 0 ? (agent ? agent.full_name : 'No Agent Assigned') : 'N/A'
-    };
+  const fetchAgentPolicies = () => {
+    setLoading(true);
+    const bought = JSON.parse(localStorage.getItem('bought_policies') || '[]');
+    const combined = [...bought];
+    
+    // Filter by current agent
+    const myPolicies = combined.filter(p => p.issued_by === user?.full_name);
+    
+    setPolicies(myPolicies);
+    setLoading(false);
   };
 
-  const handleViewProfile = (customer) => {
-    setSelectedCustomer(customer);
-    setIsProfileOpen(true);
-  };
+  useEffect(() => {
+    fetchAgentPolicies();
+  }, [user]);
 
-  const handleDeleteCustomer = async (customerId) => {
-    if (window.confirm('Are you sure you want to delete this customer?')) {
-      try {
-        // In a real app, call api.delete(`/admin/users/${customerId}`)
-        // For now, update local state
-        setData(prev => prev.filter(u => u.id !== customerId));
-        toast.success('Customer deleted successfully');
-      } catch (error) {
-        toast.error('Failed to delete customer');
-      }
+  const handleDelete = (id) => {
+    if (window.confirm('Are you sure you want to delete this policy?')) {
+      const bought = JSON.parse(localStorage.getItem('bought_policies') || '[]');
+      const filtered = bought.filter(p => p.id !== id);
+      localStorage.setItem('bought_policies', JSON.stringify(filtered));
+      setPolicies(prev => prev.filter(p => p.id !== id));
+      toast.success('Policy removed');
     }
   };
 
-  const filteredData = data.filter(u => 
-    u.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const getProviderLogo = (domain) => (
+    <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 p-1 flex items-center justify-center shadow-sm">
+      <img src={`https://www.google.com/s2/favicons?sz=64&domain=${domain}`} alt="provider" className="w-5 h-5 object-contain" />
+    </div>
   );
+
+  const filteredPolicies = policies.filter(p => {
+    const matchesSearch = p.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.policy_number.toLowerCase().includes(searchTerm.toLowerCase());
+    const currentStatus = getValidatedStatus(p);
+    return matchesSearch && (filterStatus === 'All' || currentStatus === filterStatus);
+  });
+
+  const stats = [
+    { label: 'Active Policies', value: policies.filter(p => getValidatedStatus(p) === 'Active').length.toString(), icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Renewal Due', value: policies.filter(p => getValidatedStatus(p) === 'Renewal Due').length.toString(), icon: FileText, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { label: 'Total Issued', value: policies.length.toString(), icon: Activity, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+  ];
 
   return (
     <div className="space-y-8 pb-12">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tighter">
-            {user?.role === 'agent' ? 'My Customers' : 'Customer 360°'}
-          </h1>
-          <p className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.2em] mt-1">
-            {user?.role === 'agent' ? 'Client Management' : 'Comprehensive view and management of all customers'}
-          </p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tighter">My Policies</h1>
+          <p className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.2em] mt-1">Manage and track your issued policies</p>
         </div>
-        {(user?.role === 'agent' || user?.role === 'admin' || user?.role === 'super_admin') && (
-          <button 
-            onClick={() => navigate(user.role === 'super_admin' ? '/super-admin/policies/new' : user.role === 'admin' ? '/admin/policies/new' : '/agent/add-policy')}
-            className="flex items-center space-x-2 px-8 py-4 bg-emerald-600 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-200"
-          >
-            <FilePlus className="w-5 h-5" />
-            <span>New Policy</span>
-          </button>
-        )}
+        <button 
+          onClick={() => navigate('/agent/add-policy')}
+          className="flex items-center space-x-2 px-8 py-4 bg-emerald-600 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-200"
+        >
+          <FilePlus className="w-5 h-5" />
+          <span>New Policy</span>
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stats.map((stat, idx) => (
           <motion.div 
             key={idx}
@@ -148,10 +100,6 @@ const Customers = () => {
             <div className="space-y-2">
               <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
               <h3 className="text-3xl font-black text-slate-900">{stat.value}</h3>
-              <div className={`flex items-center space-x-1 text-xs font-black ${stat.change.startsWith('+') ? 'text-emerald-500' : 'text-red-500'}`}>
-                {stat.change.startsWith('+') ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                <span>{stat.change} vs last month</span>
-              </div>
             </div>
             <div className={`w-16 h-16 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center`}>
               <stat.icon className="w-8 h-8" />
@@ -161,18 +109,30 @@ const Customers = () => {
       </div>
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-indigo-900/5 overflow-hidden">
-        <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-end items-center gap-4 bg-slate-50/50">
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input 
-                type="text" 
-                placeholder="Search customers..." 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-600/20 transition-all" 
-              />
+        <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
+          <div>
+            <h2 className="text-xl font-black text-slate-900 tracking-tight">Policy List</h2>
+            <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1 mt-2">
+              {['All', 'Active', 'Renewal Due', 'Expired'].map((status) => (
+                <button 
+                  key={status} 
+                  onClick={() => setFilterStatus(status)} 
+                  className={`px-3 py-1.5 text-[10px] font-black uppercase tracking-tighter rounded-lg transition-all ${filterStatus === status ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'text-slate-400 hover:text-indigo-600'}`}
+                >
+                  {status}
+                </button>
+              ))}
             </div>
+          </div>
+          <div className="relative min-w-[280px]">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <input 
+              type="text" 
+              placeholder="Search policies or clients..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-600/20 transition-all" 
+            />
           </div>
         </div>
 
@@ -180,47 +140,61 @@ const Customers = () => {
           <table className="w-full text-left">
             <thead>
               <tr className="bg-slate-50/50">
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Name</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Email</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Policies</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Policy ID</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Provider</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Client</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {loading ? (
-                <tr><td colSpan="5" className="p-12 text-center font-bold text-slate-400">Loading customers...</td></tr>
-              ) : filteredData.length === 0 ? (
-                <tr><td colSpan="5" className="p-12 text-center font-bold text-slate-400">No customers found.</td></tr>
-              ) : filteredData.map((item) => (
+                <tr><td colSpan="6" className="p-12 text-center font-bold text-slate-400">Loading your policies...</td></tr>
+              ) : filteredPolicies.length === 0 ? (
+                <tr><td colSpan="6" className="p-12 text-center font-bold text-slate-400 uppercase text-xs tracking-widest">No policies found.</td></tr>
+              ) : filteredPolicies.map((item) => (
                 <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
-                  <td className="px-8 py-6 font-bold text-slate-900">{item.full_name}</td>
-                  <td className="px-8 py-6 text-sm font-bold text-slate-500">{item.email}</td>
-                  <td className="px-8 py-6 font-bold text-slate-900">{getCustomerStats(item).total}</td>
+                  <td className="px-8 py-6 font-bold text-slate-900">{item.policy_number}</td>
                   <td className="px-8 py-6">
-                    <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter ${item.is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
-                      {item.is_active ? 'Active' : 'Inactive'}
-                    </span>
+                    <div className="flex items-center space-x-2">
+                      {getProviderLogo(item.domain || 'google.com')}
+                      <span className="font-bold text-slate-600 text-xs">{item.provider}</span>
+                    </div>
+                  </td>
+                  <td className="px-8 py-6 font-bold text-slate-700">{item.client_name}</td>
+                  <td className="px-8 py-6">
+                    <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-black uppercase tracking-tighter">{item.type}</span>
+                  </td>
+                  <td className="px-8 py-6 text-center">
+                    <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${
+                      getValidatedStatus(item) === 'Active' ? 'bg-emerald-50 text-emerald-600' : 
+                      getValidatedStatus(item) === 'Renewal Due' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600'
+                    }`}>{getValidatedStatus(item)}</span>
                   </td>
                   <td className="px-8 py-6 text-right">
                     <div className="flex items-center justify-end space-x-2">
                       <button 
-                        onClick={() => handleViewProfile(item)}
-                        className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
-                        title="View Profile"
+                        onClick={() => navigate(`/agent/policies/${item.id}`)}
+                        className="p-2 hover:bg-indigo-50 text-indigo-600 rounded-lg transition-all"
+                        title="View Details"
                       >
                         <Eye className="w-5 h-5" />
                       </button>
-                      {(user.role === 'admin' || user.role === 'super_admin' || user.role === 'agent') && (
-                        <button 
-                          onClick={() => handleDeleteCustomer(item.id)}
-                          className="p-2 hover:bg-rose-50 text-rose-500 rounded-lg transition-all"
-                          title="Delete Customer"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>
-                      )}
-                      <button className="p-2 hover:bg-slate-100 text-slate-400 rounded-lg transition-all"><MoreVertical className="w-5 h-5" /></button>
+                      <button 
+                        onClick={() => navigate(`/agent/policies/edit/${item.id}`, { state: { policy: item } })}
+                        className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
+                        title="Edit Policy"
+                      >
+                        <Edit3 className="w-5 h-5" />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(item.id)}
+                        className="p-2 hover:bg-rose-50 text-rose-500 rounded-lg transition-all"
+                        title="Delete Policy"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -229,117 +203,6 @@ const Customers = () => {
           </table>
         </div>
       </div>
-
-      {/* Profile Modal */}
-      <AnimatePresence>
-        {isProfileOpen && selectedCustomer && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsProfileOpen(false)}
-              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-            />
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden"
-            >
-              <div className="p-10 pb-0 flex justify-between items-start">
-                <div className="w-24 h-24 bg-emerald-50 rounded-[2rem] flex items-center justify-center text-emerald-600">
-                  <User className="w-12 h-12" />
-                </div>
-                <button onClick={() => setIsProfileOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-all">
-                  <X className="w-6 h-6 text-slate-400" />
-                </button>
-              </div>
-
-              <div className="p-10 space-y-8">
-                <div className="flex justify-between items-end">
-                  <div>
-                    <h3 className="text-3xl font-black text-slate-900 tracking-tighter">{selectedCustomer.full_name}</h3>
-                    <p className="text-emerald-600 font-black uppercase text-[10px] tracking-[0.2em] mt-1">Customer Profile</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Assigned Agent</p>
-                    <p className="font-bold text-slate-900 flex items-center justify-end">
-                      <Briefcase className="w-4 h-4 mr-2 text-emerald-500" />
-                      {getCustomerStats(selectedCustomer).agentName}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-6">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
-                        <Mail className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Email Address</p>
-                        <p className="font-bold text-slate-900">{selectedCustomer.email}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
-                        <PhoneIcon className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mobile Number</p>
-                        <p className="font-bold text-slate-900">{selectedCustomer.mobile || 'Not Provided'}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
-                        <MapPin className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Primary Address</p>
-                        <p className="font-bold text-slate-900 text-sm">{selectedCustomer.address || 'Plot 42, Sector 5, Mumbai, Maharashtra'}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-slate-50 rounded-[2.5rem] p-8 space-y-6">
-                    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center">
-                      <FileText className="w-4 h-4 mr-2 text-emerald-500" />
-                      Policy Statistics
-                    </h4>
-                    <div className="grid grid-cols-1 gap-4">
-                      <div className="flex justify-between items-center p-4 bg-white rounded-2xl border border-slate-100 shadow-sm">
-                        <span className="text-xs font-bold text-slate-500">Total Policies</span>
-                        <span className="text-lg font-black text-slate-900">{getCustomerStats(selectedCustomer).total}</span>
-                      </div>
-                      <div className="flex justify-between items-center p-4 bg-white rounded-2xl border border-emerald-100 shadow-sm">
-                        <span className="text-xs font-bold text-emerald-600">Active</span>
-                        <span className="text-lg font-black text-emerald-600">{getCustomerStats(selectedCustomer).active}</span>
-                      </div>
-                      <div className="flex justify-between items-center p-4 bg-white rounded-2xl border border-rose-100 shadow-sm">
-                        <span className="text-xs font-bold text-rose-500">Expired</span>
-                        <span className="text-lg font-black text-rose-500">{getCustomerStats(selectedCustomer).expired}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-6 border-t border-slate-50 flex justify-between items-center">
-                  <div className="flex flex-col">
-                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer ID</span>
-                    <span className="font-bold text-slate-900">#CUST-{selectedCustomer.id}</span>
-                  </div>
-                  <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${selectedCustomer.is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
-                    {selectedCustomer.is_active ? 'Verified Account' : 'Deactivated'}
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };

@@ -162,7 +162,9 @@ const AddPolicyForm = () => {
           nominee_name: form.nominee_name, nominee_relation: form.nominee_relation,
           plan_name: selectedPlan.name, plan_id: selectedPlan.id,
           payment_method: payment.method, payment_history: [{ date: new Date().toISOString().split('T')[0], amount: selectedPlan.premium, status: 'Paid', method: payment.method }],
-          renewal_history: []
+          renewal_history: [],
+          issued_by: user?.full_name || 'System',
+          issued_by_role: user?.role || 'user'
         };
         const existing = JSON.parse(localStorage.getItem('bought_policies') || '[]');
         localStorage.setItem('bought_policies', JSON.stringify([newPolicy, ...existing]));

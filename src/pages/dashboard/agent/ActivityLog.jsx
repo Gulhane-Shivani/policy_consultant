@@ -41,6 +41,14 @@ const ActivityLog = () => {
     }
   };
 
+  const filteredActivities = activities.filter(act => {
+    if (filter === 'all') return true;
+    if (filter === 'calls') return act.type === 'call';
+    if (filter === 'emails') return act.type === 'email';
+    if (filter === 'meetings') return act.type === 'meeting';
+    return true;
+  });
+
   return (
     <div className="space-y-8 pb-12">
       <div>
@@ -113,7 +121,11 @@ const ActivityLog = () => {
 
           <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden">
             <div className="divide-y divide-slate-50">
-              {activities.map((act) => (
+              {filteredActivities.length === 0 ? (
+                <div className="p-12 text-center text-slate-400 font-bold uppercase text-[10px] tracking-widest">
+                  No activity found for this category
+                </div>
+              ) : filteredActivities.map((act) => (
                 <div key={act.id} className="p-6 flex items-center justify-between hover:bg-slate-50/50 transition-all group">
                   <div className="flex items-center space-x-6">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border border-slate-100 shadow-sm transition-all group-hover:scale-110 ${getStatusColor(act.status)}`}>

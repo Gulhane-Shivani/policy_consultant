@@ -17,6 +17,10 @@ const Renewals = () => {
   const [selectedPolicy, setSelectedPolicy] = useState(null);
   const [receiptId, setReceiptId] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('Cash');
+  const [user] = useState(() => {
+    const saved = localStorage.getItem('user');
+    return saved && saved !== 'undefined' ? JSON.parse(saved) : null;
+  });
 
   const getValidatedStatus = (p) => {
     const now = new Date();
@@ -52,7 +56,14 @@ const Renewals = () => {
     // Filter for policies that are Renewal Due or Expired
     const renewalsDue = combined.filter(p => {
       const status = getValidatedStatus(p);
-      return status === 'Renewal Due' || status === 'Expired';
+      const isCorrectStatus = status === 'Renewal Due' || status === 'Expired';
+      
+      if (user?.role === 'agent') {
+        // If agent, only show policies they issued
+        return isCorrectStatus && p.issued_by === user.full_name;
+      }
+      
+      return isCorrectStatus;
     });
 
     setPolicies(renewalsDue);
@@ -133,8 +144,12 @@ const Renewals = () => {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Renewals Tracking</h1>
-        <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Lifecycle Management</p>
+        <h1 className="text-3xl font-black text-slate-900 tracking-tighter">
+          {user?.role === 'agent' ? 'My Renewals' : 'Renewals Tracking'}
+        </h1>
+        <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">
+          {user?.role === 'agent' ? 'Manage your upcoming renewals' : 'Lifecycle Management'}
+        </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
