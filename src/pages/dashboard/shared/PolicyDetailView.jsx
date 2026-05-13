@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { 
   ArrowLeft, ShieldCheck, DollarSign, Calendar, User, 
   MapPin, Activity, CreditCard, RefreshCw, X, Download,
-  Printer, Share2, Mail, ExternalLink, Shield, Layers
+  Printer, Share2, Mail, ExternalLink, Shield, Layers, Phone
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -167,11 +167,7 @@ const PolicyDetailView = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-4 w-full md:w-auto">
-            <button className="flex-grow md:flex-none px-10 py-4 bg-emerald-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-400 transition-all shadow-xl shadow-emerald-500/20">
-              Pay Now
-            </button>
-          </div>
+
         </div>
         <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full -mr-48 -mt-48 blur-3xl" />
       </div>
@@ -179,6 +175,69 @@ const PolicyDetailView = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Details */}
         <div className="lg:col-span-2 space-y-8">
+          {/* Customer Information Card */}
+          <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-8">
+               <User className="w-24 h-24 text-slate-50 opacity-50 absolute -top-8 -right-8" />
+            </div>
+            <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase mb-8 flex items-center relative z-10">
+              <User className="w-5 h-5 mr-3 text-emerald-600" />
+              Customer Information
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+              <div className="space-y-4">
+                <div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Full Name</p>
+                  <p className="text-lg font-black text-slate-900">{policy.client_name}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Contact Number</p>
+                  <div className="flex items-center text-slate-700 font-bold">
+                    <Phone className="w-4 h-4 mr-2 text-emerald-500" />
+                    {policy.contact || '+91 98765 43210'}
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Registered Address</p>
+                  <div className="flex items-start text-slate-700 font-bold leading-relaxed">
+                    <MapPin className="w-4 h-4 mr-2 mt-1 text-emerald-500 shrink-0" />
+                    {policy.address || 'Plot No. 45, Sector 12, Gulhane Enclave, Amravati, Maharashtra - 444601'}
+                  </div>
+                </div>
+                <div className="pt-4 border-t border-slate-50">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Policy Bond Period</p>
+                  <p className="text-2xl font-black text-emerald-600 mb-2">
+                    {(() => {
+                      const start = new Date(policy.start_date);
+                      const end = new Date(policy.end_date);
+                      const years = end.getFullYear() - start.getFullYear();
+                      return `${years} Years Bond`;
+                    })()}
+                  </p>
+                  {(() => {
+                    let min = '1 Year', max = 'Varies';
+                    const t = policy.type.toLowerCase();
+                    if (t.includes('term')) { min = '10 Years'; max = '40 Years'; }
+                    else if (t.includes('whole life')) { min = 'Lifelong'; max = 'Age 99'; }
+                    else if (t.includes('life')) { min = '5 Years'; max = 'Up to 99 Years'; }
+                    else if (t.includes('health')) { min = '1 Year'; max = 'Lifetime Renewal'; }
+                    else if (t.includes('car')) { min = '1 Year'; max = 'Up to 3 Years'; }
+                    else if (t.includes('bike')) { min = '1 Year'; max = 'Up to 5 Years'; }
+                    return (
+                      <div className="flex items-center space-x-3 text-[9px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50 p-2 rounded-lg">
+                        <span>Min: <span className="text-slate-700">{min}</span></span>
+                        <span>•</span>
+                        <span>Max: <span className="text-slate-700">{max}</span></span>
+                      </div>
+                    );
+                  })()}
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Coverage Details */}
           <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
             <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase mb-8 flex items-center">
@@ -241,7 +300,10 @@ const PolicyDetailView = () => {
 
           {/* Premium Payment History */}
           <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
-            <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase mb-8">Premium Payment History</h2>
+            <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase mb-8 flex items-center">
+              <CreditCard className="w-5 h-5 mr-3 text-emerald-600" />
+              Premium Payment History
+            </h2>
             <div className="space-y-4">
               {policy.payment_history?.map((h, i) => (
                 <div key={i} className="flex items-center justify-between p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
@@ -257,6 +319,35 @@ const PolicyDetailView = () => {
               ))}
               {!policy.payment_history?.length && (
                 <div className="text-center py-10 text-slate-400 font-bold uppercase text-[10px] tracking-widest">No payment records found</div>
+              )}
+            </div>
+          </div>
+
+          {/* Renewal History */}
+          <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+            <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase mb-8 flex items-center">
+              <RefreshCw className="w-5 h-5 mr-3 text-amber-500" />
+              Renewal Lifecycle History
+            </h2>
+            <div className="space-y-4">
+              {policy.renewal_history?.map((r, i) => (
+                <div key={i} className="flex items-center justify-between p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-amber-500 shadow-sm">
+                      <RefreshCw className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-black text-slate-900">{r.type}</p>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Processed on {r.date}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[9px] font-black text-amber-600 uppercase tracking-widest bg-amber-50 px-2 py-0.5 rounded-md">Completed</span>
+                  </div>
+                </div>
+              ))}
+              {!policy.renewal_history?.length && (
+                <div className="text-center py-10 text-slate-400 font-bold uppercase text-[10px] tracking-widest">No renewal records found</div>
               )}
             </div>
           </div>
