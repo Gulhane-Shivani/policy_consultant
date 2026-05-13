@@ -3,7 +3,7 @@ import {
   UserCog, Users, Shield,
   ArrowUpRight, ArrowDownRight,
   MoreVertical, Trash2, CheckCircle, Search, Filter,
-  Plus, X, Mail, Phone as PhoneIcon, Lock
+  Plus, X, Mail, Phone as PhoneIcon, Lock, Eye, MapPin, User
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../../utils/api';
@@ -14,6 +14,8 @@ const StaffMembers = () => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [newStaff, setNewStaff] = useState({
     full_name: '',
     email: '',
@@ -94,6 +96,11 @@ const StaffMembers = () => {
     } catch (error) {
       toast.error('Failed to update status');
     }
+  };
+
+  const handleViewProfile = (user) => {
+    setSelectedUser(user);
+    setIsProfileOpen(true);
   };
 
   const filteredData = data.filter(u => 
@@ -204,7 +211,14 @@ const StaffMembers = () => {
                   </td>
                   <td className="px-8 py-6 text-sm font-bold text-slate-400">{item.mobile || 'N/A'}</td>
                   <td className="px-8 py-6 text-right">
-                    <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-all">
+                    <div className="flex items-center justify-end space-x-2">
+                      <button 
+                        onClick={() => handleViewProfile(item)}
+                        className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
+                        title="View Profile"
+                      >
+                        <Eye className="w-5 h-5" />
+                      </button>
                       <button 
                         onClick={() => handleDeleteStaff(item.id)}
                         className="p-2 hover:bg-rose-50 text-rose-600 rounded-lg transition-all"
@@ -320,6 +334,85 @@ const StaffMembers = () => {
                   Confirm Staff Registration
                 </button>
               </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Profile Modal */}
+      <AnimatePresence>
+        {isProfileOpen && selectedUser && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsProfileOpen(false)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative bg-white w-full max-w-lg rounded-[3rem] shadow-2xl overflow-hidden"
+            >
+              <div className="p-10 pb-0 flex justify-between items-start">
+                <div className="w-24 h-24 bg-emerald-50 rounded-[2rem] flex items-center justify-center text-emerald-600">
+                  <User className="w-12 h-12" />
+                </div>
+                <button onClick={() => setIsProfileOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-all">
+                  <X className="w-6 h-6 text-slate-400" />
+                </button>
+              </div>
+
+              <div className="p-10 space-y-8">
+                <div>
+                  <h3 className="text-3xl font-black text-slate-900 tracking-tighter">{selectedUser.full_name}</h3>
+                  <p className="text-emerald-600 font-black uppercase text-[10px] tracking-[0.2em] mt-1">{selectedUser.role.replace('_', ' ')}</p>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                      <Mail className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Email Address</p>
+                      <p className="font-bold text-slate-900">{selectedUser.email}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                      <PhoneIcon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mobile Number</p>
+                      <p className="font-bold text-slate-900">{selectedUser.mobile || 'Not Provided'}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-4">
+                    <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                      <MapPin className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Office Address</p>
+                      <p className="font-bold text-slate-900">{selectedUser.address || 'Main Branch, Policy Consultant HQ'}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-slate-50 flex justify-between items-center">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Member Since</span>
+                    <span className="font-bold text-slate-900">May 2024</span>
+                  </div>
+                  <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest ${selectedUser.is_active ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                    {selectedUser.is_active ? 'Active Status' : 'Deactivated'}
+                  </span>
+                </div>
+              </div>
             </motion.div>
           </div>
         )}
