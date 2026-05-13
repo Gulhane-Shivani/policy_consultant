@@ -203,10 +203,11 @@ function App() {
             <Route path="tasks" element={<TasksCalendar />} />
             <Route path="activity" element={<ActivityLog />} />
             <Route path="customers" element={<Customers />} />
+            <Route path="policies/:id" element={<PolicyDetailView />} />
+            <Route path="policies/edit/:id" element={<AddPolicyForm />} />
             <Route path="add-policy" element={<AddPolicyForm />} />
             <Route path="renewals" element={<Renewals />} />
             <Route path="commissions" element={<CommissionFinance />} />
-            <Route path="communication" element={<Communication />} />
             <Route path="profile" element={<CustomerProfile />} />
           </Route>
 

@@ -87,7 +87,6 @@ const Sidebar = ({ role }) => {
               
               { label: 'Renewals', icon: RefreshCw, path: '/agent/renewals' },
               { label: 'Commissions', icon: Landmark, path: '/agent/commissions' },
-              { label: 'Communications', icon: MessageSquare, path: '/agent/communication' },
               profileItem
             ]
           }
