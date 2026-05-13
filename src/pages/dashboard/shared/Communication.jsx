@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { 
-  MessageSquare, Phone, Send,
+  MessageSquare, Phone, Send, Mail, Globe, Layout, Plus,
   ArrowUpRight, ArrowDownRight,
-  MoreVertical, Trash2, CheckCircle, Search, Filter
+  MoreVertical, Trash2, CheckCircle, Search, Filter, ExternalLink, Sparkles
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -47,6 +47,109 @@ const Communication = () => {
             </div>
           </motion.div>
         ))}
+      </div>
+
+      {/* Marketing & Website Management */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Email & SMS Campaigns */}
+        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-indigo-900/5 space-y-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-xl font-black text-slate-900 tracking-tight">Campaign Manager</h2>
+              <p className="text-sm font-bold text-slate-400 uppercase tracking-tighter">Execute Email & SMS strategies</p>
+            </div>
+            <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
+              <Sparkles className="w-6 h-6" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <button className="p-6 bg-slate-50 border border-slate-100 rounded-3xl text-left hover:border-indigo-200 transition-all group">
+              <div className="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Mail className="w-5 h-5 text-indigo-600" />
+              </div>
+              <h3 className="font-black text-slate-900 text-sm">Email Campaign</h3>
+              <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Design & Blast</p>
+            </button>
+            <button className="p-6 bg-slate-50 border border-slate-100 rounded-3xl text-left hover:border-emerald-200 transition-all group">
+              <div className="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <MessageSquare className="w-5 h-5 text-emerald-600" />
+              </div>
+              <h3 className="font-black text-slate-900 text-sm">SMS Campaign</h3>
+              <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">Direct Outreach</p>
+            </button>
+          </div>
+
+          <div className="pt-4 border-t border-slate-100">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Active Sequences</p>
+            <div className="space-y-3">
+              {[
+                { name: 'Renewal Reminder Wave 2', reach: '450 users', performance: '18% CTR' },
+                { name: 'New Year Health Promo', reach: '1.2k users', performance: '12% CTR' }
+              ].map((c, i) => (
+                <div key={i} className="flex justify-between items-center p-3 bg-slate-50/50 rounded-xl border border-slate-100">
+                  <span className="text-xs font-bold text-slate-700">{c.name}</span>
+                  <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded-md">{c.performance}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Website Updates */}
+        <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-indigo-900/5 space-y-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-xl font-black text-slate-900 tracking-tight">Website Control</h2>
+              <p className="text-sm font-bold text-slate-400 uppercase tracking-tighter">Manage site content & announcements</p>
+            </div>
+            <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center">
+              <Globe className="w-6 h-6" />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="p-4 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center">
+                  <Layout className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-900 text-sm">Hero Banner Update</h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Change homepage visuals</p>
+                </div>
+              </div>
+              <button className="p-2 hover:bg-emerald-100 text-emerald-600 rounded-lg transition-all">
+                <Plus className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-4 bg-slate-50 border border-slate-100 rounded-3xl flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="w-10 h-10 bg-white shadow-sm rounded-xl flex items-center justify-center">
+                  <ExternalLink className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div>
+                  <h3 className="font-black text-slate-900 text-sm">Quick News/Alerts</h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Manage scroll news ticker</p>
+                </div>
+              </div>
+              <button className="p-2 hover:bg-emerald-100 text-emerald-600 rounded-lg transition-all">
+                <Plus className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-6 bg-slate-900 rounded-[2rem] text-white">
+              <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2">Live Preview</p>
+              <div className="p-3 bg-white/5 border border-white/10 rounded-xl">
+                <p className="text-xs font-medium text-slate-300">"Exclusive 15% discount on Car Insurance for existing members. Limited time offer!"</p>
+              </div>
+              <button className="w-full mt-4 py-3 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-700 transition-all">
+                Publish Changes
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-indigo-900/5 overflow-hidden">

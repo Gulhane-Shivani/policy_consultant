@@ -158,6 +158,7 @@ function App() {
             <Route path="customers" element={<Customers />} />
             <Route path="tasks" element={<Tasks />} />
             <Route path="communication" element={<Communication />} />
+            <Route path="profile" element={<CustomerProfile />} />
           </Route>
 
           {/* Super Admin Dashboard Routes */}
@@ -183,6 +184,7 @@ function App() {
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<MasterSettings />} />
             <Route path="config" element={<SystemConfig />} />
+            <Route path="profile" element={<CustomerProfile />} />
           </Route>
 
           {/* Agent Dashboard Routes */}
@@ -197,6 +199,7 @@ function App() {
             <Route path="renewals" element={<Renewals />} />
             <Route path="commissions" element={<CommissionFinance />} />
             <Route path="communication" element={<Communication />} />
+            <Route path="profile" element={<CustomerProfile />} />
           </Route>
 
           {/* CSR Dashboard Routes */}
@@ -213,6 +216,7 @@ function App() {
             <Route path="tickets" element={<TicketsQueries />} />
             <Route path="servicing" element={<PolicyServicing />} />
             <Route path="communication" element={<Communication />} />
+            <Route path="profile" element={<CustomerProfile />} />
           </Route>
 
           {/* Fallback Redirections */}
