@@ -12,6 +12,7 @@ const Renewals = () => {
   const [loading, setLoading] = useState(true);
   const [policies, setPolicies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPolicy, setSelectedPolicy] = useState(null);
   const [receiptId, setReceiptId] = useState('');
@@ -31,14 +32,14 @@ const Renewals = () => {
     const mockData = [
       {
         id: 1, policy_number: 'POL-8901', client_name: 'Shivani Ashok Gulhane', type: 'Life Insurance', premium: '1200',
-        start_date: '2023-01-15', end_date: '2024-05-30', nominee_name: 'Mary Doe', nominee_relation: 'Spouse',
+        start_date: '2023-01-15', end_date: '2026-06-10', nominee_name: 'Mary Doe', nominee_relation: 'Spouse',
         benefits: 'Death cover, Critical illness', provider: 'HDFC Life', domain: 'hdfclife.com',
         contact: '+91 98765 43210', address: 'Plot 42, Sector 5, Mumbai, MH',
         payment_history: [{ date: '2023-01-15', amount: '1200', status: 'Paid' }],
         renewal_history: [{ date: '2023-01-15', type: 'Initial' }]
       },
       {
-        id: 2, policy_number: 'POL-8902', client_name: 'Jane Smith', type: 'Health Insurance', premium: '850',
+        id: 2, policy_number: 'POL-8902', client_name: 'Shivani Ashok Gulhane', type: 'Health Insurance', premium: '850',
         start_date: '2023-05-20', end_date: '2024-05-20', nominee_name: 'Sarah Smith', nominee_relation: 'Daughter',
         benefits: 'In-patient coverage', provider: 'Niva Bupa', domain: 'nivabupa.com',
         contact: '+91 98765 43210', address: 'Plot 42, Sector 5, Mumbai, MH',
@@ -116,10 +117,12 @@ const Renewals = () => {
     fetchPolicies();
   };
 
-  const filteredPolicies = policies.filter(p => 
-    p.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.policy_number.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredPolicies = policies.filter(p => {
+    const matchesSearch = p.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.policy_number.toLowerCase().includes(searchTerm.toLowerCase());
+    const currentStatus = getValidatedStatus(p);
+    return matchesSearch && (filterStatus === 'All' || currentStatus === filterStatus);
+  });
 
   const stats = [
     { label: 'Upcoming Renewals', value: policies.filter(p => getValidatedStatus(p) === 'Renewal Due').length.toString(), icon: Calendar, color: 'text-indigo-600', bg: 'bg-indigo-50' },
@@ -156,7 +159,17 @@ const Renewals = () => {
         <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
           <div>
             <h2 className="text-xl font-black text-slate-900 tracking-tight">Renewal Pipeline</h2>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-tighter">Manage upcoming and overdue renewals</p>
+            <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1 mt-2">
+              {['All', 'Renewal Due', 'Expired'].map((status) => (
+                <button 
+                  key={status} 
+                  onClick={() => setFilterStatus(status)} 
+                  className={`px-3 py-1.5 text-[10px] font-black uppercase tracking-tighter rounded-lg transition-all ${filterStatus === status ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' : 'text-slate-400 hover:text-indigo-600'}`}
+                >
+                  {status}
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex items-center space-x-3">
             <div className="relative">
