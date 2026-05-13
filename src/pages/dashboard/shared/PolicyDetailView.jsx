@@ -23,22 +23,26 @@ const PolicyDetailView = () => {
       { 
         id: 1, 
         policy_number: 'POL-8901', 
-        client_name: 'John Doe', 
+        client_name: 'Shivani Ashok Gulhane', 
         type: 'Life Insurance', 
         premium: '1200', 
         status: 'Active',
         start_date: '2023-01-15',
-        end_date: '2024-01-15',
+        end_date: '2026-06-10', // Renewal Due (within 30 days of 2026-05-13)
         nominee_name: 'Mary Doe',
         nominee_relation: 'Spouse',
         benefits: 'Death cover, Critical illness',
         provider: 'HDFC Life',
         domain: 'hdfclife.com',
         payment_history: [
-          { date: '2023-01-15', amount: '1200', status: 'Paid' }
+          { date: '2023-01-15', amount: '1200', status: 'Paid' },
+          { date: '2024-01-15', amount: '1200', status: 'Paid' },
+          { date: '2025-01-15', amount: '1200', status: 'Paid' }
         ],
         renewal_history: [
-          { date: '2023-01-15', type: 'Initial' }
+          { date: '2023-01-15', type: 'Initial' },
+          { date: '2024-01-15', type: 'Renewal' },
+          { date: '2025-01-15', type: 'Renewal' }
         ]
       },
       { 

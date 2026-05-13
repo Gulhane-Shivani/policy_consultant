@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   ShieldCheck, FileText, Layers,
   ArrowUpRight, ArrowDownRight,
   MoreVertical, Trash2, CheckCircle, Search, Filter,
@@ -45,7 +45,7 @@ const Policies = () => {
     const now = new Date();
     const end = new Date(p.end_date);
     const diffDays = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays < 0) return 'Expired';
     if (diffDays <= 30) return 'Renewal Due';
     return 'Active';
@@ -60,36 +60,40 @@ const Policies = () => {
   const fetchPolicies = async () => {
     try {
       setLoading(true);
-      
+
       // Mock data for initial implementation as requested
       const mockData = [
-        { 
-          id: 1, 
-          policy_number: 'POL-8901', 
-          client_name: 'Shivani Ashok Gulhane', 
-          type: 'Life Insurance', 
-          premium: '1200', 
+        {
+          id: 1,
+          policy_number: 'POL-8901',
+          client_name: 'Shivani Ashok Gulhane',
+          type: 'Life Insurance',
+          premium: '1200',
           status: 'Active',
           start_date: '2023-01-15',
-          end_date: '2024-01-15',
+          end_date: '2026-06-10', // Renewal Due
           nominee_name: 'Mary Doe',
           nominee_relation: 'Spouse',
           benefits: 'Death cover, Critical illness',
           provider: 'HDFC Life',
           domain: 'hdfclife.com',
           payment_history: [
-            { date: '2023-01-15', amount: '1200', status: 'Paid' }
+            { date: '2023-01-15', amount: '1200', status: 'Paid' },
+            { date: '2024-01-15', amount: '1200', status: 'Paid' },
+            { date: '2025-01-15', amount: '1200', status: 'Paid' }
           ],
           renewal_history: [
-            { date: '2023-01-15', type: 'Initial' }
+            { date: '2023-01-15', type: 'Initial' },
+            { date: '2024-01-15', type: 'Renewal' },
+            { date: '2025-01-15', type: 'Renewal' }
           ]
         },
-        { 
-          id: 2, 
-          policy_number: 'POL-8902', 
-          client_name: 'Shivani Ashok Gulhane', 
-          type: 'Health Insurance', 
-          premium: '850', 
+        {
+          id: 2,
+          policy_number: 'POL-8902',
+          client_name: 'Shivani Ashok Gulhane',
+          type: 'Health Insurance',
+          premium: '850',
           status: 'Renewal Due',
           start_date: '2023-05-20',
           end_date: '2024-05-20',
@@ -101,12 +105,12 @@ const Policies = () => {
           payment_history: [],
           renewal_history: []
         },
-        { 
-          id: 3, 
-          policy_number: 'POL-8903', 
-          client_name: 'Robert Brown', 
-          type: 'Car Insurance', 
-          premium: '450', 
+        {
+          id: 3,
+          policy_number: 'POL-8903',
+          client_name: 'Robert Brown',
+          type: 'Car Insurance',
+          premium: '450',
           status: 'Active',
           start_date: '2023-08-10',
           end_date: '2024-08-10',
@@ -118,12 +122,12 @@ const Policies = () => {
           payment_history: [],
           renewal_history: []
         },
-        { 
-          id: 4, 
-          policy_number: 'POL-8904', 
-          client_name: 'Emily Davis', 
-          type: 'Business Insurance', 
-          premium: '2500', 
+        {
+          id: 4,
+          policy_number: 'POL-8904',
+          client_name: 'Emily Davis',
+          type: 'Business Insurance',
+          premium: '2500',
           status: 'Expired',
           start_date: '2022-01-01',
           end_date: '2023-01-01',
@@ -225,8 +229,8 @@ const Policies = () => {
   const getProviderLogo = (provider, domain) => {
     return (
       <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 p-1 flex items-center justify-center shadow-sm">
-        <img 
-          src={`https://www.google.com/s2/favicons?sz=64&domain=${domain}`} 
+        <img
+          src={`https://www.google.com/s2/favicons?sz=64&domain=${domain}`}
           alt={provider}
           className="w-5 h-5 object-contain"
           onError={(e) => {
@@ -242,8 +246,8 @@ const Policies = () => {
   };
 
   const filteredData = data.filter(p => {
-    const matchesSearch = p.client_name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         p.policy_number.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = p.client_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      p.policy_number.toLowerCase().includes(searchTerm.toLowerCase());
     const currentStatus = getValidatedStatus(p);
     const matchesFilter = filterStatus === 'All' || currentStatus === filterStatus;
     return matchesSearch && matchesFilter;
@@ -261,7 +265,7 @@ const Policies = () => {
         </div>
         <div className="flex items-center space-x-3">
           {user?.role === 'user' ? (
-            <button 
+            <button
               onClick={() => navigate('/plans')}
               className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
             >
@@ -269,7 +273,7 @@ const Policies = () => {
               <span>Buy New Policy</span>
             </button>
           ) : (
-            <button 
+            <button
               onClick={() => handleOpenModal()}
               className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
             >
@@ -282,7 +286,7 @@ const Policies = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {stats.map((stat, idx) => (
-          <motion.div 
+          <motion.div
             key={idx}
             whileHover={{ y: -5 }}
             className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/50 flex items-center justify-between"
@@ -313,12 +317,12 @@ const Policies = () => {
             <div className="flex flex-wrap items-center gap-3">
               <div className="relative min-w-[240px]">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input 
-                  type="text" 
-                  placeholder="Search policy or provider..." 
+                <input
+                  type="text"
+                  placeholder="Search policy or provider..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all" 
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all"
                 />
               </div>
               <div className="flex items-center bg-slate-50 border border-slate-100 rounded-xl p-1">
@@ -379,7 +383,7 @@ const Policies = () => {
                     </div>
 
                     <div className="mt-8 flex items-center justify-between relative z-10">
-                      <button 
+                      <button
                         onClick={() => navigate(`/dashboard/policies/${item.id}`)}
                         className="flex-grow px-6 py-3 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-slate-900/10"
                       >
@@ -403,12 +407,12 @@ const Policies = () => {
             <div className="flex items-center space-x-3">
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                <input 
-                  type="text" 
-                  placeholder="Search..." 
+                <input
+                  type="text"
+                  placeholder="Search..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all" 
+                  className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all"
                 />
               </div>
               <div className="flex items-center bg-white border border-slate-200 rounded-xl p-1">
@@ -454,19 +458,19 @@ const Policies = () => {
                     <td className="px-8 py-6 font-bold text-slate-900">₹{item.premium}</td>
                     <td className="px-8 py-6 text-right">
                       <div className="flex items-center justify-end space-x-2">
-                        <button 
+                        <button
                           onClick={() => handleOpenDetail(item)}
                           className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
                         >
                           <Eye className="w-5 h-5" />
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleOpenModal(item)}
                           className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"
                         >
                           <Edit3 className="w-5 h-5" />
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleDelete(item.id)}
                           className="p-2 hover:bg-rose-50 text-rose-600 rounded-lg transition-all"
                         >
@@ -486,14 +490,14 @@ const Policies = () => {
       <AnimatePresence>
         {isModalOpen && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-6">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsModalOpen(false)}
               className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -515,8 +519,8 @@ const Policies = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Policy Number</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       value={formData.policy_number}
                       disabled
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl font-bold text-slate-400"
@@ -524,20 +528,20 @@ const Policies = () => {
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Client Name</label>
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       required
                       value={formData.client_name}
-                      onChange={(e) => setFormData({...formData, client_name: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, client_name: e.target.value })}
                       placeholder="Enter client's full name"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-bold"
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Policy Type</label>
-                    <select 
+                    <select
                       value={formData.type}
-                      onChange={(e) => setFormData({...formData, type: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-bold"
                     >
                       <option>Life Insurance</option>
@@ -548,32 +552,32 @@ const Policies = () => {
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Premium Amount (₹)</label>
-                    <input 
-                      type="number" 
+                    <input
+                      type="number"
                       required
                       value={formData.premium}
-                      onChange={(e) => setFormData({...formData, premium: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, premium: e.target.value })}
                       placeholder="1200"
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-bold"
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Start Date</label>
-                    <input 
-                      type="date" 
+                    <input
+                      type="date"
                       required
                       value={formData.start_date}
-                      onChange={(e) => setFormData({...formData, start_date: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-bold"
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">End Date</label>
-                    <input 
-                      type="date" 
+                    <input
+                      type="date"
                       required
                       value={formData.end_date}
-                      onChange={(e) => setFormData({...formData, end_date: e.target.value})}
+                      onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-bold"
                     />
                   </div>
@@ -584,22 +588,22 @@ const Policies = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Nominee Name</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         required
                         value={formData.nominee_name}
-                        onChange={(e) => setFormData({...formData, nominee_name: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, nominee_name: e.target.value })}
                         placeholder="Full name"
                         className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-bold"
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Relation</label>
-                      <input 
-                        type="text" 
+                      <input
+                        type="text"
                         required
                         value={formData.nominee_relation}
-                        onChange={(e) => setFormData({...formData, nominee_relation: e.target.value})}
+                        onChange={(e) => setFormData({ ...formData, nominee_relation: e.target.value })}
                         placeholder="e.g., Spouse, Daughter"
                         className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-bold"
                       />
@@ -609,24 +613,24 @@ const Policies = () => {
 
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Benefits & Coverage</label>
-                  <textarea 
+                  <textarea
                     rows="3"
                     value={formData.benefits}
-                    onChange={(e) => setFormData({...formData, benefits: e.target.value})}
+                    onChange={(e) => setFormData({ ...formData, benefits: e.target.value })}
                     placeholder="Enter key benefits..."
                     className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-bold"
                   />
                 </div>
 
                 <div className="pt-6 border-t border-slate-100 flex justify-end space-x-4">
-                  <button 
+                  <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
                     className="px-8 py-3 bg-slate-100 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-slate-200 transition-all"
                   >
                     Cancel
                   </button>
-                  <button 
+                  <button
                     type="submit"
                     className="px-10 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
                   >
@@ -643,14 +647,14 @@ const Policies = () => {
       <AnimatePresence>
         {isDetailModalOpen && selectedPolicy && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-6">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsDetailModalOpen(false)}
               className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
