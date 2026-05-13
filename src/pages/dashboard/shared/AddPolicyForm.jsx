@@ -30,7 +30,10 @@ const AddPolicyForm = () => {
 
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
-  
+  const [payProcessing, setPayProcessing] = useState(false);
+  const [paySuccess, setPaySuccess] = useState(false);
+  const [payment, setPayment] = useState({ method: '', upi_id: '', upi_pin: '', card_number: '', card_name: '', card_expiry: '', card_cvv: '' });
+
   const [form, setForm] = useState({
     client_name: '', email: '', contact: '', address: '',
     nominee_name: '', nominee_relation: '', nominee_contact: '',
@@ -61,45 +64,41 @@ const AddPolicyForm = () => {
         return;
       }
     }
-    setStep(prev => Math.min(prev + 1, 4));
+    if (step === 4) {
+      if (!form.start_date || !form.end_date) { toast.error('Start and End dates required.'); return; }
+    }
+    setStep(prev => Math.min(prev + 1, 5));
   };
 
   const handleBack = () => setStep(prev => Math.max(prev - 1, 1));
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!form.start_date || !form.end_date) {
-      toast.error('Start Date and End Date are required.');
-      return;
-    }
-
-    const newPolicy = {
-      id: Date.now(),
-      policy_number: `POL-${Math.floor(1000 + Math.random() * 9000)}`,
-      client_name: form.client_name,
-      email: form.email,
-      contact: form.contact,
-      address: form.address,
-      type: selectedPlan.category + ' Insurance',
-      provider: selectedPlan.provider,
-      domain: selectedPlan.domain,
-      premium: selectedPlan.premium,
-      coverage: selectedPlan.coverage,
-      benefits: selectedPlan.benefits,
-      start_date: form.start_date,
-      end_date: form.end_date,
-      nominee_name: form.nominee_name,
-      nominee_relation: form.nominee_relation,
-      plan_name: selectedPlan.name,
-      plan_id: selectedPlan.id,
-      payment_history: [],
-      renewal_history: []
-    };
-    
-    const existing = JSON.parse(localStorage.getItem('bought_policies') || '[]');
-    localStorage.setItem('bought_policies', JSON.stringify([newPolicy, ...existing]));
-    setSubmitted(true);
-    toast.success('Policy created successfully!');
+  const processPayment = () => {
+    if (!payment.method) { toast.error('Select a payment method.'); return; }
+    if (payment.method === 'UPI' && (!payment.upi_id || !payment.upi_pin)) { toast.error('Enter UPI ID and PIN.'); return; }
+    if (payment.method === 'Debit Card' && (!payment.card_number || !payment.card_name || !payment.card_expiry || !payment.card_cvw)) { toast.error('Fill all card details.'); return; }
+    setPayProcessing(true);
+    setTimeout(() => {
+      setPayProcessing(false);
+      setPaySuccess(true);
+      setTimeout(() => {
+        const newPolicy = {
+          id: Date.now(),
+          policy_number: `POL-${Math.floor(1000 + Math.random() * 9000)}`,
+          client_name: form.client_name, email: form.email, contact: form.contact, address: form.address,
+          type: selectedPlan.category + ' Insurance', provider: selectedPlan.provider, domain: selectedPlan.domain,
+          premium: selectedPlan.premium, coverage: selectedPlan.coverage, benefits: selectedPlan.benefits,
+          start_date: form.start_date, end_date: form.end_date,
+          nominee_name: form.nominee_name, nominee_relation: form.nominee_relation,
+          plan_name: selectedPlan.name, plan_id: selectedPlan.id,
+          payment_method: payment.method, payment_history: [{ date: new Date().toISOString().split('T')[0], amount: selectedPlan.premium, status: 'Paid', method: payment.method }],
+          renewal_history: []
+        };
+        const existing = JSON.parse(localStorage.getItem('bought_policies') || '[]');
+        localStorage.setItem('bought_policies', JSON.stringify([newPolicy, ...existing]));
+        setSubmitted(true);
+        toast.success('Policy issued successfully!');
+      }, 2000);
+    }, 2000);
   };
 
   if (submitted) {
@@ -120,10 +119,11 @@ const AddPolicyForm = () => {
   }
 
   const steps = [
-    { num: 1, title: 'Customer Details' },
+    { num: 1, title: 'Customer' },
     { num: 2, title: 'Policy Type' },
-    { num: 3, title: 'Policy Plan' },
-    { num: 4, title: 'Duration & Issue' },
+    { num: 3, title: 'Plan' },
+    { num: 4, title: 'Duration' },
+    { num: 5, title: 'Payment' },
   ];
 
   return (
@@ -143,7 +143,7 @@ const AddPolicyForm = () => {
       {/* Stepper */}
       <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm flex items-center justify-between relative">
         <div className="absolute top-1/2 left-8 right-8 h-1 bg-slate-100 -z-0 -translate-y-1/2 rounded-full"></div>
-        <div className="absolute top-1/2 left-8 h-1 bg-emerald-500 -z-0 -translate-y-1/2 rounded-full transition-all duration-300" style={{ width: `calc(${((step - 1) / 3) * 100}% - 4rem)` }}></div>
+        <div className="absolute top-1/2 left-8 h-1 bg-emerald-500 -z-0 -translate-y-1/2 rounded-full transition-all duration-300" style={{ width: `calc(${((step - 1) / 4) * 100}% - 4rem)` }}></div>
         
         {steps.map((s, i) => (
           <div key={s.num} className="relative z-10 flex flex-col items-center">
@@ -348,6 +348,63 @@ const AddPolicyForm = () => {
                 </div>
               </motion.div>
             )}
+
+            {/* Step 5: Payment */}
+            {step === 5 && (
+              <motion.div key="step5" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
+                <div>
+                  <h2 className="text-xl font-black text-slate-900">Payment</h2>
+                  <p className="text-slate-500 font-bold text-sm mt-1">Amount due: <span className="text-emerald-600 font-black">₹{selectedPlan?.premium}</span> for {selectedPlan?.name}</p>
+                </div>
+                {payProcessing && (
+                  <div className="flex flex-col items-center py-16 space-y-4">
+                    <div className="w-16 h-16 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-slate-600 font-black uppercase tracking-widest text-sm">Processing Payment…</p>
+                  </div>
+                )}
+                {paySuccess && !payProcessing && (
+                  <div className="flex flex-col items-center py-12 space-y-4">
+                    <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center">
+                      <CheckCircle className="w-10 h-10 text-emerald-600" />
+                    </div>
+                    <p className="text-2xl font-black text-slate-900">Payment Successful!</p>
+                    <p className="text-slate-500 font-bold text-sm">₹{selectedPlan?.premium} paid via {payment.method}</p>
+                    <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Issuing your policy…</p>
+                  </div>
+                )}
+                {!payProcessing && !paySuccess && (
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-3 gap-4">
+                      {['Cash', 'UPI', 'Debit Card'].map(m => (
+                        <button key={m} type="button" onClick={() => setPayment({...payment, method: m})} className={`p-5 rounded-2xl border-2 font-black text-sm transition-all ${payment.method === m ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-slate-100 hover:border-emerald-200 text-slate-600'}`}>{m}</button>
+                      ))}
+                    </div>
+                    {payment.method === 'UPI' && (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">UPI ID</label><input type="text" placeholder="name@upi" value={payment.upi_id} onChange={e => setPayment({...payment, upi_id: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:border-emerald-500" /></div>
+                        <div className="space-y-1"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">UPI PIN</label><input type="password" placeholder="••••••" maxLength={6} value={payment.upi_pin} onChange={e => setPayment({...payment, upi_pin: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:border-emerald-500" /></div>
+                      </div>
+                    )}
+                    {payment.method === 'Debit Card' && (
+                      <div className="space-y-4">
+                        <div className="space-y-1"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Card Number</label><input type="text" placeholder="1234 5678 9012 3456" maxLength={19} value={payment.card_number} onChange={e => setPayment({...payment, card_number: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:border-emerald-500" /></div>
+                        <div className="space-y-1"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Cardholder Name</label><input type="text" placeholder="As on card" value={payment.card_name} onChange={e => setPayment({...payment, card_name: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:border-emerald-500" /></div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-1"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Expiry (MM/YY)</label><input type="text" placeholder="MM/YY" maxLength={5} value={payment.card_expiry} onChange={e => setPayment({...payment, card_expiry: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:border-emerald-500" /></div>
+                          <div className="space-y-1"><label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">CVV</label><input type="password" placeholder="•••" maxLength={3} value={payment.card_cvw} onChange={e => setPayment({...payment, card_cvw: e.target.value})} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none focus:border-emerald-500" /></div>
+                        </div>
+                      </div>
+                    )}
+                    {payment.method === 'Cash' && (
+                      <div className="p-6 bg-amber-50 border border-amber-100 rounded-2xl">
+                        <p className="text-amber-700 font-black text-sm">Cash Payment</p>
+                        <p className="text-amber-600 font-bold text-sm mt-1">Collect ₹{selectedPlan?.premium} in cash from the customer and confirm below to issue the policy.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
 
@@ -361,21 +418,15 @@ const AddPolicyForm = () => {
             Back
           </button>
           
-          {step < 4 ? (
-            <button 
-              onClick={handleNext}
-              className="flex items-center px-8 py-3 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg"
-            >
+          {step < 5 ? (
+            <button onClick={handleNext} className="flex items-center px-8 py-3 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg">
               Continue <ChevronRight className="w-4 h-4 ml-2" />
             </button>
-          ) : (
-            <button 
-              onClick={handleSubmit}
-              className="flex items-center px-10 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
-            >
-              Issue Policy <CheckCircle className="w-4 h-4 ml-2" />
+          ) : !payProcessing && !paySuccess ? (
+            <button onClick={processPayment} className="flex items-center px-10 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20">
+              Pay &amp; Issue Policy <CheckCircle className="w-4 h-4 ml-2" />
             </button>
-          )}
+          ) : null}
         </div>
       </div>
     </div>
