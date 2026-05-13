@@ -13,12 +13,22 @@ const Communication = () => {
     { label: 'Sent Messages', value: '1,284', change: '+8.1%', icon: Send, color: 'text-blue-600', bg: 'bg-blue-50' },
   ]);
 
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('All');
+
   const [data] = useState([
-    { id: 1, contact: 'John Doe', subject: 'Policy Query', lastMessage: 'Thanks for the help!', time: '2 mins ago' },
-    { id: 2, contact: 'Jane Smith', subject: 'Claim Update', lastMessage: 'When will it be processed?', time: '1 hour ago' },
-    { id: 3, contact: 'Robert Brown', subject: 'General Inquiry', lastMessage: 'I have a question about...', time: '3 hours ago' },
-    { id: 4, contact: 'Emily Davis', subject: 'Feedback', lastMessage: 'Great service!', time: '5 hours ago' },
+    { id: 1, contact: 'John Doe', subject: 'Policy Query', lastMessage: 'Thanks for the help!', time: '2 mins ago', status: 'Unread' },
+    { id: 2, contact: 'Jane Smith', subject: 'Claim Update', lastMessage: 'When will it be processed?', time: '1 hour ago', status: 'Resolved' },
+    { id: 3, contact: 'Robert Brown', subject: 'General Inquiry', lastMessage: 'I have a question about...', time: '3 hours ago', status: 'Unread' },
+    { id: 4, contact: 'Emily Davis', subject: 'Feedback', lastMessage: 'Great service!', time: '5 hours ago', status: 'Resolved' },
   ]);
+
+  const filteredData = data.filter(item => {
+    const matchesSearch = item.contact.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         item.subject.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = filterStatus === 'All' || item.status === filterStatus;
+    return matchesSearch && matchesFilter;
+  });
 
   return (
     <div className="space-y-8">
@@ -158,15 +168,34 @@ const Communication = () => {
             <h2 className="text-xl font-black text-slate-900 tracking-tight">Recent Conversations</h2>
             <p className="text-sm font-bold text-slate-400 uppercase tracking-tighter">Monitor real-time communication activity</p>
           </div>
-          <div className="flex items-center space-x-3">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            {/* Status Tabs */}
+            <div className="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
+              {['All', 'Unread', 'Resolved'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setFilterStatus(tab)}
+                  className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                    filterStatus === tab 
+                    ? 'bg-slate-900 text-white shadow-lg' 
+                    : 'text-slate-400 hover:text-slate-600'
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input type="text" placeholder="Search conversations..." className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-600/20 transition-all" />
+              <input 
+                type="text" 
+                placeholder="Search conversations..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-600/20 transition-all" 
+              />
             </div>
-            <button className="flex items-center space-x-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all">
-              <Filter className="w-4 h-4" />
-              <span>Filter</span>
-            </button>
           </div>
         </div>
 
@@ -177,17 +206,24 @@ const Communication = () => {
                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Contact</th>
                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Subject</th>
                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Last Message</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Time</th>
+                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
                 <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {data.map((item) => (
+              {filteredData.map((item) => (
                 <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
                   <td className="px-8 py-6 font-bold text-slate-900">{item.contact}</td>
                   <td className="px-8 py-6 text-sm font-bold text-slate-700">{item.subject}</td>
                   <td className="px-8 py-6 text-sm font-medium text-slate-500 truncate max-w-[200px]">{item.lastMessage}</td>
                   <td className="px-8 py-6 text-sm font-bold text-slate-400">{item.time}</td>
+                  <td className="px-8 py-6">
+                    <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter ${
+                      item.status === 'Unread' ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'
+                    }`}>
+                      {item.status}
+                    </span>
+                  </td>
                   <td className="px-8 py-6 text-right">
                     <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-all">
                       <button className="p-2 hover:bg-indigo-50 text-indigo-600 rounded-lg transition-all"><Send className="w-5 h-5" /></button>

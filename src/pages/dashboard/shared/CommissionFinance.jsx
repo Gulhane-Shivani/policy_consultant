@@ -34,10 +34,7 @@ const CommissionFinance = () => {
           </h1>
           <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Earnings & Payout Oversight</p>
         </div>
-        <button className="flex items-center space-x-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20">
-          <Download className="w-4 h-4" />
-          <span>Export Report</span>
-        </button>
+        
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
