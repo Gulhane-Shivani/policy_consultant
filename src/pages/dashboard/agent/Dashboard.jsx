@@ -4,12 +4,14 @@ import {
   Award, Briefcase, FileText,
   PieChart, Phone, Calendar,
   ArrowUpRight, ChevronRight,
-  UserCheck, DollarSign
+  UserCheck, DollarSign, Zap,
+  Clock, Star, Shield
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, 
   CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
+import { Link } from 'react-router-dom';
 
 const AgentDashboard = () => {
   const [user] = useState(() => {
@@ -41,64 +43,88 @@ const AgentDashboard = () => {
           <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Advisor Portal</h1>
           <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Policy Consultant • Sales Performance</p>
         </div>
-        <div className="flex -space-x-2">
-          {[1,2,3,4].map(i => (
-            <div key={i} className="w-10 h-10 rounded-full border-4 border-white bg-slate-200 overflow-hidden">
-              <img src={`https://i.pravatar.cc/150?u=${i}`} alt="team" />
-            </div>
-          ))}
-          <div className="w-10 h-10 rounded-full border-4 border-white bg-emerald-600 flex items-center justify-center text-white text-[10px] font-black">+12</div>
+        <div className="flex items-center space-x-4">
+          <div className="hidden md:flex -space-x-2">
+            {[1,2,3].map(i => (
+              <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-slate-200 overflow-hidden">
+                <img src={`https://i.pravatar.cc/150?u=${i+10}`} alt="team" />
+              </div>
+            ))}
+          </div>
+          <button className="px-4 py-2 bg-emerald-50 text-emerald-600 rounded-xl font-black text-[10px] uppercase tracking-widest border border-emerald-100">
+            Monthly Target: 75%
+          </button>
         </div>
       </div>
 
-      {/* Stats Cards */}
+      {/* Premium KPI Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
-              <Target className="w-6 h-6" />
+        <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/40 relative overflow-hidden group">
+          <div className="relative z-10">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl group-hover:bg-emerald-600 group-hover:text-white transition-all duration-500">
+                <Target className="w-6 h-6" />
+              </div>
+              <span className="text-[10px] font-black text-emerald-500 flex items-center bg-emerald-50 px-2 py-1 rounded-lg">
+                +12% <ArrowUpRight className="w-3 h-3 ml-1" />
+              </span>
             </div>
-            <span className="text-xs font-black text-emerald-500 flex items-center">
-              +12% <ArrowUpRight className="w-3 h-3 ml-1" />
-            </span>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Active Leads</p>
+            <h3 className="text-3xl font-black text-slate-900 mt-1 tracking-tighter">24</h3>
           </div>
-          <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Active Leads</p>
-          <h3 className="text-2xl font-black text-slate-900 mt-1">24</h3>
+          <div className="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
+            <Target className="w-24 h-24 rotate-12" />
+          </div>
         </div>
 
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
-              <DollarSign className="w-6 h-6" />
+        <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/40 relative overflow-hidden group">
+          <div className="relative z-10">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-3 bg-blue-50 text-blue-600 rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
+                <DollarSign className="w-6 h-6" />
+              </div>
+              <span className="text-[10px] font-black text-emerald-500 flex items-center bg-emerald-50 px-2 py-1 rounded-lg">
+                +₹4k <ArrowUpRight className="w-3 h-3 ml-1" />
+              </span>
             </div>
-            <span className="text-xs font-black text-emerald-500 flex items-center">
-              +5.4% <ArrowUpRight className="w-3 h-3 ml-1" />
-            </span>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Commission</p>
+            <h3 className="text-3xl font-black text-slate-900 mt-1 tracking-tighter">₹48,250</h3>
           </div>
-          <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Total Commission</p>
-          <h3 className="text-2xl font-black text-slate-900 mt-1">₹48,250</h3>
+          <div className="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
+            <DollarSign className="w-24 h-24 rotate-12" />
+          </div>
         </div>
 
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
-              <FileText className="w-6 h-6" />
+        <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/40 relative overflow-hidden group">
+          <div className="relative z-10">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-3 bg-orange-50 text-orange-600 rounded-2xl group-hover:bg-orange-600 group-hover:text-white transition-all duration-500">
+                <Shield className="w-6 h-6" />
+              </div>
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Target: 20</span>
             </div>
-            <span className="text-xs font-black text-emerald-500 uppercase tracking-widest">Target: 20</span>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Policies Closed</p>
+            <h3 className="text-3xl font-black text-slate-900 mt-1 tracking-tighter">14</h3>
           </div>
-          <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Policies Closed</p>
-          <h3 className="text-2xl font-black text-slate-900 mt-1">14</h3>
+          <div className="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
+            <Shield className="w-24 h-24 rotate-12" />
+          </div>
         </div>
 
-        <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/40">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
-              <TrendingUp className="w-6 h-6" />
+        <div className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/40 relative overflow-hidden group">
+          <div className="relative z-10">
+            <div className="flex justify-between items-start mb-4">
+              <div className="p-3 bg-purple-50 text-purple-600 rounded-2xl group-hover:bg-purple-600 group-hover:text-white transition-all duration-500">
+                <TrendingUp className="w-6 h-6" />
+              </div>
+              <span className="text-[10px] font-black text-emerald-500 bg-emerald-50 px-2 py-1 rounded-lg">Avg 82%</span>
             </div>
-            <span className="text-xs font-black text-emerald-500">Avg 82%</span>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Conversion Rate</p>
+            <h3 className="text-3xl font-black text-slate-900 mt-1 tracking-tighter">76%</h3>
           </div>
-          <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Conversion Rate</p>
-          <h3 className="text-2xl font-black text-slate-900 mt-1">76%</h3>
+          <div className="absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
+            <TrendingUp className="w-24 h-24 rotate-12" />
+          </div>
         </div>
       </div>
 
@@ -108,25 +134,31 @@ const AgentDashboard = () => {
         <div className="lg:col-span-2 bg-white p-8 rounded-[3rem] border border-slate-200 shadow-xl shadow-slate-200/50">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">Sales vs Leads</h3>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Weekly Performance Overview</p>
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">Weekly Performance</h3>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Sales vs Leads Overview</p>
             </div>
-            <select className="bg-slate-50 border-none rounded-xl px-4 py-2 text-xs font-bold text-slate-600 outline-none focus:ring-2 focus:ring-emerald-600/20">
-              <option>Last 7 Days</option>
-              <option>Last 30 Days</option>
-            </select>
+            <div className="flex space-x-2">
+              <div className="flex items-center space-x-2 px-3 py-1 bg-emerald-50 rounded-lg">
+                <div className="w-2 h-2 bg-emerald-500 rounded-full" />
+                <span className="text-[9px] font-black text-emerald-700 uppercase tracking-widest">Sales</span>
+              </div>
+              <div className="flex items-center space-x-2 px-3 py-1 bg-slate-50 rounded-lg">
+                <div className="w-2 h-2 bg-slate-400 rounded-full" />
+                <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Leads</span>
+              </div>
+            </div>
           </div>
           <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={performanceData}>
                 <defs>
                   <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.1}/>
+                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.2}/>
                     <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
                   </linearGradient>
                   <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.1}/>
-                    <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#94A3B8" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="#94A3B8" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
@@ -134,95 +166,107 @@ const AgentDashboard = () => {
                   dataKey="name" 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fill: '#94A3B8', fontSize: 12, fontWeight: 700 }}
+                  tick={{ fill: '#94A3B8', fontSize: 10, fontWeight: 900 }}
                 />
                 <YAxis hide />
                 <Tooltip 
-                  contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
+                  contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.1)', padding: '16px' }}
+                  itemStyle={{ fontWeight: 900, fontSize: '12px', textTransform: 'uppercase' }}
                 />
-                <Area type="monotone" dataKey="sales" stroke="#10B981" strokeWidth={3} fillOpacity={1} fill="url(#colorSales)" />
-                <Area type="monotone" dataKey="leads" stroke="#059669" strokeWidth={3} fillOpacity={1} fill="url(#colorLeads)" />
+                <Area type="monotone" dataKey="sales" stroke="#10B981" strokeWidth={4} fillOpacity={1} fill="url(#colorSales)" />
+                <Area type="monotone" dataKey="leads" stroke="#94A3B8" strokeWidth={2} fillOpacity={1} fill="url(#colorLeads)" strokeDasharray="5 5" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Recent Leads */}
+        {/* Hot Leads Summary */}
         <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-200/50 flex flex-col">
-          <div className="p-8 border-b border-slate-100 flex justify-between items-center">
-            <h3 className="font-black text-slate-900 uppercase tracking-widest text-xs">Hot Leads</h3>
-            <button className="text-emerald-600 font-black text-xs uppercase tracking-tighter hover:underline">View All</button>
+          <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/30">
+            <div>
+              <h3 className="font-black text-slate-900 uppercase tracking-widest text-xs">Hot Leads</h3>
+              <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tighter mt-0.5">Priority Follow-ups</p>
+            </div>
+            <Link to="/agent/leads" className="p-2 hover:bg-white rounded-xl transition-all shadow-sm">
+              <ChevronRight className="w-5 h-5 text-emerald-600" />
+            </Link>
           </div>
-          <div className="flex-grow divide-y divide-slate-100">
+          <div className="flex-grow divide-y divide-slate-50">
             {recentLeads.map((lead) => (
-              <div key={lead.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-all group cursor-pointer">
+              <div key={lead.id} className="p-6 flex items-center justify-between hover:bg-slate-50/50 transition-all group cursor-pointer">
                 <div className="flex items-center space-x-4">
                   <div className="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center border border-slate-200 group-hover:bg-white group-hover:border-emerald-200 transition-all">
                     <UserCheck className="w-5 h-5 text-slate-400 group-hover:text-emerald-600" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">{lead.name}</h4>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{lead.type}</p>
+                    <h4 className="font-bold text-slate-900 text-sm group-hover:text-emerald-600 transition-colors">{lead.name}</h4>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{lead.type}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-md ${lead.status === 'Hot Lead' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-500'}`}>
+                  <span className={`text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${lead.status === 'Hot Lead' ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-slate-100 text-slate-500'}`}>
                     {lead.status}
                   </span>
-                  <p className="text-[10px] font-bold text-slate-300 mt-1">{lead.date}</p>
+                  <p className="text-[9px] font-bold text-slate-300 mt-1 flex items-center justify-end">
+                    <Clock className="w-3 h-3 mr-1" />
+                    {lead.date}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
           <div className="p-6">
-            <button className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-emerald-900/10 flex items-center justify-center space-x-2">
-              <span>Add New Lead</span>
+            <Link to="/agent/leads" className="w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-emerald-900/10 flex items-center justify-center space-x-2">
+              <span>View Sales Pipeline</span>
               <ArrowUpRight className="w-4 h-4 text-emerald-400" />
-            </button>
+            </Link>
           </div>
         </div>
       </div>
 
-      {/* Quick Actions */}
+      {/* Quick Access & Tools */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-6 bg-emerald-600 rounded-3xl text-white flex items-center justify-between group cursor-pointer hover:bg-emerald-700 transition-all">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-white" />
+        <Link to="/agent/quotes" className="p-8 bg-emerald-600 rounded-[2.5rem] text-white flex flex-col justify-between group hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-200 overflow-hidden relative">
+          <div className="relative z-10">
+            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-6">
+              <Zap className="w-6 h-6 text-white fill-current" />
             </div>
-            <div>
-              <h4 className="font-black tracking-tight">Schedule Meeting</h4>
-              <p className="text-xs text-emerald-100">Set follow-up reminders</p>
-            </div>
+            <h4 className="font-black text-lg tracking-tight">Quote Tool</h4>
+            <p className="text-xs text-emerald-100 mt-1">Generate comparisons instantly</p>
           </div>
-          <ChevronRight className="w-5 h-5 text-white/50 group-hover:translate-x-1 transition-transform" />
-        </div>
+          <div className="mt-8 flex items-center text-[10px] font-black uppercase tracking-widest group-hover:translate-x-2 transition-transform relative z-10">
+            Open Tool <ArrowUpRight className="w-4 h-4 ml-2" />
+          </div>
+          <Zap className="absolute -right-4 -bottom-4 w-32 h-32 text-white/10 -rotate-12 group-hover:rotate-0 transition-transform duration-500" />
+        </Link>
 
-        <div className="p-6 bg-slate-900 rounded-3xl text-white flex items-center justify-between group cursor-pointer hover:bg-slate-800 transition-all">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
-              <Phone className="w-6 h-6 text-emerald-400" />
+        <Link to="/agent/tasks" className="p-8 bg-slate-900 rounded-[2.5rem] text-white flex flex-col justify-between group hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20 overflow-hidden relative">
+          <div className="relative z-10">
+            <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-6 border border-white/5">
+              <Calendar className="w-6 h-6 text-emerald-400" />
             </div>
-            <div>
-              <h4 className="font-black tracking-tight">Call Center</h4>
-              <p className="text-xs text-slate-400">Launch softphone dialer</p>
-            </div>
+            <h4 className="font-black text-lg tracking-tight">Calendar</h4>
+            <p className="text-xs text-slate-400 mt-1">Manage tasks & meetings</p>
           </div>
-          <ChevronRight className="w-5 h-5 text-white/50 group-hover:translate-x-1 transition-transform" />
-        </div>
+          <div className="mt-8 flex items-center text-[10px] font-black uppercase tracking-widest group-hover:translate-x-2 transition-transform relative z-10">
+            View Schedule <ArrowUpRight className="w-4 h-4 ml-2" />
+          </div>
+          <Calendar className="absolute -right-4 -bottom-4 w-32 h-32 text-white/5 -rotate-12 group-hover:rotate-0 transition-transform duration-500" />
+        </Link>
 
-        <div className="p-6 bg-white border border-slate-200 rounded-3xl text-slate-900 flex items-center justify-between group cursor-pointer hover:border-emerald-600 transition-all">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center border border-slate-100">
-              <Briefcase className="w-6 h-6 text-slate-400" />
+        <Link to="/agent/activity" className="p-8 bg-white border border-slate-200 rounded-[2.5rem] text-slate-900 flex flex-col justify-between group hover:border-emerald-600 transition-all shadow-xl shadow-slate-200/50 overflow-hidden relative">
+          <div className="relative z-10">
+            <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center mb-6 border border-slate-100 group-hover:bg-emerald-50 transition-colors">
+              <Clock className="w-6 h-6 text-slate-400 group-hover:text-emerald-600" />
             </div>
-            <div>
-              <h4 className="font-black tracking-tight">Lead Resources</h4>
-              <p className="text-xs text-slate-500">Sales decks & materials</p>
-            </div>
+            <h4 className="font-black text-lg tracking-tight">Activity Log</h4>
+            <p className="text-xs text-slate-500 mt-1">Review interaction history</p>
           </div>
-          <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-emerald-600 transition-transform" />
-        </div>
+          <div className="mt-8 flex items-center text-[10px] font-black uppercase tracking-widest text-emerald-600 group-hover:translate-x-2 transition-transform relative z-10">
+            Browse History <ArrowUpRight className="w-4 h-4 ml-2" />
+          </div>
+          <Clock className="absolute -right-4 -bottom-4 w-32 h-32 text-slate-50 -rotate-12 group-hover:rotate-0 transition-transform duration-500" />
+        </Link>
       </div>
     </div>
   );

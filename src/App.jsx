@@ -45,6 +45,10 @@ import PolicyServicing from './pages/dashboard/csr/PolicyServicing';
 
 // Agent Pages
 import AgentDashboard from './pages/dashboard/agent/Dashboard';
+import AgentLeads from './pages/dashboard/agent/Leads';
+import QuoteTool from './pages/dashboard/agent/QuoteTool';
+import TasksCalendar from './pages/dashboard/agent/TasksCalendar';
+import ActivityLog from './pages/dashboard/agent/ActivityLog';
 
 // Customer Pages
 import CustomerDashboard from './pages/dashboard/customer/Dashboard';
@@ -187,7 +191,6 @@ function App() {
             <Route path="profile" element={<CustomerProfile />} />
           </Route>
 
-          {/* Agent Dashboard Routes */}
           <Route path="/agent" element={
             <RoleProtectedRoute allowedRoles={['agent']}>
               <DashboardLayout />
@@ -195,7 +198,12 @@ function App() {
           }>
             <Route index element={<AgentDashboard />} />
             <Route path="dashboard" element={<AgentDashboard />} />
+            <Route path="leads" element={<AgentLeads />} />
+            <Route path="quotes" element={<QuoteTool />} />
+            <Route path="tasks" element={<TasksCalendar />} />
+            <Route path="activity" element={<ActivityLog />} />
             <Route path="customers" element={<Customers />} />
+            <Route path="add-policy" element={<AddPolicyForm />} />
             <Route path="renewals" element={<Renewals />} />
             <Route path="commissions" element={<CommissionFinance />} />
             <Route path="communication" element={<Communication />} />

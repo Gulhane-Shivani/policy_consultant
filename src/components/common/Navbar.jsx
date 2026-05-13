@@ -15,13 +15,18 @@ const Navbar = () => {
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    if (storedUser && storedUser !== 'undefined') {
+    const token = localStorage.getItem('access_token');
+    
+    if (storedUser && storedUser !== 'undefined' && token) {
       try {
         setUser(JSON.parse(storedUser));
       } catch (error) {
         console.error('Error parsing user from localStorage:', error);
         localStorage.removeItem('user');
+        localStorage.removeItem('access_token');
       }
+    } else {
+      setUser(null);
     }
   }, [location]);
 

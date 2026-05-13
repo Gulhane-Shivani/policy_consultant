@@ -47,7 +47,7 @@ const AddPolicyForm = () => {
     start_date: '', end_date: '', policy_period: ''
   });
 
-  // Pre-fill form in edit mode
+  // Pre-fill form in edit mode or from navigation state
   useEffect(() => {
     if (isEditMode && existingPolicy) {
       const catFromType = existingPolicy.type?.replace(' Insurance', '') || '';
@@ -68,11 +68,22 @@ const AddPolicyForm = () => {
           ? String(new Date(existingPolicy.end_date).getFullYear() - new Date(existingPolicy.start_date).getFullYear())
           : ''
       });
+    } else if (location.state?.client) {
+      const c = location.state.client;
+      setForm(prev => ({
+        ...prev,
+        client_name: c.full_name || '',
+        email: c.email || '',
+        contact: c.mobile || '',
+        address: c.address || ''
+      }));
     }
-  }, [isEditMode]);
+  }, [isEditMode, existingPolicy, location.state]);
 
   const backPath = user?.role === 'super_admin' ? '/super-admin/policies'
-    : user?.role === 'admin' ? '/admin/policies' : '/dashboard/policies';
+    : user?.role === 'admin' ? '/admin/policies' 
+    : user?.role === 'agent' ? '/agent/customers' 
+    : '/dashboard/policies';
 
   const selectedPlan = POLICY_CATALOG.find(p => p.id === form.plan_id) || null;
 

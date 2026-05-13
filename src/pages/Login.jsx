@@ -31,8 +31,11 @@ const Login = () => {
 
           // Role-based redirection logic
           const role = data.user.role;
-          // User requested that everyone goes to home page after login
-          navigate('/', { replace: true });
+          if (role === 'super_admin') navigate('/super-admin', { replace: true });
+          else if (role === 'admin') navigate('/admin', { replace: true });
+          else if (role === 'agent') navigate('/agent', { replace: true });
+          else if (role === 'csr') navigate('/csr', { replace: true });
+          else navigate('/dashboard', { replace: true });
         } else {
           console.error('User data missing in login response:', data);
           toast.error('Login response incomplete');

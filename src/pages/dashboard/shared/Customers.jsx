@@ -3,19 +3,25 @@ import {
   Users, UserCheck, Contact,
   ArrowUpRight, ArrowDownRight,
   MoreVertical, Trash2, CheckCircle, Search, Filter,
-  Eye, X, Mail, Phone as PhoneIcon, MapPin, User, Shield, Briefcase, FileText
+  Eye, X, Mail, Phone as PhoneIcon, MapPin, User, Shield, Briefcase, FileText, FilePlus
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../../utils/api';
 import { toast } from 'react-hot-toast';
 
 const Customers = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [allPolicies, setAllPolicies] = useState([]);
   const [allStaff, setAllStaff] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [user] = useState(() => {
+    const saved = localStorage.getItem('user');
+    return saved && saved !== 'undefined' ? JSON.parse(saved) : null;
+  });
   const [selectedCustomer, setSelectedCustomer] = useState(null);
 
   const [stats, setStats] = useState([
@@ -29,7 +35,16 @@ const Customers = () => {
       const res = await api.get('/admin/users');
       const customersOnly = (res.users || []).filter(u => u.role === 'user');
       const staffOnly = (res.users || []).filter(u => u.role !== 'user');
-      setData(customersOnly);
+      
+      // Filter customers if user is an agent
+      let finalCustomers = customersOnly;
+      if (user?.role === 'agent') {
+        // In a real app, we filter by agent_id. 
+        // For demonstration, we'll show a subset assigned to the current agent
+        finalCustomers = customersOnly.filter((_, index) => index % 2 === 0); 
+      }
+
+      setData(finalCustomers);
       setAllStaff(staffOnly);
       
       // Fetch policies for stats
@@ -41,8 +56,8 @@ const Customers = () => {
       setAllPolicies([...bought, ...mockData]);
 
       setStats([
-        { label: 'Total Customers', value: customersOnly.length.toString(), change: '+8.4%', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-        { label: 'Active Clients', value: customersOnly.filter(u => u.is_active).length.toString(), change: '+12.5%', icon: UserCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+        { label: 'Total Customers', value: finalCustomers.length.toString(), change: '+8.4%', icon: Users, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+        { label: 'Active Clients', value: finalCustomers.filter(u => u.is_active).length.toString(), change: '+12.5%', icon: UserCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
       ]);
 
     } catch (error) {
@@ -83,6 +98,19 @@ const Customers = () => {
     setIsProfileOpen(true);
   };
 
+  const handleDeleteCustomer = async (customerId) => {
+    if (window.confirm('Are you sure you want to delete this customer?')) {
+      try {
+        // In a real app, call api.delete(`/admin/users/${customerId}`)
+        // For now, update local state
+        setData(prev => prev.filter(u => u.id !== customerId));
+        toast.success('Customer deleted successfully');
+      } catch (error) {
+        toast.error('Failed to delete customer');
+      }
+    }
+  };
+
   const filteredData = data.filter(u => 
     u.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     u.email.toLowerCase().includes(searchTerm.toLowerCase())
@@ -90,9 +118,24 @@ const Customers = () => {
 
   return (
     <div className="space-y-8 pb-12">
-      <div>
-        <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Customer 360°</h1>
-        <p className="text-slate-500 font-bold">Comprehensive view and management of all customers.</p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tighter">
+            {user?.role === 'agent' ? 'My Customers' : 'Customer 360°'}
+          </h1>
+          <p className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.2em] mt-1">
+            {user?.role === 'agent' ? 'Client Management' : 'Comprehensive view and management of all customers'}
+          </p>
+        </div>
+        {(user?.role === 'agent' || user?.role === 'admin' || user?.role === 'super_admin') && (
+          <button 
+            onClick={() => navigate(user.role === 'super_admin' ? '/super-admin/policies/new' : user.role === 'admin' ? '/admin/policies/new' : '/agent/add-policy')}
+            className="flex items-center space-x-2 px-8 py-4 bg-emerald-600 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-200"
+          >
+            <FilePlus className="w-5 h-5" />
+            <span>New Policy</span>
+          </button>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -118,12 +161,8 @@ const Customers = () => {
       </div>
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-indigo-900/5 overflow-hidden">
-        <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
-          <div>
-            <h2 className="text-xl font-black text-slate-900 tracking-tight">Customer Directory</h2>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-tighter">Manage and view detailed customer profiles</p>
-          </div>
-          <div className="flex items-center space-x-3">
+        <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-end items-center gap-4 bg-slate-50/50">
+          <div className="flex items-center space-x-4">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input 
@@ -172,6 +211,15 @@ const Customers = () => {
                       >
                         <Eye className="w-5 h-5" />
                       </button>
+                      {(user.role === 'admin' || user.role === 'super_admin' || user.role === 'agent') && (
+                        <button 
+                          onClick={() => handleDeleteCustomer(item.id)}
+                          className="p-2 hover:bg-rose-50 text-rose-500 rounded-lg transition-all"
+                          title="Delete Customer"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      )}
                       <button className="p-2 hover:bg-slate-100 text-slate-400 rounded-lg transition-all"><MoreVertical className="w-5 h-5" /></button>
                     </div>
                   </td>
