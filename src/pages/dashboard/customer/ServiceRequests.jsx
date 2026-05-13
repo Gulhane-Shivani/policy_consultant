@@ -159,47 +159,75 @@ const ServiceRequests = () => {
 
   const handleDownloadAck = (req) => {
     toast.promise(
-      new Promise((resolve) => {
+      new Promise((resolve, reject) => {
         setTimeout(() => {
-          // Creating a formatted text blob that browsers will open as a document
-          const header = "====================================================\n";
-          const title = "       POLICY CONSULTANT - ACKNOWLEDGMENT           \n";
-          const subTitle = "          SERVICE REQUEST CONFIRMATION              \n";
-          const footer = "====================================================\n";
-          const body = `
-Request ID:    ${req.id}
-Request Type:  ${req.type}
-Policy:        ${req.policy}
-Date:          ${req.date}
-Status:        ${req.status}
-Priority:      ${req.priority}
+          try {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
 
-Description:
-This document serves as formal confirmation of your 
-service request. Our team is currently processing 
-your requirement. You can track real-time progress 
-on your dashboard.
+            // Set colors and fonts
+            doc.setFillColor(16, 185, 129); // Emerald-600
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(22);
+            doc.setFont('helvetica', 'bold');
+            doc.text('POLICY CONSULTANT', 20, 25);
+            
+            doc.setFontSize(10);
+            doc.text('SERVICE REQUEST ACKNOWLEDGMENT', 20, 32);
 
-Thank you for choosing Policy Consultant.
-Generated on: ${new Date().toLocaleString()}
-`;
-          const content = header + title + subTitle + header + body + footer;
-          // Using application/octet-stream for forced download as .pdf
-          const blob = new Blob([content], { type: 'application/octet-stream' });
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `Acknowledgment_${req.id}.pdf`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          resolve();
+            // Body content
+            doc.setTextColor(30, 41, 59); // Slate-800
+            doc.setFontSize(12);
+            doc.text(`Generated on: ${new Date().toLocaleString()}`, 140, 55);
+
+            doc.setDrawColor(241, 245, 249);
+            doc.line(20, 60, 190, 60);
+
+            let y = 75;
+            const details = [
+              ['Request ID', req.id],
+              ['Request Type', req.type],
+              ['Linked Policy', req.policy],
+              ['Submission Date', req.date],
+              ['Current Status', req.status],
+              ['Priority Level', req.priority]
+            ];
+
+            details.forEach(([label, value]) => {
+              doc.setFont('helvetica', 'bold');
+              doc.text(`${label}:`, 20, y);
+              doc.setFont('helvetica', 'normal');
+              doc.text(String(value), 70, y);
+              y += 12;
+            });
+
+            doc.line(20, y + 5, 190, y + 5);
+            
+            y += 20;
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'italic');
+            doc.text('Note: This is a digitally generated acknowledgment for your records.', 20, y);
+            doc.text('Our team will process your request as per the defined SLAs.', 20, y + 6);
+
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(16, 185, 129);
+            doc.text('Thank you for choosing Policy Consultant.', 20, y + 20);
+
+            // Save the PDF
+            doc.save(`Acknowledgment_${req.id}.pdf`);
+            resolve();
+          } catch (err) {
+            console.error('PDF Generation Error:', err);
+            reject(err);
+          }
         }, 1500);
       }),
       {
-        loading: `Generating acknowledgment for ${req.id}...`,
-        success: 'Acknowledgment PDF downloaded successfully!',
-        error: 'Failed to generate document.',
+        loading: `Generating high-fidelity PDF for ${req.id}...`,
+        success: 'PDF Acknowledgment downloaded successfully!',
+        error: 'Failed to generate PDF. Check browser console.',
       }
     );
     setOpenActionId(null);

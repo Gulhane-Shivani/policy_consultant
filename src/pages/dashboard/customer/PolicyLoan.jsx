@@ -34,7 +34,7 @@ const PolicyLoan = () => {
     }
   ];
 
-  const loanHistory = [
+  const [history, setHistory] = useState([
     { 
       id: 'LN-99201', 
       policy: 'Term Life Cover (TL-4421)', 
@@ -51,7 +51,7 @@ const PolicyLoan = () => {
       status: 'Closed', 
       nextEMI: 'Fully Repaid' 
     }
-  ];
+  ]);
 
   const handleApply = (policy) => {
     setSelectedPolicy(policy);
@@ -60,11 +60,26 @@ const PolicyLoan = () => {
 
   const handleSubmitLoan = (e) => {
     e.preventDefault();
+    const newId = 'LN-' + Math.floor(10000 + Math.random() * 90000);
+    
     toast.promise(
-      new Promise((resolve) => setTimeout(resolve, 2000)),
+      new Promise((resolve) => {
+        setTimeout(() => {
+          const newLoan = {
+            id: newId,
+            policy: `${selectedPolicy.name} (${selectedPolicy.id})`,
+            amount: `₹${loanAmount.toLocaleString()}`,
+            date: new Date().toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' }),
+            status: 'Processing',
+            nextEMI: 'Under Verification'
+          };
+          setHistory(prev => [newLoan, ...prev]);
+          resolve();
+        }, 2000);
+      }),
       {
         loading: 'Processing loan application...',
-        success: 'Loan application submitted successfully! Reference: LN-' + Math.floor(10000 + Math.random() * 90000),
+        success: 'Loan application submitted successfully! Reference: ' + newId,
         error: 'Failed to process. Please try again.',
       }
     );
@@ -320,7 +335,7 @@ const PolicyLoan = () => {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
-                    {loanHistory.map((loan) => (
+                    {history.map((loan) => (
                       <tr key={loan.id} className="hover:bg-slate-50/50 transition-colors group">
                         <td className="px-8 py-6">
                           <span className="text-sm font-black text-slate-900 tracking-tight">{loan.id}</span>
@@ -335,7 +350,11 @@ const PolicyLoan = () => {
                           <span className="text-xs font-black text-slate-400 uppercase tracking-tighter">{loan.date}</span>
                         </td>
                         <td className="px-8 py-6">
-                          <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${loan.status === 'Active' ? 'text-blue-600 bg-blue-50' : 'text-emerald-600 bg-emerald-50'}`}>
+                          <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${
+                            loan.status === 'Active' ? 'text-blue-600 bg-blue-50' : 
+                            loan.status === 'Processing' ? 'text-orange-600 bg-orange-50' : 
+                            'text-emerald-600 bg-emerald-50'
+                          }`}>
                             {loan.status}
                           </span>
                         </td>

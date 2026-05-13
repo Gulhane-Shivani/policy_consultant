@@ -2,14 +2,18 @@ import React, { useState } from 'react';
 import { 
   Folder, FileText, Download, Eye, 
   Search, Filter, Shield, Clock,
-  MoreVertical, Share2, Trash2, Plus,
-  FileCheck, FileClock, ShieldCheck
+  MoreVertical, Trash2, Plus,
+  FileCheck, FileClock, ShieldCheck, X
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
 const DocumentVault = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('All');
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [viewingDoc, setViewingDoc] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const documents = [
     { 
@@ -59,15 +63,38 @@ const DocumentVault = () => {
     },
   ];
 
-  const handleDownload = (docName) => {
-    toast.success(`Downloading ${docName}...`);
+  const handleDownload = (doc) => {
+    toast.promise(
+      new Promise((resolve) => setTimeout(resolve, 1500)),
+      {
+        loading: `Preparing ${doc.name}...`,
+        success: `${doc.name} downloaded successfully!`,
+        error: 'Failed to download file.',
+      }
+    );
   };
 
-  const filteredDocs = documents.filter(doc => 
-    doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    doc.policy.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    doc.type.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleUpload = () => {
+    setIsUploading(true);
+    toast.promise(
+      new Promise((resolve) => setTimeout(resolve, 2000)),
+      {
+        loading: 'Encrypting and uploading document...',
+        success: () => {
+          setIsUploading(false);
+          return 'Document uploaded to secure vault!';
+        },
+        error: 'Upload failed.',
+      }
+    );
+  };
+
+  const filteredDocs = documents.filter(doc => {
+    const matchesSearch = doc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         doc.policy.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = categoryFilter === 'All' || doc.category === categoryFilter;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="space-y-8 pb-12">
@@ -76,10 +103,7 @@ const DocumentVault = () => {
           <h2 className="text-3xl font-black text-slate-900 tracking-tighter">Document Vault</h2>
           <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">All your policy documents in one secure place</p>
         </div>
-        <button className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-900/20 hover:bg-emerald-700 transition-all">
-          <Plus className="w-4 h-4" />
-          <span>Upload Document</span>
-        </button>
+        <div />
       </div>
 
       {/* Stats Cards */}
@@ -115,14 +139,38 @@ const DocumentVault = () => {
             />
           </div>
           <div className="flex items-center space-x-3">
-            <button className="flex items-center space-x-2 px-5 py-3 bg-slate-50 text-slate-600 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-slate-100 transition-all">
-              <Filter className="w-4 h-4" />
-              <span>Filter</span>
-            </button>
-            <button className="flex items-center space-x-2 px-5 py-3 bg-slate-900 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20">
-              <Download className="w-4 h-4" />
-              <span>Download All</span>
-            </button>
+            <div className="relative">
+              <button 
+                onClick={() => setShowFilterDropdown(!showFilterDropdown)}
+                className={`flex items-center space-x-2 px-5 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all ${categoryFilter !== 'All' ? 'bg-emerald-600 text-white shadow-lg' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
+              >
+                <Filter className="w-4 h-4" />
+                <span>{categoryFilter === 'All' ? 'Filter' : categoryFilter}</span>
+              </button>
+
+              <AnimatePresence>
+                {showFilterDropdown && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 overflow-hidden"
+                  >
+                    <div className="p-2 space-y-1">
+                      {['All', 'Policy', 'Receipt', 'Identity', 'Claim', 'Tax'].map(cat => (
+                        <button 
+                          key={cat}
+                          onClick={() => { setCategoryFilter(cat); setShowFilterDropdown(false); }}
+                          className={`w-full text-left px-4 py-2.5 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${categoryFilter === cat ? 'bg-emerald-50 text-emerald-600' : 'text-slate-500 hover:bg-slate-50'}`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
 
@@ -146,7 +194,10 @@ const DocumentVault = () => {
                       <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-white group-hover:text-emerald-600 group-hover:shadow-sm transition-all">
                         <FileText className="w-5 h-5" />
                       </div>
-                      <div className="flex flex-col">
+                      <div 
+                        onClick={() => setViewingDoc(doc)}
+                        className="flex flex-col cursor-pointer hover:opacity-70 transition-opacity"
+                      >
                         <span className="text-sm font-black text-slate-900 group-hover:text-emerald-600 transition-colors">{doc.name}</span>
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{doc.type}</span>
                       </div>
@@ -169,21 +220,12 @@ const DocumentVault = () => {
                   <td className="px-8 py-6 text-right">
                     <div className="flex items-center justify-end space-x-2">
                       <button 
-                        onClick={() => handleDownload(doc.name)}
+                        onClick={() => handleDownload(doc)}
                         className="p-2.5 bg-slate-50 text-slate-400 rounded-xl hover:text-emerald-600 hover:bg-emerald-50 transition-all"
                         title="Download"
                       >
                         <Download className="w-4 h-4" />
                       </button>
-                      <button className="p-2.5 bg-slate-50 text-slate-400 rounded-xl hover:text-blue-600 hover:bg-blue-50 transition-all" title="View">
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <div className="relative group/menu">
-                        <button className="p-2.5 bg-slate-50 text-slate-400 rounded-xl hover:text-slate-900 hover:bg-white transition-all">
-                          <MoreVertical className="w-4 h-4" />
-                        </button>
-                        {/* Simple Tooltip-like menu on hover if needed, but keeping it simple for now */}
-                      </div>
                     </div>
                   </td>
                 </tr>
@@ -223,6 +265,70 @@ const DocumentVault = () => {
           </div>
         </div>
       </div>
+      
+      {/* Document View Modal */}
+      <AnimatePresence>
+        {viewingDoc && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setViewingDoc(null)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-sm bg-white rounded-[2rem] shadow-2xl overflow-hidden"
+            >
+              <div className="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-900 text-white">
+                <div className="flex items-center space-x-4">
+                  <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-black tracking-tight">{viewingDoc.name}</h3>
+                    <p className="text-[9px] font-bold uppercase opacity-60 tracking-widest">{viewingDoc.category} • {viewingDoc.size}</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setViewingDoc(null)}
+                  className="p-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="p-6 space-y-5 bg-slate-50/50">
+                <div className="aspect-[3/4] bg-white rounded-2xl border border-slate-200 shadow-inner overflow-hidden flex flex-col items-center justify-center relative group">
+                  <div className="absolute inset-0 bg-slate-900/5 flex items-center justify-center">
+                    <ShieldCheck className="w-20 h-20 text-slate-200 opacity-50" />
+                  </div>
+                  <div className="relative z-10 text-center space-y-3 p-8">
+                    <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+                      <FileCheck className="w-8 h-8" />
+                    </div>
+                    <p className="text-xs font-black text-slate-900 uppercase tracking-widest">Digital Copy Verified</p>
+                    <p className="text-[10px] text-slate-400 font-bold max-w-[200px] mx-auto">This document is encrypted and protected by Policy Consultant Security Protocols.</p>
+                  </div>
+                </div>
+
+                <div className="flex pt-2">
+                  <button 
+                    onClick={() => { handleDownload(viewingDoc); setViewingDoc(null); }}
+                    className="w-full py-3.5 bg-slate-900 text-white rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all flex items-center justify-center space-x-2"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download Document</span>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
