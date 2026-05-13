@@ -53,6 +53,7 @@ import CustomerDashboard from './pages/dashboard/customer/Dashboard';
 import Policies from './pages/dashboard/shared/Policies';
 import Renewals from './pages/dashboard/shared/Renewals';
 import Payments from './pages/dashboard/shared/Payments';
+import CommissionFinance from './pages/dashboard/shared/CommissionFinance';
 import Notifications from './pages/dashboard/shared/Notifications';
 import Customers from './pages/dashboard/shared/Customers';
 import Communication from './pages/dashboard/shared/Communication';
@@ -151,6 +152,7 @@ function App() {
             <Route path="policies/:id" element={<PolicyDetailView />} />
             <Route path="renewals" element={<Renewals />} />
             <Route path="payments" element={<Payments />} />
+            <Route path="commissions" element={<CommissionFinance />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="performance" element={<Performance />} />
             <Route path="customers" element={<Customers />} />
@@ -176,6 +178,7 @@ function App() {
             <Route path="plans/:id" element={<PlanDetailView />} />
             <Route path="renewals" element={<Renewals />} />
             <Route path="payments" element={<Payments />} />
+            <Route path="commissions" element={<CommissionFinance />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="reports" element={<Reports />} />
             <Route path="settings" element={<MasterSettings />} />
@@ -192,6 +195,7 @@ function App() {
             <Route path="dashboard" element={<AgentDashboard />} />
             <Route path="customers" element={<Customers />} />
             <Route path="renewals" element={<Renewals />} />
+            <Route path="commissions" element={<CommissionFinance />} />
             <Route path="communication" element={<Communication />} />
           </Route>
 

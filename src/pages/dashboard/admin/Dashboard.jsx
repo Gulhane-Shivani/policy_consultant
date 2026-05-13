@@ -1,37 +1,70 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
-  Users, MessageSquare, FileCheck, 
-  ArrowUpRight, ArrowDownRight,
-  MoreVertical, Trash2, CheckCircle, Search, Filter,
-  Clock, AlertCircle, DollarSign, Activity
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, 
+  Tooltip, ResponsiveContainer, AreaChart, Area,
+  PieChart, Pie, Cell, LineChart, Line
+} from 'recharts';
+import { 
+  Users, Shield, 
+  Settings, Database, Zap, 
+  RefreshCw, ChevronRight, Activity,
+  FileCheck, Clock, AlertCircle, DollarSign, ArrowUpRight
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const AdminDashboard = () => {
-  const [stats] = useState([
-    { label: 'Total Customer', value: '1,284', change: '+12.5%', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Active Policies', value: '842', change: '+8.2%', icon: FileCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Renewal Due', value: '45', change: '+2.1%', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
-    { label: 'Expired Policies', value: '12', change: '-5.4%', icon: AlertCircle, color: 'text-rose-600', bg: 'bg-rose-50' },
-    { label: 'Total Revenue', value: '$84,230', change: '+15.4%', icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Pending Requests', value: '18', change: '+1.2%', icon: Activity, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-  ]);
+  const revenueData = [
+    { name: 'Jan', revenue: 45000 },
+    { name: 'Feb', revenue: 52000 },
+    { name: 'Mar', revenue: 48000 },
+    { name: 'Apr', revenue: 61000 },
+    { name: 'May', revenue: 55000 },
+    { name: 'Jun', revenue: 67000 },
+  ];
 
-  const [recentMessages] = useState([
-    { id: 1, sender: 'Alex Johnson', type: 'Life Insurance', status: 'Pending', date: '2 mins ago' },
-    { id: 2, sender: 'Sarah Williams', type: 'Car Insurance', status: 'Resolved', date: '1 hour ago' },
-    { id: 3, sender: 'Michael Brown', type: 'Health Insurance', status: 'Pending', date: '3 hours ago' },
-    { id: 4, sender: 'Emma Davis', type: 'Business Insurance', status: 'Pending', date: '5 hours ago' },
-  ]);
+  const policyGrowthData = [
+    { name: 'Jan', policies: 120 },
+    { name: 'Feb', policies: 180 },
+    { name: 'Mar', policies: 250 },
+    { name: 'Apr', policies: 310 },
+    { name: 'May', policies: 380 },
+    { name: 'Jun', policies: 450 },
+  ];
+
+  const renewalSuccessData = [
+    { name: 'Success', value: 85, color: '#10B981' },
+    { name: 'Failed', value: 15, color: '#EF4444' },
+  ];
+
+  const stats = [
+    { label: 'Total Customer', value: '1,284', icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Active Policies', value: '842', icon: FileCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Renewal Due', value: '45', icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { label: 'Expired Policies', value: '12', icon: AlertCircle, color: 'text-rose-600', bg: 'bg-rose-50' },
+    { label: 'Total Revenue', value: '₹28.4L', icon: DollarSign, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Pending Requests', value: '18', icon: Activity, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+  ];
 
   return (
-    <div className="space-y-8 pb-12">
-      <div>
-        <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Operations Overview</h1>
-        <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Policy Consultant • Admin Dashboard</p>
+    <div className="space-y-10 pb-12">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div>
+          <h1 className="text-4xl font-black text-slate-900 tracking-tighter">Operations Overview</h1>
+          <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Policy Consultant • Admin Dashboard</p>
+        </div>
+        <div className="flex items-center space-x-3">
+          <button className="flex items-center space-x-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-slate-50 transition-all shadow-xl shadow-slate-200/50">
+            <Database className="w-4 h-4 text-slate-400" />
+            <span>Audit Logs</span>
+          </button>
+          <button className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20">
+            <Zap className="w-4 h-4 text-white" />
+            <span>Generate Report</span>
+          </button>
+        </div>
       </div>
 
-      {/* Stats Grid */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
         {stats.map((stat, idx) => (
           <motion.div 
@@ -45,96 +78,150 @@ const AdminDashboard = () => {
             <div>
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
               <h3 className="text-2xl font-black text-slate-900">{stat.value}</h3>
-              <div className={`flex items-center space-x-1 text-[10px] font-black ${stat.change.startsWith('+') ? 'text-emerald-500' : 'text-rose-500'} mt-1`}>
-                {stat.change.startsWith('+') ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-                <span>{stat.change}</span>
-              </div>
             </div>
           </motion.div>
         ))}
       </div>
 
-      {/* Main Content Table */}
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-slate-200/50 overflow-hidden">
-        <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
-          <div>
-            <h2 className="text-xl font-black text-slate-900 tracking-tight">Recent Inquiries</h2>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-tighter">Manage incoming customer requests</p>
-          </div>
-          <div className="flex items-center space-x-3">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input 
-                type="text" 
-                placeholder="Search..." 
-                className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-emerald-600/20 outline-none transition-all"
-              />
+      {/* Charts Row 1: Revenue & Policy Growth */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Monthly Revenue Graph */}
+        <div className="bg-white p-8 rounded-[3rem] border border-slate-200 shadow-2xl shadow-slate-200/50">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">Monthly Revenue</h3>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Financial Performance Overview</p>
             </div>
-            <button className="flex items-center space-x-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all">
-              <Filter className="w-4 h-4" />
-              <span>Filter</span>
-            </button>
+            <div className="flex items-center text-emerald-600 font-black text-sm bg-emerald-50 px-3 py-1 rounded-lg">
+              <ArrowUpRight className="w-4 h-4 mr-1" />
+              12.4%
+            </div>
+          </div>
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={revenueData}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10B981" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 12, fontWeight: 700 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 12, fontWeight: 700 }} />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }}
+                />
+                <Area type="monotone" dataKey="revenue" stroke="#10B981" strokeWidth={4} fillOpacity={1} fill="url(#colorRevenue)" />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-slate-50/50">
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Sender</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Insurance Type</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Received</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {recentMessages.map((msg) => (
-                <tr key={msg.id} className="hover:bg-slate-50/50 transition-colors group">
-                  <td className="px-8 py-6">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-600 font-black text-sm">
-                        {msg.sender.charAt(0)}
-                      </div>
-                      <p className="font-bold text-slate-900">{msg.sender}</p>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-tighter">
-                      {msg.type}
-                    </span>
-                  </td>
-                  <td className="px-8 py-6 text-sm font-bold text-slate-500">
-                    {msg.date}
-                  </td>
-                  <td className="px-8 py-6">
-                    <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-tighter ${msg.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
-                      {msg.status}
-                    </span>
-                  </td>
-                  <td className="px-8 py-6 text-right">
-                    <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-all">
-                      <button className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all" title="Resolve">
-                        <CheckCircle className="w-5 h-5" />
-                      </button>
-                      <button className="p-2 hover:bg-rose-50 text-rose-600 rounded-lg transition-all" title="Delete">
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                      <button className="p-2 hover:bg-slate-100 text-slate-400 rounded-lg transition-all">
-                        <MoreVertical className="w-5 h-5" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {/* Policy Growth Graph */}
+        <div className="bg-slate-900 p-8 rounded-[3rem] text-white shadow-2xl shadow-emerald-900/10">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h3 className="text-xl font-black tracking-tight">Policy Growth</h3>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">New Policies Acquisition</p>
+            </div>
+            <div className="w-10 h-10 bg-emerald-600/20 rounded-xl flex items-center justify-center">
+              <Activity className="w-5 h-5 text-emerald-400" />
+            </div>
+          </div>
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={policyGrowthData}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1E293B" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#475569', fontSize: 12, fontWeight: 700 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#475569', fontSize: 12, fontWeight: 700 }} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#0F172A', border: 'none', borderRadius: '12px' }}
+                />
+                <Line type="monotone" dataKey="policies" stroke="#10B981" strokeWidth={4} dot={{ fill: '#10B981', r: 6 }} activeDot={{ r: 8, strokeWidth: 0 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
+      {/* Row 2: Renewal Success Rate */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-1 bg-white p-8 rounded-[3rem] border border-slate-200 shadow-2xl shadow-slate-200/50">
+          <div className="mb-8">
+            <h3 className="text-xl font-black text-slate-900 tracking-tight">Renewal Success Rate</h3>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Retention Performance</p>
+          </div>
+          <div className="h-64 flex items-center justify-center relative">
+            <div className="absolute flex flex-col items-center">
+              <span className="text-4xl font-black text-slate-900">85%</span>
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Success</span>
+            </div>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={renewalSuccessData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={70}
+                  outerRadius={90}
+                  paddingAngle={8}
+                  dataKey="value"
+                >
+                  {renewalSuccessData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="flex justify-center space-x-6 mt-6">
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+              <span className="text-xs font-bold text-slate-500">Successful</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-3 h-3 bg-rose-500 rounded-full"></div>
+              <span className="text-xs font-bold text-slate-500">Failed</span>
+            </div>
+          </div>
         </div>
 
-        <div className="p-6 border-t border-slate-100 bg-slate-50/30 flex justify-center">
-          <button className="text-xs font-black text-emerald-600 uppercase tracking-widest hover:underline">
-            View All Inquiries
-          </button>
+        {/* Placeholder for additional content or shortcuts */}
+        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-emerald-600 p-8 rounded-[3rem] text-white relative overflow-hidden group flex flex-col justify-between shadow-2xl shadow-emerald-900/20">
+             <Activity className="absolute -right-4 -bottom-4 w-40 h-40 text-white/10 group-hover:scale-110 transition-transform duration-700" />
+             <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center">
+                <Shield className="w-7 h-7 text-white" />
+             </div>
+             <div>
+                <p className="text-sm font-bold text-emerald-100 uppercase tracking-widest mb-1">System Health</p>
+                <h3 className="text-4xl font-black">Stable</h3>
+                <div className="flex items-center mt-4 space-x-2">
+                   <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                   <span className="text-xs font-bold text-emerald-50">99.9% Uptime</span>
+                </div>
+             </div>
+          </div>
+          
+          <div className="bg-white p-8 rounded-[3rem] border border-slate-200 flex flex-col justify-between shadow-xl shadow-slate-200/50">
+             <div className="flex items-center justify-between">
+                <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center">
+                   <Users className="w-7 h-7 text-emerald-600" />
+                </div>
+                <div className="text-right">
+                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Staff</p>
+                   <p className="text-3xl font-black text-slate-900">42</p>
+                </div>
+             </div>
+             <div className="space-y-4">
+                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                   <div className="h-full bg-emerald-500 w-[85%] rounded-full"></div>
+                </div>
+                <p className="text-xs font-bold text-slate-500">Capacity utilization at 85%</p>
+             </div>
+          </div>
         </div>
       </div>
     </div>

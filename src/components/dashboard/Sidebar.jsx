@@ -53,6 +53,7 @@ const Sidebar = ({ role }) => {
               },
               { label: 'Renewals', icon: RefreshCw, path: '/super-admin/renewals' },
               { label: 'Payments', icon: CreditCard, path: '/super-admin/payments' },
+              { label: 'Commissions', icon: Landmark, path: '/super-admin/commissions' },
               { label: 'Reports', icon: PieChart, path: '/super-admin/reports' },
               { label: 'System Config', icon: Database, path: '/super-admin/config' },
             ]
@@ -66,6 +67,7 @@ const Sidebar = ({ role }) => {
               { label: 'Policy Management', icon: FileText, path: '/admin/policies' },
               { label: 'Renewals', icon: RefreshCw, path: '/admin/renewals' },
               { label: 'Payments', icon: CreditCard, path: '/admin/payments' },
+              { label: 'Commissions', icon: Landmark, path: '/admin/commissions' },
               { label: 'Customer 360°', icon: Users, path: '/admin/customers' },
               { label: 'Communications', icon: MessageSquare, path: '/admin/communication' },
               profileItem
