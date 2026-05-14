@@ -5,10 +5,11 @@ import {
   Bell, Users, UserCheck, Shield, MessageSquare,
   Settings, Database, BarChart3, HelpCircle, ChevronRight,
   UserCircle2, PieChart, LifeBuoy, LogOut, ChevronDown, ShieldCheck,
-  ShieldAlert, User, Landmark, CloudDownload, Wrench, Zap, ListTodo, Activity, Mail
+  ShieldAlert, User, Landmark, CloudDownload, Wrench, Zap, ListTodo, Activity, Mail,
+  X
 } from 'lucide-react';
 
-const Sidebar = ({ role }) => {
+const Sidebar = ({ role, isOpen, setIsOpen }) => {
   const [openMenus, setOpenMenus] = useState({});
   const location = useLocation();
   const userStr = localStorage.getItem('user');
@@ -130,19 +131,28 @@ const Sidebar = ({ role }) => {
   const navItems = getNavItems();
 
   return (
-    <div className="w-64 h-screen bg-white border-r border-slate-100 flex flex-col fixed left-0 top-0 overflow-y-auto scrollbar-hide no-scrollbar">
+    <div className={`w-64 h-screen bg-white border-r border-slate-100 flex flex-col fixed left-0 top-0 overflow-y-auto scrollbar-hide no-scrollbar z-50 transition-transform duration-300 transform ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
       <style>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
-      <Link to="/" className="p-8 flex items-center space-x-3">
-        <div className="bg-emerald-600 p-2 rounded-xl shadow-lg shadow-emerald-200">
-          <Shield className="w-6 h-6 text-white" />
-        </div>
-        <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-emerald-900 tracking-tight">
-          Policy Consultant
-        </span>
-      </Link>
+
+      <div className="p-8 flex items-center justify-between">
+        <Link to="/" className="flex items-center space-x-3">
+          <div className="bg-emerald-600 p-2 rounded-xl shadow-lg shadow-emerald-200">
+            <Shield className="w-6 h-6 text-white" />
+          </div>
+          <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-emerald-900 tracking-tight">
+            Policy Consultant
+          </span>
+        </Link>
+        <button 
+          onClick={() => setIsOpen(false)}
+          className="p-2 bg-slate-50 rounded-lg text-slate-400 hover:text-slate-900 lg:hidden"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
 
       <nav className="flex-grow px-4 space-y-2 mt-4">
         {navItems.map((group, idx) => (
@@ -175,6 +185,7 @@ const Sidebar = ({ role }) => {
                               <NavLink
                                 key={subIdx}
                                 to={sub.path}
+                                onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
                                 className={({ isActive }) => `block py-2 text-sm font-bold transition-all ${isActive ? 'text-emerald-600' : 'text-slate-400 hover:text-emerald-500'}`}
                               >
                                 {sub.label}
@@ -186,7 +197,8 @@ const Sidebar = ({ role }) => {
                     ) : (
                       <NavLink
                         to={item.path}
-                        end={item.label === 'Overview' || item.label === 'My Dashboard'}
+                        end={item.label === 'Overview' || item.label === 'Dashboard'}
+                        onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
                         className={({ isActive }) => `flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all group ${isActive ? 'bg-emerald-50 text-emerald-600' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'}`}
                       >
                         {({ isActive }) => (

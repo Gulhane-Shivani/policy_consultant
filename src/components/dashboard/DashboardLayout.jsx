@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const DashboardLayout = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
   
   // Determine role from path
@@ -21,12 +22,25 @@ const DashboardLayout = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
-      <Sidebar role={role} />
+      {/* Overlay for mobile sidebar */}
+      <AnimatePresence>
+        {isSidebarOpen && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsSidebarOpen(false)}
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden"
+          />
+        )}
+      </AnimatePresence>
+
+      <Sidebar role={role} isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       
-      <div className="flex-grow ml-64 min-h-screen flex flex-col">
-        <Header role={role} />
+      <div className={`flex-grow min-h-screen flex flex-col transition-all duration-300 ${isSidebarOpen ? 'lg:ml-64' : 'lg:ml-64'}`}>
+        <Header role={role} onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
         
-        <main className="p-8 flex-grow">
+        <main className="p-4 md:p-8 flex-grow">
           <div className="max-w-[1600px] mx-auto">
             <AnimatePresence mode="wait">
               <motion.div

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Home, User, LogOut, Settings, ChevronDown, Bell } from 'lucide-react';
+import { Search, Home, User, LogOut, Settings, ChevronDown, Bell, Menu } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
-const Header = ({ role }) => {
+const Header = ({ role, onToggleSidebar }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
@@ -34,22 +34,29 @@ const Header = ({ role }) => {
   };
 
   return (
-    <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-40">
-      <div className="flex-grow max-w-2xl">
-        <div className="relative group">
+    <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-40">
+      <div className="flex items-center space-x-4 flex-grow max-w-2xl">
+        <button 
+          onClick={onToggleSidebar}
+          className="p-2.5 bg-slate-100 rounded-xl text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all lg:hidden"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+
+        <div className="relative group flex-grow hidden md:block">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-emerald-600 transition-colors" />
           <input 
             type="text" 
-            placeholder={role === 'user' ? "Search for policies or support..." : "Search for policies, customers, or transactions..."}
+            placeholder={role === 'user' ? "Search for policies..." : "Search for policies, customers..."}
             className="w-full pl-12 pr-4 py-3 bg-slate-100 border-none rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-medium text-slate-900 placeholder:text-slate-400"
           />
         </div>
       </div>
 
-      <div className="flex items-center space-x-6">
+      <div className="flex items-center space-x-3 md:space-x-6">
         <Link 
           to="/"
-          className="p-2.5 bg-slate-100 rounded-xl text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all group"
+          className="p-2.5 bg-slate-100 rounded-xl text-slate-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all group hidden sm:flex"
           title="Back to Website"
         >
           <Home className="w-5 h-5 group-hover:scale-110 transition-transform" />
@@ -70,7 +77,7 @@ const Header = ({ role }) => {
                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                className="absolute right-0 mt-4 w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden z-50"
+                className="absolute right-0 mt-4 w-72 md:w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden z-50"
               >
                 <div className="p-5 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
                   <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em]">Notifications</h4>
@@ -98,19 +105,16 @@ const Header = ({ role }) => {
         <div className="relative">
           <button 
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className="flex items-center space-x-3 p-1.5 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all"
+            className="flex items-center space-x-2 md:space-x-3 p-1 md:p-1.5 bg-slate-100 rounded-2xl hover:bg-slate-200 transition-all"
           >
-            <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-black">
+            <div className="w-9 h-9 md:w-10 md:h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white font-black text-sm">
               {user.full_name?.charAt(0) || 'U'}
             </div>
-            <div className="text-left hidden md:block">
+            <div className="text-left hidden lg:block">
               <p className="text-xs font-black text-slate-900 leading-tight">{user.full_name || 'User'}</p>
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">{getRoleLabel()}</p>
             </div>
-           
           </button>
-
-        
         </div>
       </div>
     </header>
