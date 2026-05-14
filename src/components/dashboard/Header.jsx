@@ -1,11 +1,27 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, Home, User, LogOut, Settings, ChevronDown, Bell, Menu } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const Header = ({ role, onToggleSidebar }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
+
+  const handleSearchKeyPress = (e) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      let basePath = '';
+      if (role === 'user') basePath = '/dashboard/policies';
+      else if (role === 'admin') basePath = '/admin/customers';
+      else if (role === 'super_admin') basePath = '/super-admin/customers';
+      else if (role === 'agent') basePath = '/agent/customers';
+      else if (role === 'csr') basePath = '/csr/customers';
+      else basePath = `/${role}/customers`;
+
+      navigate(`${basePath}?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   const notifications = [
     { id: 1, title: 'Premium Due', text: 'Renewal for Care Supreme is due in 15 days.', time: 'Just now', type: 'warning' },
@@ -48,6 +64,9 @@ const Header = ({ role, onToggleSidebar }) => {
           <input 
             type="text" 
             placeholder={role === 'user' ? "Search for policies..." : "Search for policies, customers..."}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearchKeyPress}
             className="w-full pl-12 pr-4 py-3 bg-slate-100 border-none rounded-2xl outline-none focus:ring-2 focus:ring-emerald-600/20 transition-all font-medium text-slate-900 placeholder:text-slate-400"
           />
         </div>
