@@ -68,7 +68,7 @@ const Sidebar = ({ role }) => {
               { label: 'Renewals', icon: RefreshCw, path: '/admin/renewals' },
               { label: 'Payments', icon: CreditCard, path: '/admin/payments' },
               { label: 'Commissions', icon: Landmark, path: '/admin/commissions' },
-              { label: 'Customer 360°', icon: Users, path: '/admin/customers' },
+              { label: 'Client Management', icon: Users, path: '/admin/customers' },
               { label: 'Communications', icon: MessageSquare, path: '/admin/communication' },
               profileItem
             ]

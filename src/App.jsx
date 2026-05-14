@@ -34,6 +34,7 @@ import CustomerManagement from './pages/dashboard/super-admin/CustomerManagement
 import PolicyPlans from './pages/dashboard/super-admin/PolicyPlans';
 import PlanDetailView from './pages/dashboard/super-admin/PlanDetailView';
 import Reports from './pages/dashboard/super-admin/Reports';
+import AdminCustomerManagement from './pages/dashboard/admin/CustomerManagement';
 import MasterSettings from './pages/dashboard/super-admin/MasterSettings';
 import SystemConfig from './pages/dashboard/super-admin/SystemConfig';
 
@@ -160,7 +161,7 @@ function App() {
             <Route path="commissions" element={<CommissionFinance />} />
             <Route path="notifications" element={<Notifications />} />
             <Route path="performance" element={<Performance />} />
-            <Route path="customers" element={<Customers />} />
+            <Route path="customers" element={<AdminCustomerManagement />} />
             <Route path="tasks" element={<Tasks />} />
             <Route path="communication" element={<Communication />} />
             <Route path="profile" element={<CustomerProfile />} />
