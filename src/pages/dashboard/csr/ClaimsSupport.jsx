@@ -21,10 +21,10 @@ const ClaimsSupport = () => {
   const [claims, setClaims] = useState(() => {
     const saved = localStorage.getItem('csr_claims');
     return saved ? JSON.parse(saved) : [
-      { id: 'CLM-7821', customer: 'Sarah Jenkins', type: 'Health Claim', amount: 'Rs.45,000', status: 'In Review', date: '2024-05-12', policyId: 'POL-8901' },
-      { id: 'CLM-7822', customer: 'Robert Fox', type: 'Motor Claim', amount: 'Rs.12,800', status: 'Processing', date: '2024-05-13', policyId: 'POL-5562' },
-      { id: 'CLM-7823', customer: 'Jane Cooper', type: 'Life Claim', amount: 'Rs.5,00,000', status: 'Processing', date: '2024-05-10', policyId: 'POL-1104' },
-      { id: 'CLM-7824', customer: 'Michael Scott', type: 'Health Claim', amount: 'Rs.8,500', status: 'Completed', date: '2024-05-08', policyId: 'POL-4421' }
+      { id: 'CLM-7821', customer: 'Sarah Jenkins', type: 'Health Claim', amount: 'Rs.45,000', status: 'Submitted', date: '2024-05-12', policyId: 'POL-8901', documents: [] },
+      { id: 'CLM-7822', customer: 'Robert Fox', type: 'Motor Claim', amount: 'Rs.12,800', status: 'Documents Pending', date: '2024-05-13', policyId: 'POL-5562', documents: [] },
+      { id: 'CLM-7823', customer: 'Jane Cooper', type: 'Life Claim', amount: 'Rs.5,00,000', status: 'Under Investigation', date: '2024-05-10', policyId: 'POL-1104', documents: [{name: 'Medical_Report.pdf', verified: true}] },
+      { id: 'CLM-7824', customer: 'Michael Scott', type: 'Health Claim', amount: 'Rs.8,500', status: 'Settled', date: '2024-05-08', policyId: 'POL-4421', documents: [{name: 'Invoice.pdf', verified: true}] }
     ];
   });
 
@@ -49,8 +49,9 @@ const ClaimsSupport = () => {
       const claimToAdd = {
         ...newClaim,
         id: `CLM-${Math.floor(1000 + Math.random() * 9000)}`,
-        status: 'In Review',
+        status: 'Submitted',
         amount: `Rs.${Number(newClaim.amount).toLocaleString()}`,
+        documents: [],
         history: [{ date: new Date().toLocaleDateString(), event: 'Claim Intake Created', user: 'System' }]
       };
       setClaims([claimToAdd, ...claims]);
@@ -87,7 +88,7 @@ const ClaimsSupport = () => {
                 <p className="text-slate-500 font-bold text-[10px] mt-1">{selectedClaim.customer} • {selectedClaim.type}</p>
               </div>
            </div>
-           <div className={`px-6 py-3 rounded-2xl font-black text-xs shadow-xl ${selectedClaim.status === 'Completed' ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-white'}`}>
+           <div className={`px-6 py-3 rounded-2xl font-black text-xs shadow-xl ${['Approved', 'Settled'].includes(selectedClaim.status) ? 'bg-emerald-600 text-white' : selectedClaim.status === 'Rejected' ? 'bg-rose-500 text-white' : 'bg-amber-500 text-white'}`}>
               {selectedClaim.status}
            </div>
         </div>
@@ -156,26 +157,32 @@ const ClaimsSupport = () => {
               <div className="bg-slate-900 p-8 rounded-[3rem] text-white shadow-2xl">
                  <h4 className="font-black text-xs mb-6 flex items-center space-x-2">
                     <MessageSquare className="w-5 h-5 text-emerald-400" />
-                    <span>Internal Note</span>
+                    <span>Communicate Updates</span>
                  </h4>
                  <textarea 
                     className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-xs font-bold outline-none focus:bg-white/10 transition-all mb-4"
                     rows="4"
-                    placeholder="Add an internal investigation note..."
+                    placeholder="Send an update to the customer..."
                  ></textarea>
-                 <button onClick={() => toast.success('Internal note saved to ledger')} className="w-full py-4 bg-emerald-600 rounded-xl font-black text-[10px] hover:bg-emerald-500 transition-all">
-                    Save to Ledger
+                 <button onClick={() => toast.success('Update sent to customer')} className="w-full py-4 bg-emerald-600 rounded-xl font-black text-[10px] hover:bg-emerald-500 transition-all">
+                    Send to Customer
                  </button>
               </div>
 
               <div className="bg-white p-8 rounded-[3rem] border border-slate-200 shadow-xl">
-                 <h4 className="font-black text-[10px] text-slate-400 mb-6">Critical Actions</h4>
+                 <h4 className="font-black text-[10px] text-slate-400 mb-6">CSR Actions</h4>
                  <div className="space-y-3">
-                    <button onClick={() => toast.error('Initiating Legal Investigation...')} className="w-full py-4 bg-rose-50 text-rose-600 rounded-2xl font-black text-[10px] hover:bg-rose-100 transition-all">
-                       Flag for Fraud
+                    <button onClick={() => toast.success('Document upload prompt opened')} className="w-full py-4 bg-blue-50 text-blue-600 rounded-2xl font-black text-[10px] hover:bg-blue-100 transition-all flex items-center justify-center space-x-2">
+                       <Upload className="w-4 h-4" />
+                       <span>Upload Claim Documents</span>
                     </button>
-                    <button onClick={() => toast.success('Approval request sent to Underwriter')} className="w-full py-4 bg-indigo-50 text-indigo-600 rounded-2xl font-black text-[10px] hover:bg-indigo-100 transition-all">
-                       Request Underwriter Approval
+                    <button onClick={() => toast.success('Documents verified for completeness')} className="w-full py-4 bg-emerald-50 text-emerald-600 rounded-2xl font-black text-[10px] hover:bg-emerald-100 transition-all flex items-center justify-center space-x-2">
+                       <CheckCircle className="w-4 h-4" />
+                       <span>Verify Documents</span>
+                    </button>
+                    <button onClick={() => toast.success('Claim forwarded to Claims Department')} className="w-full py-4 bg-indigo-50 text-indigo-600 rounded-2xl font-black text-[10px] hover:bg-indigo-100 transition-all flex items-center justify-center space-x-2">
+                       <ShieldAlert className="w-4 h-4" />
+                       <span>Forward to Claims Dept</span>
                     </button>
                  </div>
               </div>
@@ -427,9 +434,9 @@ const ClaimsSupport = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {[
-          { label: 'Pending Review', value: claims.filter(c => c.status === 'In Review').length, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
-          { label: 'Critical Claims', value: '04', icon: AlertCircle, color: 'text-rose-600', bg: 'bg-rose-50' },
-          { label: 'Settled Today', value: claims.filter(c => c.status === 'Completed').length, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+          { label: 'Submitted / Pending', value: claims.filter(c => ['Submitted', 'Documents Pending'].includes(c.status)).length, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
+          { label: 'Under Investigation', value: claims.filter(c => c.status === 'Under Investigation').length, icon: Search, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+          { label: 'Approved / Settled', value: claims.filter(c => ['Approved', 'Settled'].includes(c.status)).length, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
           { label: 'Avg. Cycle Time', value: '5.2d', icon: ShieldAlert, color: 'text-blue-600', bg: 'bg-blue-50' },
         ].map((stat, idx) => {
           const Icon = stat.icon;
@@ -460,8 +467,8 @@ const ClaimsSupport = () => {
             />
           </div>
           <div className="flex items-center space-x-3">
-            <div className="bg-white p-1 rounded-2xl border border-slate-200 flex items-center space-x-1">
-              {['All', 'In Review', 'Completed', 'Processing'].map((status) => (
+            <div className="bg-white p-1 rounded-2xl border border-slate-200 flex items-center space-x-1 flex-wrap">
+              {['All', 'Submitted', 'Documents Pending', 'Under Investigation', 'Approved', 'Rejected', 'Settled'].map((status) => (
                 <button
                   key={status}
                   onClick={() => setStatusFilter(status)}
@@ -519,16 +526,18 @@ const ClaimsSupport = () => {
                         toast.success(`Claim ${claim.id} updated to ${nextStatus}`);
                       }}
                       className={`px-4 py-1.5 rounded-full text-[10px] font-black outline-none border-none cursor-pointer transition-all ${
-                        claim.status === 'Completed' ? 'bg-emerald-50 text-emerald-600' : 
-                        claim.status === 'In Review' ? 'bg-amber-50 text-amber-600' : 
-                        claim.status === 'Processing' ? 'bg-indigo-50 text-indigo-600' : 
+                        ['Approved', 'Settled'].includes(claim.status) ? 'bg-emerald-50 text-emerald-600' : 
+                        ['Submitted', 'Documents Pending'].includes(claim.status) ? 'bg-amber-50 text-amber-600' : 
+                        claim.status === 'Under Investigation' ? 'bg-indigo-50 text-indigo-600' : 
                         'bg-rose-50 text-rose-600'
                       }`}
                     >
-                      <option value="In Review">In Review</option>
-                      <option value="Processing">Processing</option>
-                      <option value="Completed">Completed</option>
+                      <option value="Submitted">Submitted</option>
+                      <option value="Documents Pending">Documents Pending</option>
+                      <option value="Under Investigation">Under Investigation</option>
+                      <option value="Approved">Approved</option>
                       <option value="Rejected">Rejected</option>
+                      <option value="Settled">Settled</option>
                     </select>
                   </td>
                   <td className="px-10 py-8 text-right">
@@ -538,9 +547,10 @@ const ClaimsSupport = () => {
                           setSelectedClaim(claim);
                           setView('detail');
                         }}
-                        className="p-3 bg-slate-50 text-slate-400 hover:bg-slate-900 hover:text-white rounded-xl transition-all shadow-sm active:scale-90"
+                        className="px-5 py-2.5 bg-slate-900 text-white hover:bg-emerald-600 rounded-xl font-black text-xs transition-all shadow-md active:scale-95 flex items-center space-x-2"
                       >
-                        <ChevronRight className="w-5 h-5" />
+                        <FileText className="w-4 h-4" />
+                        <span>View Claim</span>
                       </button>
                     </div>
                   </td>
