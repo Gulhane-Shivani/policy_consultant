@@ -3,20 +3,20 @@ import {
   CreditCard, Calendar, Clock, CheckCircle, 
   ArrowUpRight, Wallet, Zap, Shield, 
   ChevronRight, Download, Plus, Smartphone,
-  Globe, Landmark, IndianRupee, X
+  Landmark, CircleDollarSign, X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CustomerPayments = () => {
   const [renewals, setRenewals] = useState([
-    { id: 1, policy_number: 'POL-8901', policy: 'Life Insurance Elite', provider: 'HDFC Life', amount: '₹1,200', date: '2026-06-10', status: 'Due' },
-    { id: 2, policy_number: 'POL-8902', policy: 'Health Care Supreme', provider: 'Niva Bupa', amount: '₹850', date: '2026-06-15', status: 'Upcoming' },
+    { id: 1, policy_number: 'POL-8901', policy: 'Life Insurance Elite', provider: 'HDFC Life', amount: 'Rs.1,200', date: '2026-06-10', status: 'Due' },
+    { id: 2, policy_number: 'POL-8902', policy: 'Health Care Supreme', provider: 'Niva Bupa', amount: 'Rs.850', date: '2026-06-15', status: 'Upcoming' },
   ]);
 
   const [paymentHistory, setPaymentHistory] = useState([
-    { id: 'TXN-9921', policy: 'Care Supreme', date: '2025-06-15', amount: '₹615', status: 'Successful', method: 'UPI' },
-    { id: 'TXN-8810', policy: 'Motor Secure', date: '2025-08-10', amount: '₹520', status: 'Successful', method: 'Card' },
-    { id: 'TXN-7705', policy: 'Term Smart', date: '2025-05-25', amount: '₹1,200', status: 'Successful', method: 'Net Banking' },
+    { id: 'TXN-9921', policy: 'Care Supreme', date: '2025-06-15', amount: 'Rs.615', status: 'Successful', method: 'UPI' },
+    { id: 'TXN-8810', policy: 'Motor Secure', date: '2025-08-10', amount: 'Rs.520', status: 'Successful', method: 'Card' },
+    { id: 'TXN-7705', policy: 'Term Smart', date: '2025-05-25', amount: 'Rs.1,200', status: 'Successful', method: 'Net Banking' },
   ]);
 
   const [selectedPolicy, setSelectedPolicy] = useState(null);
@@ -49,7 +49,6 @@ const CustomerPayments = () => {
     setTimeout(() => {
       setPaymentStep('success');
       
-      // Update history
       const newTxn = {
         id: `TXN-${Math.floor(1000 + Math.random() * 9000)}`,
         policy: selectedPolicy.policy,
@@ -59,8 +58,6 @@ const CustomerPayments = () => {
         method: selectedMethod.name
       };
       setPaymentHistory([newTxn, ...paymentHistory]);
-      
-      // Remove from renewals
       setRenewals(renewals.filter(r => r.id !== selectedPolicy.id));
     }, 2500);
   };
@@ -90,7 +87,6 @@ const CustomerPayments = () => {
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
         <div className="xl:col-span-2 space-y-8">
-          {/* Upcoming Renewals */}
           <div className="space-y-6">
             <h2 className="text-xl font-black text-slate-900 tracking-tight px-2">Pending Renewals</h2>
             {renewals.length > 0 ? (
@@ -98,13 +94,12 @@ const CustomerPayments = () => {
                 {renewals.map((renewal) => (
                   <motion.div
                     key={renewal.id}
-                    layoutId={`renewal-${renewal.id}`}
                     whileHover={{ y: -5 }}
                     className="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-xl shadow-slate-200/50 relative overflow-hidden group"
                   >
                     <div className="flex justify-between items-start relative z-10 mb-8">
                       <div className="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                        <IndianRupee className="w-6 h-6" />
+                        <CircleDollarSign className="w-6 h-6" />
                       </div>
                       <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${renewal.status === 'Due' ? 'bg-rose-50 text-rose-600 animate-pulse' : 'bg-amber-50 text-amber-600'}`}>
                         {renewal.status}
@@ -139,7 +134,6 @@ const CustomerPayments = () => {
             )}
           </div>
 
-          {/* Payment History */}
           <div className="bg-white rounded-[3.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden">
             <div className="p-8 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
               <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Premium History</h3>
@@ -178,7 +172,6 @@ const CustomerPayments = () => {
           </div>
         </div>
 
-        {/* Sidebar: Payment Interaction */}
         <div className="space-y-8">
           <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl space-y-10 min-h-[500px] flex flex-col">
             <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest flex items-center px-2">
@@ -257,7 +250,6 @@ const CustomerPayments = () => {
           </div>
         </div>
  
-        {/* Payment Modal Overlay */}
         <AnimatePresence>
           {isModalOpen && (
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
@@ -280,9 +272,9 @@ const CustomerPayments = () => {
                     <div className="flex justify-between items-center">
                       <div className="flex items-center space-x-4">
                         <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
-                          {(() => {
-                            const Icon = selectedMethod.icon;
-                            return <Icon className="w-6 h-6" />;
+                          {selectedMethod.icon && (() => {
+                            const MethodIcon = selectedMethod.icon;
+                            return <MethodIcon className="w-6 h-6" />;
                           })()}
                         </div>
                         <div>
@@ -345,52 +337,53 @@ const CustomerPayments = () => {
                     </div>
                   </form>
                 </div>
-              )}
+                )}
 
-              {paymentStep === 'processing' && (
-                <div className="p-20 flex flex-col items-center justify-center space-y-8 text-center">
-                  <div className="relative w-24 h-24">
-                    <div className="absolute inset-0 border-8 border-emerald-50 rounded-full"></div>
-                    <div className="absolute inset-0 border-8 border-emerald-600 rounded-full border-t-transparent animate-spin"></div>
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-black text-slate-900 tracking-tight">Payment Processing</h3>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2">Communicating with Banking Gateway...</p>
-                    <p className="text-[10px] font-black text-emerald-600 mt-4 bg-emerald-50 px-4 py-1 rounded-full inline-block">SECURE TRANSACTION ACTIVE</p>
-                  </div>
-                </div>
-              )}
-
-              {paymentStep === 'success' && (
-                <div className="p-20 flex flex-col items-center justify-center space-y-8 text-center">
-                  <motion.div 
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center text-white shadow-2xl shadow-emerald-500/40"
-                  >
-                    <CheckCircle className="w-12 h-12" />
-                  </motion.div>
-                  <div>
-                    <h3 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-4 uppercase">Renewal Done!</h3>
-                    <div className="space-y-2">
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Policy Updated Successfully</p>
-                      <p className="text-sm font-black text-emerald-600 uppercase tracking-tighter">Receipt sent to shivani***@gmail.com</p>
+                {paymentStep === 'processing' && (
+                  <div className="p-20 flex flex-col items-center justify-center space-y-8 text-center">
+                    <div className="relative w-24 h-24">
+                      <div className="absolute inset-0 border-8 border-emerald-50 rounded-full"></div>
+                      <div className="absolute inset-0 border-8 border-emerald-600 rounded-full border-t-transparent animate-spin"></div>
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-black text-slate-900 tracking-tight">Payment Processing</h3>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-2">Communicating with Banking Gateway...</p>
+                      <p className="text-[10px] font-black text-emerald-600 mt-4 bg-emerald-50 px-4 py-1 rounded-full inline-block">SECURE TRANSACTION ACTIVE</p>
                     </div>
                   </div>
-                  <button 
-                    onClick={closeModal}
-                    className="px-12 py-5 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-slate-900/20 hover:bg-slate-800 transition-all"
-                  >
-                    Back to Dashboard
-                  </button>
-                </div>
-              )}
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-    </div>
+                )}
+
+                {paymentStep === 'success' && (
+                  <div className="p-20 flex flex-col items-center justify-center space-y-8 text-center">
+                    <motion.div 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center text-white shadow-2xl shadow-emerald-500/40"
+                    >
+                      <CheckCircle className="w-12 h-12" />
+                    </motion.div>
+                    <div>
+                      <h3 className="text-3xl font-black text-slate-900 tracking-tight leading-none mb-4 uppercase">Renewal Done!</h3>
+                      <div className="space-y-2">
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Policy Updated Successfully</p>
+                        <p className="text-sm font-black text-emerald-600 uppercase tracking-tighter">Receipt sent to shivani***@gmail.com</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={closeModal}
+                      className="px-12 py-5 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-slate-900/20 hover:bg-slate-800 transition-all"
+                    >
+                      Back to Dashboard
+                    </button>
+                  </div>
+                )}
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+      </div>
   );
 };
 
 export default CustomerPayments;
+

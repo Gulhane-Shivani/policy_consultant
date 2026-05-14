@@ -28,25 +28,28 @@ const Payments = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {stats.map((stat, idx) => (
-          <motion.div 
-            key={idx}
-            whileHover={{ y: -5 }}
-            className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/50 flex items-center justify-between"
-          >
-            <div className="space-y-2">
-              <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
-              <h3 className="text-3xl font-black text-slate-900">{stat.value}</h3>
-              <div className={`flex items-center space-x-1 text-xs font-black ${stat.change.startsWith('+') ? 'text-emerald-500' : 'text-red-500'}`}>
-                {stat.change.startsWith('+') ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                <span>{stat.change} vs last month</span>
+        {stats.map((stat, idx) => {
+          const Icon = stat.icon;
+          return (
+            <motion.div 
+              key={idx}
+              whileHover={{ y: -5 }}
+              className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/50 flex items-center justify-between"
+            >
+              <div className="space-y-2">
+                <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
+                <h3 className="text-3xl font-black text-slate-900">{stat.value}</h3>
+                <div className={`flex items-center space-x-1 text-xs font-black ${stat.change.startsWith('+') ? 'text-emerald-500' : 'text-red-500'}`}>
+                  {stat.change.startsWith('+') ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+                  <span>{stat.change} vs last month</span>
+                </div>
               </div>
-            </div>
-            <div className={`w-16 h-16 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center`}>
-              <stat.icon className="w-8 h-8" />
-            </div>
-          </motion.div>
-        ))}
+              <div className={`w-16 h-16 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center`}>
+                <Icon className="w-8 h-8" />
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-indigo-900/5 overflow-hidden">
