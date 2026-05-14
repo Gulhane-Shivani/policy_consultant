@@ -195,96 +195,105 @@ const CustomerPayments = () => {
                 </div>
                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Choose Method</p>
                 <div className="space-y-4">
-                  {paymentMethods.map((method, i) => (
-                    <div 
-                      key={i} 
-                      onClick={() => handleMethodSelect(method)}
-                      className="flex items-center space-x-4 p-4 rounded-3xl bg-slate-50 border border-transparent hover:border-emerald-200 hover:bg-white cursor-pointer transition-all group"
-                    >
-                      <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-emerald-600 shadow-sm group-hover:scale-110 transition-transform">
-                        <method.icon className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-black text-slate-900 uppercase tracking-tight">{method.name}</p>
-                        <p className="text-[10px] font-bold text-slate-400 leading-tight mt-0.5">{method.desc}</p>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-slate-300 ml-auto group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  ))}
+                    {paymentMethods.map((method, i) => {
+                      const Icon = method.icon;
+                      return (
+                        <div 
+                          key={i} 
+                          onClick={() => handleMethodSelect(method)}
+                          className="flex items-center space-x-4 p-4 rounded-3xl bg-slate-50 border border-transparent hover:border-emerald-200 hover:bg-white cursor-pointer transition-all group"
+                        >
+                          <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-emerald-600 shadow-sm group-hover:scale-110 transition-transform">
+                            <Icon className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-black text-slate-900 uppercase tracking-tight">{method.name}</p>
+                            <p className="text-[10px] font-bold text-slate-400 leading-tight mt-0.5">{method.desc}</p>
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-slate-300 ml-auto group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <button 
+                    onClick={() => setPaymentStep('list')}
+                    className="w-full py-4 text-slate-400 font-black text-[10px] uppercase tracking-widest hover:text-slate-600 transition-colors mt-4"
+                  >
+                    Cancel Payment
+                  </button>
                 </div>
-                <button 
-                  onClick={() => setPaymentStep('list')}
-                  className="w-full py-4 text-slate-400 font-black text-[10px] uppercase tracking-widest hover:text-slate-600 transition-colors mt-4"
-                >
-                  Cancel Payment
-                </button>
-              </div>
-            ) : (
-              <div className="space-y-6 flex-grow">
-                <div className="space-y-6">
-                  {paymentMethods.map((method, i) => (
-                    <div key={i} className="flex items-center space-x-4 p-4 rounded-3xl bg-slate-50 border border-transparent hover:border-emerald-200 hover:bg-white cursor-pointer transition-all group opacity-50 grayscale hover:grayscale-0 hover:opacity-100">
-                      <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-400 group-hover:text-emerald-600 shadow-sm group-hover:scale-110 transition-transform">
-                        <method.icon className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <p className="text-xs font-black text-slate-900 uppercase tracking-tight">{method.name}</p>
-                        <p className="text-[10px] font-bold text-slate-400 leading-tight mt-0.5">{method.desc}</p>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-slate-300 ml-auto group-hover:translate-x-1 transition-transform" />
+              ) : (
+                <div className="space-y-6 flex-grow">
+                  <div className="space-y-6">
+                    {paymentMethods.map((method, i) => {
+                      const Icon = method.icon;
+                      return (
+                        <div key={i} className="flex items-center space-x-4 p-4 rounded-3xl bg-slate-50 border border-transparent hover:border-emerald-200 hover:bg-white cursor-pointer transition-all group opacity-50 grayscale hover:grayscale-0 hover:opacity-100">
+                          <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-slate-400 group-hover:text-emerald-600 shadow-sm group-hover:scale-110 transition-transform">
+                            <Icon className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-black text-slate-900 uppercase tracking-tight">{method.name}</p>
+                            <p className="text-[10px] font-bold text-slate-400 leading-tight mt-0.5">{method.desc}</p>
+                          </div>
+                          <ChevronRight className="w-4 h-4 text-slate-300 ml-auto group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="pt-8 border-t border-slate-100">
+                    <div className="p-6 bg-slate-900 rounded-[2rem] text-white text-center space-y-4">
+                      <p className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">One-Tap Checkout</p>
+                      <h5 className="text-xl font-black tracking-tight leading-tight">Setup Auto-Pay</h5>
+                      <p className="text-[10px] font-bold text-slate-400 px-4">Never miss a renewal. Automatic payments for peace of mind.</p>
+                      <button className="w-full py-4 bg-emerald-600 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-emerald-900/40 hover:bg-emerald-700 transition-all">
+                        Enable Now
+                      </button>
                     </div>
-                  ))}
-                </div>
-                <div className="pt-8 border-t border-slate-100">
-                  <div className="p-6 bg-slate-900 rounded-[2rem] text-white text-center space-y-4">
-                    <p className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">One-Tap Checkout</p>
-                    <h5 className="text-xl font-black tracking-tight leading-tight">Setup Auto-Pay</h5>
-                    <p className="text-[10px] font-bold text-slate-400 px-4">Never miss a renewal. Automatic payments for peace of mind.</p>
-                    <button className="w-full py-4 bg-emerald-600 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-emerald-900/40 hover:bg-emerald-700 transition-all">
-                      Enable Now
-                    </button>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Payment Modal Overlay */}
-      <AnimatePresence>
-        {isModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={paymentStep === 'details' ? closeModal : null}
-              className="absolute inset-0 bg-slate-900/80 backdrop-blur-md"
-            />
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-lg bg-white rounded-[3.5rem] shadow-2xl overflow-hidden"
-            >
-              {paymentStep === 'details' && selectedMethod && (
-                <div className="p-10 space-y-8">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
-                        <selectedMethod.icon className="w-6 h-6" />
+ 
+        {/* Payment Modal Overlay */}
+        <AnimatePresence>
+          {isModalOpen && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={paymentStep === 'details' ? closeModal : null}
+                className="absolute inset-0 bg-slate-900/80 backdrop-blur-md"
+              />
+              
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="relative w-full max-w-lg bg-white rounded-[3.5rem] shadow-2xl overflow-hidden"
+              >
+                {paymentStep === 'details' && selectedMethod && (
+                  <div className="p-10 space-y-8">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600">
+                          {(() => {
+                            const Icon = selectedMethod.icon;
+                            return <Icon className="w-6 h-6" />;
+                          })()}
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-black text-slate-900 tracking-tight">{selectedMethod.name} Verification</h3>
+                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Step 2 of 3 • Secure Authentication</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-xl font-black text-slate-900 tracking-tight">{selectedMethod.name} Verification</h3>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Step 2 of 3 • Secure Authentication</p>
-                      </div>
+                      <button onClick={closeModal} className="p-2 hover:bg-slate-100 rounded-xl transition-all">
+                        <X className="w-6 h-6 text-slate-300" />
+                      </button>
                     </div>
-                    <button onClick={closeModal} className="p-2 hover:bg-slate-100 rounded-xl transition-all">
-                      <X className="w-6 h-6 text-slate-300" />
-                    </button>
-                  </div>
 
                   <form onSubmit={handleConfirmPayment} className="space-y-6">
                     {selectedMethod.name === 'UPI' ? (

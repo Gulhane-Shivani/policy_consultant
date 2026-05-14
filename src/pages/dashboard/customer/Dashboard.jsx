@@ -111,23 +111,26 @@ const CustomerOverview = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, i) => (
-          <motion.div 
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-all"
-          >
-            <div>
-              <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
-              <h3 className="text-xl md:text-3xl font-black text-slate-900 mt-1">{stat.value}</h3>
-            </div>
-            <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-${stat.color}-50 flex items-center justify-center text-${stat.color}-600 group-hover:scale-110 transition-transform`}>
-              <stat.icon className="w-5 h-5 md:w-7 md:h-7" />
-            </div>
-          </motion.div>
-        ))}
+        {stats.map((stat, i) => {
+          const Icon = stat.icon;
+          return (
+            <motion.div 
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.1 }}
+              className="bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] border border-slate-100 shadow-sm flex items-center justify-between group hover:border-emerald-200 transition-all"
+            >
+              <div>
+                <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
+                <h3 className="text-xl md:text-3xl font-black text-slate-900 mt-1">{stat.value}</h3>
+              </div>
+              <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-${stat.color}-50 flex items-center justify-center text-${stat.color}-600 group-hover:scale-110 transition-transform`}>
+                <Icon className="w-5 h-5 md:w-7 md:h-7" />
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
@@ -179,14 +182,17 @@ const CustomerOverview = () => {
                 { label: 'File Claim', icon: ShieldAlert, color: 'rose', path: '/dashboard/claims' },
                 { label: 'Download ID', icon: Download, color: 'blue', path: '/dashboard/policies' },
                 { label: 'Get Support', icon: MessageSquare, color: 'amber', path: '/dashboard/support' },
-              ].map((action, i) => (
-                <Link key={i} to={action.path} className="flex flex-col items-center justify-center p-8 rounded-[2.5rem] bg-slate-50 border border-transparent hover:border-emerald-200 hover:bg-white transition-all group">
-                  <div className={`w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-${action.color}-600 mb-4 group-hover:scale-110 transition-transform`}>
-                    <action.icon className="w-7 h-7" />
-                  </div>
-                  <span className="text-[10px] font-black text-slate-600 uppercase tracking-tighter text-center">{action.label}</span>
-                </Link>
-              ))}
+              ].map((action, i) => {
+                const Icon = action.icon;
+                return (
+                  <Link key={i} to={action.path} className="flex flex-col items-center justify-center p-8 rounded-[2.5rem] bg-slate-50 border border-transparent hover:border-emerald-200 hover:bg-white transition-all group">
+                    <div className={`w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-${action.color}-600 mb-4 group-hover:scale-110 transition-transform`}>
+                      <Icon className="w-7 h-7" />
+                    </div>
+                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-tighter text-center">{action.label}</span>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -225,20 +231,23 @@ const CustomerOverview = () => {
               {[
                 { title: 'Payment Confirmed', time: '2h ago', text: 'Premium for POL-8901 was successfully paid.', icon: CreditCard, color: 'emerald' },
                 { title: 'Claim Update', time: '1d ago', text: 'Your claim CLM-105 is now under review.', icon: ShieldAlert, color: 'amber' },
-              ].map((notif, i) => (
-                <div key={i} className="flex space-x-4 group cursor-pointer">
-                  <div className={`w-12 h-12 rounded-xl bg-${notif.color}-50 flex-shrink-0 flex items-center justify-center text-${notif.color}-600`}>
-                    <notif.icon className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <div className="flex justify-between items-center mb-1">
-                      <p className="text-xs font-black text-slate-900 uppercase">{notif.title}</p>
-                      <span className="text-[8px] font-bold text-slate-400 uppercase">{notif.time}</span>
+              ].map((notif, i) => {
+                const Icon = notif.icon;
+                return (
+                  <div key={i} className="flex space-x-4 group cursor-pointer">
+                    <div className={`w-12 h-12 rounded-xl bg-${notif.color}-50 flex-shrink-0 flex items-center justify-center text-${notif.color}-600`}>
+                      <Icon className="w-6 h-6" />
                     </div>
-                    <p className="text-[10px] font-bold text-slate-500 leading-snug">{notif.text}</p>
+                    <div>
+                      <div className="flex justify-between items-center mb-1">
+                        <p className="text-xs font-black text-slate-900 uppercase">{notif.title}</p>
+                        <span className="text-[8px] font-bold text-slate-400 uppercase">{notif.time}</span>
+                      </div>
+                      <p className="text-[10px] font-bold text-slate-500 leading-snug">{notif.text}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
