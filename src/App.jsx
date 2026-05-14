@@ -43,6 +43,10 @@ import CSRDashboard from './pages/dashboard/csr/Dashboard';
 import ClaimsSupport from './pages/dashboard/csr/ClaimsSupport';
 import TicketsQueries from './pages/dashboard/csr/TicketsQueries';
 import PolicyServicing from './pages/dashboard/csr/PolicyServicing';
+import CSRCustomerSearch from './pages/dashboard/csr/CustomerSearch';
+import CSRRenewals from './pages/dashboard/csr/Renewals';
+import CSRCommunication from './pages/dashboard/csr/Communication';
+import CSRReports from './pages/dashboard/csr/Reports';
 
 // Agent Pages
 import AgentDashboard from './pages/dashboard/agent/Dashboard';
@@ -221,12 +225,13 @@ function App() {
           }>
             <Route index element={<CSRDashboard />} />
             <Route path="dashboard" element={<CSRDashboard />} />
-            <Route path="customers" element={<Customers />} />
+            <Route path="customers" element={<CSRCustomerSearch />} />
             <Route path="claims" element={<ClaimsSupport />} />
-            <Route path="renewals" element={<Renewals />} />
+            <Route path="renewals" element={<CSRRenewals />} />
             <Route path="tickets" element={<TicketsQueries />} />
             <Route path="servicing" element={<PolicyServicing />} />
-            <Route path="communication" element={<Communication />} />
+            <Route path="communication" element={<CSRCommunication />} />
+            <Route path="reports" element={<CSRReports />} />
             <Route path="profile" element={<CustomerProfile />} />
           </Route>
 

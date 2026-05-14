@@ -3,8 +3,11 @@ import {
   Search, LifeBuoy, 
   UserCircle, Phone,
   Mail, Clock, 
-  ChevronRight, ArrowRight
+  ChevronRight, ArrowRight,
+  RefreshCw, MessageSquare, ShieldAlert,
+  ArrowUpRight, ArrowDownRight
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const CSRDashboard = () => {
   const [tasks] = useState([
@@ -14,12 +17,18 @@ const CSRDashboard = () => {
     { id: 4, title: 'Verify: New User Docs', priority: 'High', time: '02:30 PM', type: 'Verification' },
   ]);
 
+  const stats = [
+    { label: 'Renewals Due', value: '12', change: '+2', trend: 'up', icon: RefreshCw, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+    { label: 'Service Requests', value: '48', change: '+12', trend: 'up', icon: MessageSquare, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Pending Claims', value: '05', change: '-1', trend: 'down', icon: ShieldAlert, color: 'text-rose-600', bg: 'bg-rose-50' },
+  ];
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-12">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tighter">CSR Agent Hub</h1>
-          <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Policy Consultant • Support Terminal</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">CSR Hub</h1>
+          <p className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.2em] mt-1">Policy Consultant • Support Terminal</p>
         </div>
         <div className="text-right">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">System Status</p>
@@ -30,26 +39,38 @@ const CSRDashboard = () => {
         </div>
       </div>
 
-      {/* Quick Search Section */}
-      <div className="bg-emerald-600 p-10 rounded-[3rem] text-white shadow-2xl shadow-emerald-900/20 relative overflow-hidden">
-        <div className="relative z-10 max-w-2xl">
-          <h2 className="text-2xl font-black mb-2 tracking-tight">Customer 360° Search</h2>
-          <p className="text-emerald-100 font-bold mb-6">Instantly access any customer profile by name, policy number, or email.</p>
-          <div className="relative">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-emerald-400" />
-            <input 
-              type="text" 
-              placeholder="Search customers..." 
-              className="w-full pl-14 pr-4 py-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl outline-none focus:ring-4 focus:ring-white/10 transition-all font-bold placeholder:text-emerald-300"
-            />
-            <button className="absolute right-3 top-1/2 -translate-y-1/2 px-6 py-2.5 bg-white text-emerald-600 rounded-xl font-black text-xs uppercase tracking-tighter hover:bg-emerald-50 transition-all">
-              Quick Find
-            </button>
-          </div>
-        </div>
-        <UserCircle className="absolute -right-10 -bottom-10 w-64 h-64 text-white/5" />
+      {/* Quick Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {stats.map((stat, idx) => {
+          const Icon = stat.icon;
+          return (
+            <motion.div 
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              whileHover={{ y: -5 }}
+              className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex items-center justify-between group overflow-hidden relative"
+            >
+              <div className="space-y-2 relative z-10">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{stat.label}</p>
+                <h3 className="text-4xl font-black text-slate-900 tracking-tighter">{stat.value}</h3>
+                <div className={`flex items-center space-x-1 text-[10px] font-black ${stat.trend === 'up' ? 'text-emerald-500' : 'text-rose-500'}`}>
+                  {stat.trend === 'up' ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                  <span>{stat.change} vs yesterday</span>
+                </div>
+              </div>
+              <div className={`w-16 h-16 ${stat.bg} ${stat.color} rounded-[1.5rem] flex items-center justify-center relative z-10 shadow-inner group-hover:scale-110 transition-transform duration-500`}>
+                <Icon className="w-8 h-8" />
+              </div>
+              <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-slate-50 rounded-full blur-2xl group-hover:bg-emerald-50 transition-colors" />
+            </motion.div>
+          );
+        })}
       </div>
 
+      {/* Quick Search Section */}
+     
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Today's Tasks */}
         <div className="lg:col-span-2 bg-white rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden">

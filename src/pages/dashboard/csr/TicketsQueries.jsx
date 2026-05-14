@@ -1,110 +1,120 @@
 import React, { useState } from 'react';
 import { 
-  HelpCircle, MessagesSquare, LifeBuoy,
-  ArrowUpRight, ArrowDownRight,
-  MoreVertical, Trash2, CheckCircle, Search, Filter
+  MessageSquare, Plus, Search, Filter, 
+  Clock, CheckCircle, AlertCircle, 
+  User, ChevronRight, MessageCircle,
+  Tag, Flag, Send
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const TicketsQueries = () => {
-  const [stats] = useState([
-    { label: 'Open Tickets', value: '42', change: '+12.5%', icon: HelpCircle, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-    { label: 'Resolved Today', value: '18', change: '+5.2%', icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
-    { label: 'Avg. Wait Time', value: '14m', change: '-2m', icon: MessagesSquare, color: 'text-blue-600', bg: 'bg-blue-50' },
-  ]);
-
-  const [data] = useState([
-    { id: 'TKT-101', client: 'Alice Freeman', subject: 'Login Issue', priority: 'High', status: 'Open' },
-    { id: 'TKT-102', client: 'Bob Wilson', subject: 'Policy Update', priority: 'Medium', status: 'In Progress' },
-    { id: 'TKT-103', client: 'Charlie Davis', subject: 'Payment Error', priority: 'Critical', status: 'Open' },
-    { id: 'TKT-104', client: 'Diana Prince', subject: 'General Query', priority: 'Low', status: 'Resolved' },
+  const [tickets] = useState([
+    { id: 'TKT-101', customer: 'Sarah Jenkins', subject: 'Address Update Failure', priority: 'High', status: 'Open', date: '2h ago' },
+    { id: 'TKT-102', customer: 'Robert Fox', subject: 'Policy PDF not received', priority: 'Medium', status: 'In Progress', date: '5h ago' },
+    { id: 'TKT-103', customer: 'Jane Cooper', subject: 'Nominee correction', priority: 'Low', status: 'Open', date: '1d ago' },
+    { id: 'TKT-104', customer: 'Michael Scott', subject: 'Premium amount discrepancy', priority: 'High', status: 'Resolved', date: '2d ago' }
   ]);
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Tickets & Queries</h1>
-        <p className="text-slate-500 font-bold">Handle customer support tickets and general inquiries.</p>
+    <div className="space-y-8 pb-12">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">Ticket Management</h1>
+          <p className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.2em] mt-1">Resolve customer service requests and complaints</p>
+        </div>
+        <button className="flex items-center space-x-3 px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl">
+          <Plus className="w-5 h-5 text-emerald-400" />
+          <span>Log Service Request</span>
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {stats.map((stat, idx) => (
-          <motion.div 
-            key={idx}
-            whileHover={{ y: -5 }}
-            className="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-xl shadow-slate-200/50 flex items-center justify-between"
-          >
-            <div className="space-y-2">
-              <p className="text-xs font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
-              <h3 className="text-3xl font-black text-slate-900">{stat.value}</h3>
-              <div className={`flex items-center space-x-1 text-xs font-black ${stat.change.startsWith('+') ? 'text-emerald-500' : 'text-red-500'}`}>
-                {stat.change.startsWith('+') ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                <span>{stat.change} vs last month</span>
+      {/* Ticket Pulse Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {[
+          { label: 'Unassigned', value: '08', icon: Flag, color: 'text-amber-600', bg: 'bg-amber-50' },
+          { label: 'Open Tickets', value: '24', icon: MessageCircle, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+          { label: 'Overdue SLA', value: '03', icon: AlertCircle, color: 'text-rose-600', bg: 'bg-rose-50' },
+          { label: 'Resolved Today', value: '15', icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+        ].map((stat, idx) => {
+          const Icon = stat.icon;
+          return (
+            <div key={idx} className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-200/50 flex items-center space-x-4 group hover:border-emerald-600 transition-all">
+              <div className={`w-12 h-12 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform`}>
+                <Icon className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{stat.label}</p>
+                <h3 className="text-2xl font-black text-slate-900 mt-1">{stat.value}</h3>
               </div>
             </div>
-            <div className={`w-16 h-16 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center`}>
-              <stat.icon className="w-8 h-8" />
-            </div>
-          </motion.div>
-        ))}
+          );
+        })}
       </div>
 
-      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-2xl shadow-indigo-900/5 overflow-hidden">
-        <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
-          <div>
-            <h2 className="text-xl font-black text-slate-900 tracking-tight">Support Queue</h2>
-            <p className="text-sm font-bold text-slate-400 uppercase tracking-tighter">Manage and resolve customer support requests</p>
+      {/* Tickets Interface */}
+      <div className="bg-white rounded-[3.5rem] border border-slate-200 shadow-2xl shadow-indigo-900/5 overflow-hidden">
+        <div className="p-8 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6 bg-slate-50/50">
+          <div className="relative w-full md:w-96">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <input 
+              type="text" 
+              placeholder="Search by Ticket ID, Customer, or Keyword..." 
+              className="w-full pl-14 pr-6 py-4 bg-white border border-slate-200 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-600/5 transition-all font-bold text-slate-900 shadow-sm"
+            />
           </div>
           <div className="flex items-center space-x-3">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input type="text" placeholder="Search tickets..." className="pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-600/20 transition-all" />
-            </div>
-            <button className="flex items-center space-x-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all">
-              <Filter className="w-4 h-4" />
-              <span>Filter</span>
-            </button>
+             <button className="flex items-center space-x-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all">
+                <Tag className="w-4 h-4 text-slate-400" />
+                <span>Categories</span>
+             </button>
+             <button className="flex items-center space-x-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all">
+                <Filter className="w-4 h-4 text-slate-400" />
+                <span>Priority</span>
+             </button>
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-slate-50/50">
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Ticket ID</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Client</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Subject</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Priority</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {data.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
-                  <td className="px-8 py-6 font-bold text-slate-900">{item.id}</td>
-                  <td className="px-8 py-6 font-bold text-slate-700">{item.client}</td>
-                  <td className="px-8 py-6 text-sm font-medium text-slate-900">{item.subject}</td>
-                  <td className="px-8 py-6">
-                    <span className={`px-3 py-1 rounded-lg text-xs font-black uppercase tracking-tighter ${item.priority === 'Critical' ? 'bg-rose-50 text-rose-600' : item.priority === 'High' ? 'bg-orange-50 text-orange-600' : 'bg-blue-50 text-blue-600'}`}>
-                      {item.priority}
-                    </span>
-                  </td>
-                  <td className="px-8 py-6">
-                    <span className={`px-3 py-1 rounded-lg text-xs font-black uppercase tracking-tighter ${item.status === 'Resolved' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>
-                      {item.status}
-                    </span>
-                  </td>
-                  <td className="px-8 py-6 text-right">
-                    <div className="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-all">
-                      <button className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"><CheckCircle className="w-5 h-5" /></button>
-                      <button className="p-2 hover:bg-slate-100 text-slate-400 rounded-lg transition-all"><MoreVertical className="w-5 h-5" /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="divide-y divide-slate-100">
+          {tickets.map((ticket) => (
+            <div key={ticket.id} className="p-10 flex items-center justify-between hover:bg-slate-50/50 transition-all group cursor-pointer">
+               <div className="flex items-center space-x-8">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border ${ticket.status === 'Open' ? 'bg-amber-50 border-amber-100 text-amber-600' : ticket.status === 'Resolved' ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-indigo-50 border-indigo-100 text-indigo-600'}`}>
+                     <MessageSquare className="w-7 h-7" />
+                  </div>
+                  <div>
+                     <div className="flex items-center space-x-4 mb-1">
+                        <h4 className="font-black text-slate-900 uppercase tracking-tight text-lg">{ticket.subject}</h4>
+                        <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${ticket.priority === 'High' ? 'bg-rose-50 text-rose-600' : 'bg-slate-100 text-slate-500'}`}>
+                           {ticket.priority} Priority
+                        </span>
+                     </div>
+                     <div className="flex items-center space-x-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                        <span className="flex items-center"><User className="w-3 h-3 mr-1.5" /> {ticket.customer}</span>
+                        <span className="flex items-center"><Clock className="w-3 h-3 mr-1.5" /> Received {ticket.date}</span>
+                        <span className="text-emerald-600 font-black">#{ticket.id}</span>
+                     </div>
+                  </div>
+               </div>
+               <div className="flex items-center space-x-4">
+                  <div className="text-right mr-6">
+                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-2">Status</p>
+                     <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${ticket.status === 'Resolved' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20' : 'bg-slate-100 text-slate-600'}`}>
+                        {ticket.status}
+                     </span>
+                  </div>
+                  <button className="p-4 bg-slate-50 rounded-2xl text-slate-300 group-hover:bg-slate-900 group-hover:text-white transition-all">
+                     <ChevronRight className="w-6 h-6" />
+                  </button>
+               </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="p-8 bg-slate-50/50 text-center border-t border-slate-100">
+           <button className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-emerald-600 transition-all flex items-center mx-auto space-x-2">
+              <span>View Resolved Archive</span>
+              <Send className="w-3 h-3" />
+           </button>
         </div>
       </div>
     </div>

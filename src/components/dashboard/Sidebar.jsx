@@ -5,7 +5,7 @@ import {
   Bell, Users, UserCheck, Shield, MessageSquare,
   Settings, Database, BarChart3, HelpCircle, ChevronRight,
   UserCircle2, PieChart, LifeBuoy, LogOut, ChevronDown, ShieldCheck,
-  ShieldAlert, User, Landmark, CloudDownload, Wrench, Zap, ListTodo, Activity
+  ShieldAlert, User, Landmark, CloudDownload, Wrench, Zap, ListTodo, Activity, Mail
 } from 'lucide-react';
 
 const Sidebar = ({ role }) => {
@@ -98,8 +98,11 @@ const Sidebar = ({ role }) => {
               { label: 'Dashboard', icon: LayoutDashboard, path: '/csr/dashboard' },
               { label: 'Customer Search', icon: Users, path: '/csr/customers' },
               { label: 'Claim Support', icon: ShieldCheck, path: '/csr/claims' },
-              { label: 'Active Tickets', icon: MessageSquare, path: '/csr/tickets' },
+              { label: 'Renewal Management', icon: RefreshCw, path: '/csr/renewals' },
+              { label: 'Service Tickets', icon: MessageSquare, path: '/csr/tickets' },
+              { label: 'Communication', icon: Mail, path: '/csr/communication' },
               { label: 'Policy Servicing', icon: Settings, path: '/csr/servicing' },
+              { label: 'My Reports', icon: PieChart, path: '/csr/reports' },
               profileItem
             ]
           }
