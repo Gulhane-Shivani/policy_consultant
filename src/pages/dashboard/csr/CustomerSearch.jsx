@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import { 
   Search, User, Shield, History, 
   FileText, MessageSquare, Phone, 
-  Mail, MapPin, Calendar, ArrowUpRight, Plus
+  Mail, MapPin, Calendar, ArrowUpRight, Plus,
+  ShieldCheck, ArrowLeft, Clock
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-hot-toast';
 
 const CustomerSearch = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
 
   const mockCustomers = [
     { 
@@ -43,242 +46,200 @@ const CustomerSearch = () => {
       history: [
         { date: '2024-05-12', action: 'Document Verification', status: 'Completed' }
       ]
-    },
-    { 
-      id: 'CUST-003', 
-      name: 'Jane Cooper', 
-      email: 'jane.c@example.com', 
-      phone: '+91 99887 76655',
-      address: 'Indira Nagar, Bangalore, India',
-      status: 'Terminated',
-      joinDate: '2021-02-15',
-      policies: [
-        { id: 'POL-1104', type: 'Term Life', provider: 'LIC', amount: 'Rs.15,000', status: 'Lapsed' }
-      ],
-      history: [
-        { date: '2023-12-01', action: 'Policy Lapse Warning', status: 'Sent' }
-      ]
     }
   ];
 
   const performSearch = (query) => {
-    const searchTerm = query.toLowerCase().trim();
-    console.log('Searching for:', searchTerm);
+    const searchTerm = (query || searchQuery).toLowerCase().trim();
+    if (!searchTerm) return toast.error('Enter Name, ID or Mobile');
+    
+    setIsSearching(true);
+    setTimeout(() => {
+      const found = mockCustomers.find(c => 
+        c.name.toLowerCase().includes(searchTerm) || 
+        c.id.toLowerCase().includes(searchTerm) || 
+        c.phone.replace(/\s+/g, '').includes(searchTerm.replace(/\s+/g, ''))
+      );
 
-    if (!searchTerm) {
-      setSelectedCustomer(null);
-      return;
-    }
-
-    const found = mockCustomers.find(c => 
-      c.name.toLowerCase().includes(searchTerm) || 
-      c.id.toLowerCase().includes(searchTerm) || 
-      c.phone.replace(/\s+/g, '').includes(searchTerm.replace(/\s+/g, '')) ||
-      c.policies.some(p => p.id.toLowerCase().includes(searchTerm))
-    );
-
-    if (found) {
-      console.log('Customer found:', found.name);
-      setSelectedCustomer(found);
-    } else {
-      console.warn('No customer found for query:', searchTerm);
-      alert('No customer found with that Name, ID, or Policy Number.');
-      setSelectedCustomer(null);
-    }
-  };
-
-  const onFormSubmit = (e) => {
-    e.preventDefault();
-    performSearch(searchQuery);
+      if (found) {
+        setSelectedCustomer(found);
+        toast.success(`Profile for ${found.name} loaded`);
+      } else {
+        toast.error('No customer record found');
+        setSelectedCustomer(null);
+      }
+      setIsSearching(false);
+    }, 800);
   };
 
   return (
     <div className="space-y-8 pb-12">
-      <div className="flex justify-between items-end">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase">Customer 360° View</h1>
-          <p className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.2em] mt-1">Unified Intelligence & Support Terminal</p>
+          <h1 className="text-3xl font-black text-slate-900 leading-none">Customer 360° View</h1>
+          <p className="text-slate-500 font-bold text-[10px] mt-1">Unified intelligence & support terminal</p>
         </div>
+        {selectedCustomer && (
+           <button onClick={() => setSelectedCustomer(null)} className="flex items-center space-x-2 text-xs font-black text-slate-400 hover:text-slate-900 transition-all">
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Search</span>
+           </button>
+        )}
       </div>
 
-      {/* Search Bar */}
-      <div className="bg-white p-8 rounded-[3rem] border border-slate-200 shadow-xl shadow-slate-200/50">
-        <form onSubmit={onFormSubmit} className="relative max-w-3xl mx-auto">
-          <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-400" />
-          <input 
-            type="text" 
-            placeholder="Search by Name, Policy ID, or Mobile Number..." 
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-16 pr-32 py-6 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-emerald-600/5 focus:bg-white transition-all font-bold text-slate-900"
-          />
-          <button 
-            type="submit"
-            className="absolute right-3 top-1/2 -translate-y-1/2 px-8 py-3 bg-slate-900 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg"
-          >
-            SEARCH
-          </button>
-        </form>
+      {!selectedCustomer ? (
+        <div className="bg-white p-12 rounded-[4rem] border border-slate-200 shadow-2xl shadow-slate-200/50 flex flex-col items-center justify-center text-center">
+           <div className="w-20 h-20 bg-slate-50 rounded-[2rem] flex items-center justify-center mb-8 shadow-inner text-slate-300">
+              <Search className="w-10 h-10" />
+           </div>
+           <h2 className="text-2xl font-black text-slate-900 mb-4">Unified Customer Lookup</h2>
+           <p className="text-xs font-bold text-slate-400 max-w-sm mb-10">Access policy history, interaction logs, and profile details in one unified view.</p>
+           
+           <div className="relative w-full max-w-2xl">
+              <input 
+                type="text" 
+                placeholder="Search by Name, Policy ID, or Mobile Number..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && performSearch()}
+                className="w-full pl-8 pr-36 py-6 bg-slate-50 border border-slate-200 rounded-3xl font-bold text-slate-900 outline-none focus:ring-4 focus:ring-emerald-600/5 transition-all text-lg shadow-inner"
+              />
+              <button 
+                onClick={() => performSearch()}
+                disabled={isSearching}
+                className="absolute right-3 top-1/2 -translate-y-1/2 px-8 py-4 bg-slate-900 text-white rounded-2xl font-black text-xs hover:bg-emerald-600 transition-all flex items-center space-x-2 shadow-xl"
+              >
+                {isSearching ? <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div> : <Search className="w-4 h-4" />}
+                <span>{isSearching ? 'Loading' : 'Search'}</span>
+              </button>
+           </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">Try Demo:</span>
-          {[
-            { label: 'Sarah Jenkins', query: 'Sarah' },
-            { label: 'Policy #POL-5562', query: 'POL-5562' },
-            { label: 'Jane Cooper', query: 'Jane' },
-            { label: 'Mobile: 98765', query: '98765' }
-          ].map((demo, idx) => (
-            <button
-              key={idx}
-              onClick={() => {
-                setSearchQuery(demo.query);
-                performSearch(demo.query);
-              }}
-              className="px-4 py-2 bg-slate-50 hover:bg-emerald-50 border border-slate-100 hover:border-emerald-200 rounded-xl text-[10px] font-black text-slate-600 hover:text-emerald-600 transition-all uppercase tracking-tight"
-            >
-              {demo.label}
-            </button>
-          ))}
+           <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">Quick Access:</span>
+              {['Sarah Jenkins', 'Robert Fox', '98765'].map((demo) => (
+                <button
+                  key={demo}
+                  onClick={() => { setSearchQuery(demo); performSearch(demo); }}
+                  className="px-4 py-2 bg-slate-50 hover:bg-white border border-slate-100 hover:border-emerald-200 rounded-xl text-[10px] font-black text-slate-600 hover:text-emerald-600 transition-all shadow-sm"
+                >
+                  {demo}
+                </button>
+              ))}
+           </div>
         </div>
-      </div>
-
-      {selectedCustomer ? (
+      ) : (
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="grid grid-cols-1 xl:grid-cols-3 gap-8"
         >
-          {/* Left Column: Profile Card */}
+          {/* Profile Card */}
           <div className="xl:col-span-1 space-y-8">
-            <div className="bg-white p-10 rounded-[3.5rem] border border-slate-200 shadow-xl relative overflow-hidden">
-              <div className="relative z-10">
-                <div className="w-24 h-24 bg-emerald-50 rounded-[2rem] flex items-center justify-center text-emerald-600 mb-6 border border-emerald-100 shadow-inner">
-                  <User className="w-12 h-12" />
+            <div className="bg-white p-10 rounded-[3.5rem] border border-slate-200 shadow-2xl relative overflow-hidden group">
+              <div className="relative z-10 text-center">
+                <div className="w-28 h-28 bg-emerald-50 rounded-[2.5rem] flex items-center justify-center text-emerald-600 mx-auto mb-6 border border-emerald-100 shadow-inner group-hover:scale-105 transition-transform">
+                  <User className="w-14 h-14" />
                 </div>
-                <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-2 uppercase">{selectedCustomer.name}</h2>
-                <div className="flex items-center space-x-2 mb-8">
-                  <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-emerald-100">
+                <h2 className="text-3xl font-black text-slate-900 tracking-tight mb-2">{selectedCustomer.name}</h2>
+                <div className="flex items-center justify-center space-x-3 mb-8">
+                  <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black border border-emerald-100">
                     {selectedCustomer.status}
                   </span>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Since {selectedCustomer.joinDate}</span>
+                  <span className="text-[10px] font-black text-slate-400">ID: {selectedCustomer.id}</span>
                 </div>
 
-                <div className="space-y-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-slate-50 rounded-xl"><Mail className="w-5 h-5 text-slate-400" /></div>
+                <div className="space-y-4 text-left px-2">
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center space-x-4">
+                    <Mail className="w-5 h-5 text-slate-400" />
                     <div>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Email Address</p>
-                      <p className="text-sm font-bold text-slate-700 mt-1">{selectedCustomer.email}</p>
+                      <p className="text-[9px] font-black text-slate-400">Email</p>
+                      <p className="text-xs font-bold text-slate-700">{selectedCustomer.email}</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-slate-50 rounded-xl"><Phone className="w-5 h-5 text-slate-400" /></div>
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center space-x-4">
+                    <Phone className="w-5 h-5 text-slate-400" />
                     <div>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Phone Number</p>
-                      <p className="text-sm font-bold text-slate-700 mt-1">{selectedCustomer.phone}</p>
+                      <p className="text-[9px] font-black text-slate-400">Mobile</p>
+                      <p className="text-xs font-bold text-slate-700">{selectedCustomer.phone}</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="p-3 bg-slate-50 rounded-xl"><MapPin className="w-5 h-5 text-slate-400" /></div>
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center space-x-4">
+                    <MapPin className="w-5 h-5 text-slate-400" />
                     <div>
-                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Location</p>
-                      <p className="text-sm font-bold text-slate-700 mt-1">{selectedCustomer.address}</p>
+                      <p className="text-[9px] font-black text-slate-400">Address</p>
+                      <p className="text-xs font-bold text-slate-700">{selectedCustomer.address}</p>
                     </div>
                   </div>
                 </div>
 
-                <div className="mt-10 pt-10 border-t border-slate-100 flex gap-4">
-                  <button className="flex-1 py-4 bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-900/20">
-                    Call Customer
-                  </button>
-                  <button className="flex-1 py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg">
-                    Email
-                  </button>
+                <div className="mt-10 grid grid-cols-2 gap-4">
+                   <button onClick={() => toast.success('Connecting Call...')} className="py-4 bg-slate-900 text-white rounded-2xl font-black text-[10px] hover:bg-indigo-600 transition-all shadow-xl">Call Mobile</button>
+                   <button onClick={() => toast.success('Email draft opened')} className="py-4 bg-slate-50 text-slate-600 border border-slate-100 rounded-2xl font-black text-[10px] hover:bg-slate-100 transition-all">Send Email</button>
                 </div>
               </div>
-              <div className="absolute -right-20 -top-20 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl" />
+              <ShieldCheck className="absolute -right-10 -bottom-10 w-40 h-40 text-slate-50 -rotate-12 pointer-events-none" />
             </div>
           </div>
 
-          {/* Right Column: Policies & History */}
           <div className="xl:col-span-2 space-y-8">
-            {/* Active Policies */}
-            <div className="bg-white p-10 rounded-[3.5rem] border border-slate-200 shadow-xl">
-              <div className="flex justify-between items-center mb-8">
-                <h3 className="text-xl font-black text-slate-900 tracking-tight flex items-center">
-                  <Shield className="w-6 h-6 mr-3 text-emerald-500" />
-                  Policy Portfolio
-                </h3>
-                <button className="p-3 hover:bg-slate-50 rounded-2xl transition-all border border-slate-100">
-                  <Plus className="w-5 h-5 text-slate-400" />
-                </button>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {selectedCustomer.policies.map((policy) => (
-                  <div key={policy.id} className="p-6 rounded-3xl border border-slate-100 bg-slate-50/30 hover:border-emerald-200 hover:bg-white transition-all group cursor-pointer">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="p-3 bg-white rounded-xl border border-slate-100 text-emerald-600 shadow-sm">
-                        <FileText className="w-6 h-6" />
-                      </div>
-                      <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest ${policy.status === 'Active' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
-                        {policy.status}
-                      </span>
+            {/* Policies */}
+            <div className="bg-white p-10 rounded-[3.5rem] border border-slate-200 shadow-2xl shadow-slate-200/50">
+               <div className="flex justify-between items-center mb-10">
+                  <h3 className="text-xl font-black text-slate-900 flex items-center">
+                     <Shield className="w-6 h-6 mr-3 text-emerald-500" />
+                     Policy Portfolio
+                  </h3>
+                  <button className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-100">Issue New</button>
+               </div>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {selectedCustomer.policies.map((p) => (
+                    <div key={p.id} className="p-8 rounded-[2.5rem] border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-900/5 transition-all group">
+                       <div className="flex justify-between items-start mb-6">
+                          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm">
+                             <FileText className="w-6 h-6" />
+                          </div>
+                          <span className={`px-3 py-1 rounded-lg text-[9px] font-black ${p.status === 'Active' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}`}>{p.status}</span>
+                       </div>
+                       <h4 className="text-lg font-black text-slate-900 mb-1">{p.type}</h4>
+                       <p className="text-[10px] font-bold text-slate-400">{p.provider} • {p.id}</p>
+                       <div className="mt-8 flex justify-between items-center pt-6 border-t border-slate-100">
+                          <span className="text-xl font-black text-slate-900">{p.amount}</span>
+                          <button className="p-2 text-slate-300 hover:text-emerald-500 group-hover:translate-x-2 transition-all"><ChevronRight className="w-6 h-6" /></button>
+                       </div>
                     </div>
-                    <h4 className="font-black text-slate-900 uppercase tracking-tight">{policy.type}</h4>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{policy.provider} • {policy.id}</p>
-                    <div className="mt-6 flex justify-between items-end">
-                      <p className="text-xl font-black text-slate-900">{policy.amount}</p>
-                      <button className="flex items-center space-x-2 text-[10px] font-black text-emerald-600 uppercase tracking-widest group-hover:translate-x-2 transition-transform">
-                        <span>Details</span>
-                        <ArrowUpRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+               </div>
             </div>
 
-            {/* Interaction History */}
-            <div className="bg-white p-10 rounded-[3.5rem] border border-slate-200 shadow-xl">
-              <div className="flex justify-between items-center mb-8">
-                <h3 className="text-xl font-black text-slate-900 tracking-tight flex items-center">
-                  <History className="w-6 h-6 mr-3 text-emerald-500" />
-                  Interaction Logs
-                </h3>
-                <button className="text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-emerald-600 transition-colors">
-                  View Full History
-                </button>
-              </div>
-              <div className="space-y-4">
-                {selectedCustomer.history.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-6 rounded-3xl border border-slate-50 bg-slate-50/50">
-                    <div className="flex items-center space-x-6">
-                      <div className="w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.4)]" />
-                      <div>
-                        <h4 className="font-bold text-slate-900 text-sm">{item.action}</h4>
-                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">{item.date}</p>
-                      </div>
+            {/* Logs */}
+            <div className="bg-white p-10 rounded-[3.5rem] border border-slate-200 shadow-2xl shadow-slate-200/50">
+               <div className="flex justify-between items-center mb-10">
+                  <h3 className="text-xl font-black text-slate-900 flex items-center">
+                     <Clock className="w-6 h-6 mr-3 text-emerald-500" />
+                     Interaction Logs
+                  </h3>
+               </div>
+               <div className="space-y-4">
+                  {selectedCustomer.history.map((h, i) => (
+                    <div key={i} className="flex items-center justify-between p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                       <div className="flex items-center space-x-6">
+                          <div className="w-2 h-2 bg-indigo-500 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
+                          <div>
+                             <p className="text-sm font-black text-slate-900">{h.action}</p>
+                             <p className="text-[10px] font-bold text-slate-400">{h.date}</p>
+                          </div>
+                       </div>
+                       <span className="text-[9px] font-black text-indigo-600 px-3 py-1 bg-indigo-50 rounded-lg">{h.status}</span>
                     </div>
-                    <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">{item.status}</span>
-                  </div>
-                ))}
-              </div>
-              <button className="w-full mt-8 py-5 border-2 border-dashed border-slate-200 rounded-[2rem] text-slate-400 font-black text-[10px] uppercase tracking-widest hover:border-emerald-600 hover:text-emerald-600 transition-all">
-                Add New Interaction Note
-              </button>
+                  ))}
+               </div>
+               <button className="w-full mt-8 py-5 border-2 border-dashed border-slate-100 rounded-[2rem] text-slate-400 font-black text-[10px] hover:bg-slate-50 hover:text-slate-900 transition-all flex items-center justify-center space-x-2">
+                  <Plus className="w-4 h-4" />
+                  <span>Log New Interaction</span>
+               </button>
             </div>
           </div>
         </motion.div>
-      ) : (
-        <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-[4rem] p-32 text-center">
-          <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl text-slate-200">
-            <Search className="w-10 h-10" />
-          </div>
-          <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-2 uppercase">Ready for Lookup</h3>
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest max-w-md mx-auto">
-            Search for a customer to view their full 360° profile, policy portfolio, and interaction history.
-          </p>
-        </div>
       )}
     </div>
   );

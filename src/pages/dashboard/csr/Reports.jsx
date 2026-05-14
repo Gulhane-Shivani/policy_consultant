@@ -3,7 +3,8 @@ import {
   BarChart3, PieChart, TrendingUp, 
   Users, CheckCircle, Clock, 
   Calendar, Download, Filter, 
-  ArrowUpRight, Target, Briefcase
+  ArrowUpRight, Target, Briefcase,
+  FileText
 } from 'lucide-react';
 import { 
   BarChart, Bar, XAxis, YAxis, 
@@ -33,17 +34,16 @@ const CSRReports = () => {
     <div className="space-y-8 pb-12">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">Service Analytics</h1>
-          <p className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.2em] mt-1">Personal Performance & Task Insight</p>
+          <h1 className="text-3xl font-black text-slate-900 leading-none">Service Analytics</h1>
+          <p className="text-slate-500 font-bold text-[10px] mt-1">Personal performance & task insights</p>
         </div>
         <div className="flex items-center space-x-3">
-          <button className="flex items-center space-x-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-50 transition-all shadow-xl shadow-slate-200/50">
+          <button className="flex items-center space-x-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl font-black text-[10px] hover:bg-slate-50 transition-all shadow-xl shadow-slate-200/50">
             <Calendar className="w-4 h-4 text-slate-400" />
             <span>This Month</span>
           </button>
-          <button className="flex items-center space-x-2 px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20">
-            <Download className="w-4 h-4" />
-            <span>Export Report</span>
+          <button className="p-3 bg-slate-900 text-white rounded-2xl shadow-xl hover:bg-emerald-600 transition-all">
+            <Download className="w-5 h-5" />
           </button>
         </div>
       </div>
@@ -62,7 +62,7 @@ const CSRReports = () => {
               <div className={`w-14 h-14 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-sm`}>
                 <Icon className="w-7 h-7" />
               </div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{stat.label}</p>
+              <p className="text-[10px] font-black text-slate-400 leading-none">{stat.label}</p>
               <h3 className="text-3xl font-black text-slate-900 mt-1">{stat.value}</h3>
             </div>
           );
@@ -71,11 +71,11 @@ const CSRReports = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Task Volume Chart */}
-        <div className="lg:col-span-2 bg-white p-10 rounded-[3.5rem] border border-slate-200 shadow-xl">
+        <div className="lg:col-span-2 bg-white p-10 rounded-[3.5rem] border border-slate-200 shadow-xl shadow-slate-200/50">
           <div className="flex justify-between items-center mb-10">
             <div>
-              <h3 className="text-xl font-black text-slate-900 tracking-tight">Service Volume</h3>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Daily interaction load across 7 days</p>
+              <h3 className="text-xl font-black text-slate-900">Service Volume</h3>
+              <p className="text-[10px] font-black text-slate-400 mt-1 uppercase tracking-widest">Daily interaction load across 7 days</p>
             </div>
             <TrendingUp className="w-6 h-6 text-emerald-500" />
           </div>
@@ -101,15 +101,15 @@ const CSRReports = () => {
         </div>
 
         {/* Resolution Pie */}
-        <div className="bg-white p-10 rounded-[3.5rem] border border-slate-200 shadow-xl">
+        <div className="bg-white p-10 rounded-[3.5rem] border border-slate-200 shadow-xl shadow-slate-200/50">
           <div className="mb-10">
-            <h3 className="text-xl font-black text-slate-900 tracking-tight">Resolution Mix</h3>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Task status distribution</p>
+            <h3 className="text-xl font-black text-slate-900">Resolution Mix</h3>
+            <p className="text-[10px] font-black text-slate-400 mt-1 uppercase tracking-widest">Task status distribution</p>
           </div>
           <div className="h-64 relative">
              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                 <span className="text-3xl font-black text-slate-900">178</span>
-                <span className="text-[10px] font-black text-slate-400 uppercase">Total</span>
+                <span className="text-[10px] font-black text-slate-400">Total</span>
              </div>
              <ResponsiveContainer width="100%" height="100%">
                <RechartsPie>
@@ -135,13 +135,49 @@ const CSRReports = () => {
               <div key={idx} className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
                 <div className="flex items-center space-x-3">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                  <span className="text-xs font-black text-slate-700 uppercase tracking-tight">{item.name}</span>
+                  <span className="text-xs font-black text-slate-700">{item.name}</span>
                 </div>
                 <span className="text-xs font-black text-slate-900">{item.value}</span>
               </div>
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Recent Activity Table (for reporting context) */}
+      <div className="bg-white rounded-[3.5rem] border border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden">
+         <div className="p-8 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+            <h3 className="text-xs font-black text-slate-900">Recent Service Log</h3>
+            <button className="text-[10px] font-black text-emerald-600 hover:underline">View All Activity</button>
+         </div>
+         <div className="overflow-x-auto">
+            <table className="w-full text-left">
+               <thead>
+                  <tr className="bg-slate-50/20 border-b border-slate-100 text-[10px] font-black text-slate-400">
+                     <th className="px-8 py-5">Activity</th>
+                     <th className="px-8 py-5">Customer</th>
+                     <th className="px-8 py-5 text-right">Time</th>
+                     <th className="px-8 py-5">Status</th>
+                  </tr>
+               </thead>
+               <tbody className="divide-y divide-slate-100">
+                  {[
+                    { act: 'Address Update', cust: 'Sarah Jenkins', time: '14 min ago', status: 'Completed' },
+                    { act: 'Claim Intake', cust: 'Robert Fox', time: '42 min ago', status: 'Pending' },
+                    { act: 'Renewal Call', cust: 'Jane Cooper', time: '1 hour ago', status: 'Follow-up' }
+                  ].map((row, i) => (
+                    <tr key={i} className="hover:bg-slate-50/50 transition-colors">
+                       <td className="px-8 py-6 font-bold text-slate-900 text-sm">{row.act}</td>
+                       <td className="px-8 py-6 text-slate-500 font-bold text-xs">{row.cust}</td>
+                       <td className="px-8 py-6 text-right text-slate-400 font-black text-[10px]">{row.time}</td>
+                       <td className="px-8 py-6">
+                          <span className="px-3 py-1 bg-slate-100 text-slate-500 rounded-lg text-[9px] font-black">{row.status}</span>
+                       </td>
+                    </tr>
+                  ))}
+               </tbody>
+            </table>
+         </div>
       </div>
     </div>
   );

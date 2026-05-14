@@ -27,11 +27,11 @@ const CSRDashboard = () => {
     <div className="space-y-8 pb-12">
       <div className="flex justify-between items-end">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">CSR Hub</h1>
-          <p className="text-slate-500 font-bold uppercase text-[10px] tracking-[0.2em] mt-1">Policy Consultant • Support Terminal</p>
+          <h1 className="text-3xl font-black text-slate-900 leading-none">CSR Hub</h1>
+          <p className="text-slate-500 font-bold text-[10px] mt-1">Policy Consultant • Support Terminal</p>
         </div>
         <div className="text-right">
-          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">System Status</p>
+          <p className="text-[10px] font-black text-slate-400">System Status</p>
           <div className="flex items-center space-x-2 text-emerald-500 font-black text-sm">
             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
             <span>Online & Ready</span>
@@ -53,7 +53,7 @@ const CSRDashboard = () => {
               className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 flex items-center justify-between group overflow-hidden relative"
             >
               <div className="space-y-2 relative z-10">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{stat.label}</p>
+                <p className="text-[10px] font-black text-slate-400 leading-none">{stat.label}</p>
                 <h3 className="text-4xl font-black text-slate-900 tracking-tighter">{stat.value}</h3>
                 <div className={`flex items-center space-x-1 text-[10px] font-black ${stat.trend === 'up' ? 'text-emerald-500' : 'text-rose-500'}`}>
                   {stat.trend === 'up' ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
@@ -69,14 +69,12 @@ const CSRDashboard = () => {
         })}
       </div>
 
-      {/* Quick Search Section */}
-     
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Today's Tasks */}
         <div className="lg:col-span-2 bg-white rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden">
           <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-            <h3 className="font-black text-slate-900 uppercase tracking-widest text-xs">Today's Schedule</h3>
-            <button className="text-emerald-600 font-black text-xs uppercase tracking-tighter hover:underline">Manage All</button>
+            <h3 className="font-black text-slate-900 text-xs">Today's Schedule</h3>
+            <button className="text-emerald-600 font-black text-xs hover:underline">Manage All</button>
           </div>
           <div className="divide-y divide-slate-100">
             {tasks.map((task) => (
@@ -87,11 +85,11 @@ const CSRDashboard = () => {
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">{task.title}</h4>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-tighter">{task.type} • {task.time}</p>
+                    <p className="text-xs font-bold text-slate-400">{task.type} • {task.time}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest ${task.priority === 'High' ? 'bg-rose-50 text-rose-500' : 'bg-slate-100 text-slate-500'}`}>
+                  <span className={`px-3 py-1 rounded-lg text-[10px] font-black ${task.priority === 'High' ? 'bg-rose-50 text-rose-600' : 'bg-slate-100 text-slate-500'}`}>
                     {task.priority}
                   </span>
                   <button className="p-2 hover:bg-slate-100 rounded-xl transition-all">
@@ -102,7 +100,7 @@ const CSRDashboard = () => {
             ))}
           </div>
           <div className="p-6 bg-slate-50/50 text-center">
-            <button className="flex items-center space-x-2 mx-auto font-black text-slate-400 hover:text-emerald-600 transition-colors uppercase tracking-widest text-[10px]">
+            <button className="flex items-center space-x-2 mx-auto font-black text-slate-400 hover:text-emerald-600 transition-colors text-[10px]">
               <span>Load More Tasks</span>
               <ArrowRight className="w-3 h-3" />
             </button>
@@ -114,16 +112,16 @@ const CSRDashboard = () => {
           <div className="bg-slate-900 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-emerald-900/20">
             <div className="flex items-center space-x-3 mb-6">
               <LifeBuoy className="w-6 h-6 text-emerald-400" />
-              <h3 className="font-black uppercase tracking-widest text-xs">Internal Support</h3>
+              <h3 className="font-black text-xs">Internal Support</h3>
             </div>
             <p className="text-slate-400 font-bold text-sm mb-6">Need help with a complex policy? Request internal assistance.</p>
-            <button className="w-full py-4 bg-emerald-600 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-600/20">
+            <button className="w-full py-4 bg-emerald-600 rounded-2xl font-black text-xs hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-600/20">
               Open Support Ticket
             </button>
           </div>
 
           <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-200/50">
-            <h3 className="font-black uppercase tracking-widest text-xs text-slate-400 mb-6">Emergency Contacts</h3>
+            <h3 className="font-black text-xs text-slate-400 mb-6">Emergency Contacts</h3>
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
                 <div className="flex items-center space-x-3">
@@ -131,8 +129,8 @@ const CSRDashboard = () => {
                     <Phone className="w-5 h-5 text-emerald-500" />
                   </div>
                   <div>
-                    <p className="text-xs font-black text-slate-900 uppercase">Underwriting</p>
-                    <p className="text-[10px] font-bold text-slate-400 tracking-tighter">Ext: 402</p>
+                    <p className="text-xs font-black text-slate-900">Underwriting</p>
+                    <p className="text-[10px] font-bold text-slate-400">Ext: 402</p>
                   </div>
                 </div>
                 <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-300 hover:text-emerald-500">
@@ -145,8 +143,8 @@ const CSRDashboard = () => {
                     <Mail className="w-5 h-5 text-emerald-500" />
                   </div>
                   <div>
-                    <p className="text-xs font-black text-slate-900 uppercase">Claims Dept</p>
-                    <p className="text-[10px] font-bold text-slate-400 tracking-tighter">claims@policyconsultant.com</p>
+                    <p className="text-xs font-black text-slate-900">Claims Dept</p>
+                    <p className="text-[10px] font-bold text-slate-400">claims@policyconsultant.com</p>
                   </div>
                 </div>
                 <button className="p-2 hover:bg-white rounded-lg transition-all text-slate-300 hover:text-emerald-500">
