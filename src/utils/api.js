@@ -1,11 +1,20 @@
 const getApiUrl = () => {
-  // Try to get from env first, then fallback to local
+  // Use environment variable if available (best practice for production)
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // Automatic detection for local development
+  if (
+    window.location.hostname === 'localhost' || 
+    window.location.hostname === '127.0.0.1'
+  ) {
+    // Local fallback (Uvicorn defaults to 8000)
+    return "http://127.0.0.1:8000";
+  }
 
-
-  // Local fallback (Uvicorn defaults to 8000)
-  // return "http://127.0.0.1:8000";
-  return "https://policy-consultant-backend-1.onrender.com"
-
+  // Production fallback
+  return "https://policy-consultant-backend-1.onrender.com";
 };
 const API_URL = getApiUrl();
 console.log('[API] Base URL:', API_URL);

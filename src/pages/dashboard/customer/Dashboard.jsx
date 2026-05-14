@@ -29,22 +29,26 @@ const CustomerOverview = () => {
   const initialPolicies = [
     { 
       id: 1, 
+      client_name: 'Shivani Ashok Gulhane',
       name: 'Care Supreme Discounted', 
       provider: 'Care Health', 
       domain: 'careinsurance.com',
       type: 'Health Insurance', 
       premium: '615', 
+      coverage: '5 Lakh',
       status: 'Active',
       end_date: '2025-05-20',
       color: 'emerald'
     },
     { 
       id: 2, 
+      client_name: 'Shivani Ashok Gulhane',
       name: 'Term Smart Guard', 
       provider: 'HDFC Life', 
       domain: 'hdfclife.com',
       type: 'Life Insurance', 
       premium: '1200', 
+      coverage: '1 Crore',
       status: 'Renewal Due',
       end_date: '2024-06-15',
       color: 'blue'
@@ -53,9 +57,10 @@ const CustomerOverview = () => {
 
   const [policies] = useState(() => {
     const bought = JSON.parse(localStorage.getItem('bought_policies') || '[]');
-    // Transform bought policies to match dashboard format if needed
+    // Transform bought policies to match dashboard format
     const formattedBought = bought.map(p => ({
       id: p.id,
+      client_name: p.client_name,
       name: p.type.split(' Insurance')[0] + ' Protection',
       provider: p.provider,
       domain: p.domain,
@@ -65,14 +70,31 @@ const CustomerOverview = () => {
       end_date: p.end_date,
       color: p.type.includes('Health') ? 'emerald' : p.type.includes('Life') ? 'blue' : 'amber'
     }));
-    return [...formattedBought, ...initialPolicies];
+    
+    const allPolicies = [...formattedBought, ...initialPolicies];
+    
+    // Strict filtering: Only show policies belonging to the logged-in user
+    return allPolicies.filter(p => p.client_name === user.full_name);
   });
+
+  const calculateSumAssured = (policyList) => {
+    let total = 0;
+    policyList.forEach(p => {
+      const cov = p.coverage || '0';
+      if (cov.includes('Lakh')) total += parseFloat(cov) * 100000;
+      else if (cov.includes('Cr')) total += parseFloat(cov) * 10000000;
+      else if (cov.includes('IDV')) total += parseFloat(cov.split(' ')[1]) * 100000;
+    });
+    if (total >= 10000000) return `₹${(total / 10000000).toFixed(1)} Cr`;
+    if (total >= 100000) return `₹${(total / 100000).toFixed(1)} Lakh`;
+    return `₹${total.toLocaleString()}`;
+  };
 
   const stats = [
     { label: 'Total Policies', value: policies.length.toString(), icon: Shield, color: 'blue' },
-    { label: 'Sum Assured', value: '₹1.5 Cr', icon: PieChart, color: 'emerald' },
-    { label: 'Next Premium', value: `₹${policies.reduce((acc, curr) => acc + parseInt(curr.premium), 0).toLocaleString()}`, icon: CreditCard, color: 'amber' },
-    { label: 'Pending Claims', value: '1', icon: ShieldAlert, color: 'rose' },
+    { label: 'Sum Assured', value: calculateSumAssured(policies), icon: PieChart, color: 'emerald' },
+    { label: 'Next Premium', value: `₹${policies.reduce((acc, curr) => acc + parseInt(curr.premium || 0), 0).toLocaleString()}`, icon: CreditCard, color: 'amber' },
+    { label: 'Pending Claims', value: '0', icon: ShieldAlert, color: 'rose' },
   ];
 
   return (

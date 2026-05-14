@@ -136,7 +136,9 @@ const PolicyDetailView = () => {
           <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center group-hover:bg-emerald-50 transition-all">
             <ArrowLeft className="w-4 h-4" />
           </div>
-          <span className="uppercase text-[9px] tracking-widest">Back to Overview</span>
+          <span className="uppercase text-[9px] tracking-widest">
+            {user?.role === 'user' ? 'Back to My Policies' : 'Back to Overview'}
+          </span>
         </button>
       </div>
 
@@ -175,68 +177,70 @@ const PolicyDetailView = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Details */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Customer Information Card */}
-          <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-8">
-               <User className="w-24 h-24 text-slate-50 opacity-50 absolute -top-8 -right-8" />
-            </div>
-            <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase mb-8 flex items-center relative z-10">
-              <User className="w-5 h-5 mr-3 text-emerald-600" />
-              Customer Information
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
-              <div className="space-y-4">
-                <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Full Name</p>
-                  <p className="text-lg font-black text-slate-900">{policy.client_name}</p>
-                </div>
-                <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Contact Number</p>
-                  <div className="flex items-center text-slate-700 font-bold">
-                    <Phone className="w-4 h-4 mr-2 text-emerald-500" />
-                    {policy.contact || '+91 98765 43210'}
-                  </div>
-                </div>
+          {/* Customer Information Card - Hidden for customers to focus on policy details */}
+          {user?.role !== 'user' && (
+            <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8">
+                <User className="w-24 h-24 text-slate-50 opacity-50 absolute -top-8 -right-8" />
               </div>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Registered Address</p>
-                  <div className="flex items-start text-slate-700 font-bold leading-relaxed">
-                    <MapPin className="w-4 h-4 mr-2 mt-1 text-emerald-500 shrink-0" />
-                    {policy.address || 'Plot No. 45, Sector 12, Gulhane Enclave, Amravati, Maharashtra - 444601'}
+              <h2 className="text-lg font-black text-slate-900 tracking-tight uppercase mb-8 flex items-center relative z-10">
+                <User className="w-5 h-5 mr-3 text-emerald-600" />
+                Customer Information
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Full Name</p>
+                    <p className="text-lg font-black text-slate-900">{policy.client_name}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Contact Number</p>
+                    <div className="flex items-center text-slate-700 font-bold">
+                      <Phone className="w-4 h-4 mr-2 text-emerald-500" />
+                      {policy.contact || '+91 98765 43210'}
+                    </div>
                   </div>
                 </div>
-                <div className="pt-4 border-t border-slate-50">
-                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Policy Bond Period</p>
-                  <p className="text-2xl font-black text-emerald-600 mb-2">
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Registered Address</p>
+                    <div className="flex items-start text-slate-700 font-bold leading-relaxed">
+                      <MapPin className="w-4 h-4 mr-2 mt-1 text-emerald-500 shrink-0" />
+                      {policy.address || 'Plot No. 45, Sector 12, Gulhane Enclave, Amravati, Maharashtra - 444601'}
+                    </div>
+                  </div>
+                  <div className="pt-4 border-t border-slate-50">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Policy Bond Period</p>
+                    <p className="text-2xl font-black text-emerald-600 mb-2">
+                      {(() => {
+                        const start = new Date(policy.start_date);
+                        const end = new Date(policy.end_date);
+                        const years = end.getFullYear() - start.getFullYear();
+                        return `${years} Years Bond`;
+                      })()}
+                    </p>
                     {(() => {
-                      const start = new Date(policy.start_date);
-                      const end = new Date(policy.end_date);
-                      const years = end.getFullYear() - start.getFullYear();
-                      return `${years} Years Bond`;
+                      let min = '1 Year', max = 'Varies';
+                      const t = policy.type.toLowerCase();
+                      if (t.includes('term')) { min = '10 Years'; max = '40 Years'; }
+                      else if (t.includes('whole life')) { min = 'Lifelong'; max = 'Age 99'; }
+                      else if (t.includes('life')) { min = '5 Years'; max = 'Up to 99 Years'; }
+                      else if (t.includes('health')) { min = '1 Year'; max = 'Lifetime Renewal'; }
+                      else if (t.includes('car')) { min = '1 Year'; max = 'Up to 3 Years'; }
+                      else if (t.includes('bike')) { min = '1 Year'; max = 'Up to 5 Years'; }
+                      return (
+                        <div className="flex items-center space-x-3 text-[9px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50 p-2 rounded-lg">
+                          <span>Min: <span className="text-slate-700">{min}</span></span>
+                          <span>•</span>
+                          <span>Max: <span className="text-slate-700">{max}</span></span>
+                        </div>
+                      );
                     })()}
-                  </p>
-                  {(() => {
-                    let min = '1 Year', max = 'Varies';
-                    const t = policy.type.toLowerCase();
-                    if (t.includes('term')) { min = '10 Years'; max = '40 Years'; }
-                    else if (t.includes('whole life')) { min = 'Lifelong'; max = 'Age 99'; }
-                    else if (t.includes('life')) { min = '5 Years'; max = 'Up to 99 Years'; }
-                    else if (t.includes('health')) { min = '1 Year'; max = 'Lifetime Renewal'; }
-                    else if (t.includes('car')) { min = '1 Year'; max = 'Up to 3 Years'; }
-                    else if (t.includes('bike')) { min = '1 Year'; max = 'Up to 5 Years'; }
-                    return (
-                      <div className="flex items-center space-x-3 text-[9px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50 p-2 rounded-lg">
-                        <span>Min: <span className="text-slate-700">{min}</span></span>
-                        <span>•</span>
-                        <span>Max: <span className="text-slate-700">{max}</span></span>
-                      </div>
-                    );
-                  })()}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Coverage Details */}
           <div className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
@@ -373,19 +377,21 @@ const PolicyDetailView = () => {
             </div>
           </div>
 
-          {/* Nominee Card */}
-          <div className="bg-emerald-50 p-8 rounded-[2.5rem] border border-emerald-100 shadow-sm space-y-6">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-emerald-600 shadow-sm">
-                <User className="w-5 h-5" />
+          {/* Nominee Card - Hidden for customers to keep focus on policy specs */}
+          {user?.role !== 'user' && (
+            <div className="bg-emerald-50 p-8 rounded-[2.5rem] border border-emerald-100 shadow-sm space-y-6">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-emerald-600 shadow-sm">
+                  <User className="w-5 h-5" />
+                </div>
+                <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Nominee</h3>
               </div>
-              <h3 className="text-sm font-black text-slate-900 uppercase tracking-widest">Nominee</h3>
+              <div>
+                <p className="text-lg font-black text-slate-900">{policy.nominee_name}</p>
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-tighter">{policy.nominee_relation}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-lg font-black text-slate-900">{policy.nominee_name}</p>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-tighter">{policy.nominee_relation}</p>
-            </div>
-          </div>
+          )}
 
           {/* Policy Documents */}
           <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm space-y-6">

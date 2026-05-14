@@ -63,6 +63,11 @@ const Renewals = () => {
         return isCorrectStatus && p.issued_by === user.full_name;
       }
       
+      if (user?.role === 'user') {
+        // If customer, only show their own renewals
+        return isCorrectStatus && p.client_name === user.full_name;
+      }
+      
       return isCorrectStatus;
     });
 

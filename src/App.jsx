@@ -52,6 +52,7 @@ import ActivityLog from './pages/dashboard/agent/ActivityLog';
 
 // Customer Pages
 import CustomerDashboard from './pages/dashboard/customer/Dashboard';
+import MyPolicies from './pages/dashboard/customer/MyPolicies';
 
 // Shared Pages
 import Policies from './pages/dashboard/shared/Policies';
@@ -115,7 +116,7 @@ function App() {
           }>
             <Route index element={<CustomerDashboard />} />
             <Route path="overview" element={<CustomerDashboard />} />
-            <Route path="policies" element={<Policies />} />
+            <Route path="policies" element={<MyPolicies />} />
             <Route path="policies/new" element={<AddPolicyForm />} />
             <Route path="policies/edit/:id" element={<AddPolicyForm />} />
             <Route path="policies/:id" element={<PolicyDetailView />} />

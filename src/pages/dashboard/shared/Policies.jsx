@@ -161,10 +161,7 @@ const Policies = () => {
           <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Lifecycle Oversight</p>
         </div>
         <button
-          onClick={() => {
-            const basePath = user?.role === 'super_admin' ? '/super-admin' : user?.role === 'admin' ? '/admin' : '/dashboard';
-            navigate(`${basePath}/policies/new`);
-          }}
+          onClick={() => navigate('/plans')}
           className="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
         >
           <Plus className="w-4 h-4 inline mr-2" />
@@ -202,52 +199,118 @@ const Policies = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="bg-slate-50/50">
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Policy ID</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Provider</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Client</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Premium</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
-                <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {filteredData.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
-                  <td className="px-8 py-6 font-bold text-slate-900">{item.policy_number}</td>
-                  <td className="px-8 py-6">
-                    <div className="flex items-center space-x-2">
-                      {getProviderLogo(item.provider, item.domain)}
-                      <span className="font-bold text-slate-600 text-xs">{item.provider}</span>
+        {user?.role === 'user' ? (
+          <div className="p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredData.map((item) => (
+              <motion.div
+                key={item.id}
+                whileHover={{ y: -5 }}
+                className="bg-white rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/50 overflow-hidden group relative"
+              >
+                {/* Card Header with Provider and Status */}
+                <div className="p-6 pb-0 flex justify-between items-start">
+                  <div className="flex items-center space-x-3">
+                    {getProviderLogo(item.provider, item.domain)}
+                    <div>
+                      <h4 className="font-black text-slate-900 text-sm tracking-tight">{item.provider}</h4>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{item.policy_number}</p>
                     </div>
-                  </td>
-                  <td className="px-8 py-6 font-bold text-slate-700">{item.client_name}</td>
-                  <td className="px-8 py-6">
-                    <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-tighter">{item.type}</span>
-                  </td>
-                  <td className="px-8 py-6 font-bold text-slate-900">₹{item.premium}</td>
-                  <td className="px-8 py-6 text-center">
-                    <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${
-                      getValidatedStatus(item) === 'Active' ? 'bg-emerald-50 text-emerald-600' : 
-                      getValidatedStatus(item) === 'Renewal Due' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600'
-                    }`}>{getValidatedStatus(item)}</span>
-                  </td>
-                  <td className="px-8 py-6 text-right">
-                    <div className="flex items-center justify-end space-x-2">
-                      <button onClick={() => navigate(`${user?.role === 'super_admin' ? '/super-admin' : user?.role === 'admin' ? '/admin' : '/dashboard'}/policies/${item.id}`)} className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all" title="View Details"><Eye className="w-5 h-5" /></button>
-                      <button onClick={() => { const base = user?.role === 'super_admin' ? '/super-admin' : user?.role === 'admin' ? '/admin' : '/dashboard'; navigate(`${base}/policies/edit/${item.id}`, { state: { policy: item } }); }} className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"><Edit3 className="w-5 h-5" /></button>
-                      <button onClick={() => handleDelete(item.id)} className="p-2 hover:bg-rose-50 text-rose-600 rounded-lg transition-all"><Trash2 className="w-5 h-5" /></button>
+                  </div>
+                  <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${
+                    getValidatedStatus(item) === 'Active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 
+                    getValidatedStatus(item) === 'Renewal Due' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-rose-50 text-rose-600 border-rose-100'
+                  }`}>
+                    {getValidatedStatus(item)}
+                  </span>
+                </div>
+
+                {/* Card Body */}
+                <div className="p-6 space-y-4">
+                  <div className="flex items-center justify-between p-4 bg-slate-50 rounded-2xl">
+                    <div>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Premium</p>
+                      <h3 className="text-xl font-black text-slate-900">₹{item.premium}</h3>
                     </div>
-                  </td>
+                    <div className="text-right">
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Type</p>
+                      <span className="text-xs font-bold text-slate-600">{item.type}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-4 text-xs">
+                    <div className="flex items-center text-slate-500 font-medium">
+                      <Calendar className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
+                      Ends: {new Date(item.end_date).toLocaleDateString()}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card Footer Actions */}
+                <div className="px-6 pb-6 pt-0 flex gap-2">
+                  <button 
+                    onClick={() => navigate(`/dashboard/policies/${item.id}`)}
+                    className="flex-1 py-3 bg-slate-900 text-white rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg shadow-slate-200"
+                  >
+                    Manage Policy
+                  </button>
+                  <button 
+                    onClick={() => navigate(`/dashboard/policies/${item.id}`)}
+                    className="p-3 bg-emerald-50 text-emerald-600 rounded-xl hover:bg-emerald-100 transition-all"
+                  >
+                    <Download className="w-4 h-4" />
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="bg-slate-50/50">
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Policy ID</th>
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Provider</th>
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Client</th>
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Type</th>
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Premium</th>
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
+                  <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filteredData.map((item) => (
+                  <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
+                    <td className="px-8 py-6 font-bold text-slate-900">{item.policy_number}</td>
+                    <td className="px-8 py-6">
+                      <div className="flex items-center space-x-2">
+                        {getProviderLogo(item.provider, item.domain)}
+                        <span className="font-bold text-slate-600 text-xs">{item.provider}</span>
+                      </div>
+                    </td>
+                    <td className="px-8 py-6 font-bold text-slate-700">{item.client_name}</td>
+                    <td className="px-8 py-6">
+                      <span className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-lg text-[10px] font-black uppercase tracking-tighter">{item.type}</span>
+                    </td>
+                    <td className="px-8 py-6 font-bold text-slate-900">₹{item.premium}</td>
+                    <td className="px-8 py-6 text-center">
+                      <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${
+                        getValidatedStatus(item) === 'Active' ? 'bg-emerald-50 text-emerald-600' : 
+                        getValidatedStatus(item) === 'Renewal Due' ? 'bg-amber-50 text-amber-600' : 'bg-rose-50 text-rose-600'
+                      }`}>{getValidatedStatus(item)}</span>
+                    </td>
+                    <td className="px-8 py-6 text-right">
+                      <div className="flex items-center justify-end space-x-2">
+                        <button onClick={() => navigate(`${user?.role === 'super_admin' ? '/super-admin' : user?.role === 'admin' ? '/admin' : '/dashboard'}/policies/${item.id}`)} className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all" title="View Details"><Eye className="w-5 h-5" /></button>
+                        <button onClick={() => { const base = user?.role === 'super_admin' ? '/super-admin' : user?.role === 'admin' ? '/admin' : '/dashboard'; navigate(`${base}/policies/edit/${item.id}`, { state: { policy: item } }); }} className="p-2 hover:bg-emerald-50 text-emerald-600 rounded-lg transition-all"><Edit3 className="w-5 h-5" /></button>
+                        <button onClick={() => handleDelete(item.id)} className="p-2 hover:bg-rose-50 text-rose-600 rounded-lg transition-all"><Trash2 className="w-5 h-5" /></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       <AnimatePresence>
