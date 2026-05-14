@@ -197,39 +197,83 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Placeholder for additional content or shortcuts */}
-        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-emerald-600 p-8 rounded-[3rem] text-white relative overflow-hidden group flex flex-col justify-between shadow-2xl shadow-emerald-900/20">
-             <Activity className="absolute -right-4 -bottom-4 w-40 h-40 text-white/10 group-hover:scale-110 transition-transform duration-700" />
-             <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center">
-                <Shield className="w-7 h-7 text-white" />
-             </div>
-             <div>
-                <p className="text-sm font-bold text-emerald-100 uppercase tracking-widest mb-1">System Health</p>
-                <h3 className="text-4xl font-black">Stable</h3>
-                <div className="flex items-center mt-4 space-x-2">
-                   <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                   <span className="text-xs font-bold text-emerald-50">99.9% Uptime</span>
-                </div>
-             </div>
-          </div>
-          
-          <div className="bg-white p-8 rounded-[3rem] border border-slate-200 flex flex-col justify-between shadow-xl shadow-slate-200/50">
-             <div className="flex items-center justify-between">
-                <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center">
-                   <Users className="w-7 h-7 text-emerald-600" />
+        {/* Premium Operations Modules */}
+        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* System Status Card - Dark Glass Aesthetic */}
+          <div className="bg-slate-900 p-10 rounded-[3.5rem] text-white relative overflow-hidden group flex flex-col justify-between shadow-2xl shadow-emerald-900/20">
+            <div className="absolute top-0 right-0 p-10 opacity-20 group-hover:opacity-40 transition-opacity">
+              <Shield className="w-32 h-32 rotate-12" />
+            </div>
+            
+            <div className="relative z-10">
+              <div className="flex justify-between items-start">
+                <div className="w-16 h-16 bg-emerald-500/20 border border-emerald-500/30 rounded-3xl flex items-center justify-center backdrop-blur-md">
+                  <Activity className="w-8 h-8 text-emerald-400 animate-pulse" />
                 </div>
                 <div className="text-right">
-                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Staff</p>
-                   <p className="text-3xl font-black text-slate-900">42</p>
+                  <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em] bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                    All Systems Live
+                  </span>
                 </div>
-             </div>
-             <div className="space-y-4">
-                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                   <div className="h-full bg-emerald-500 w-[85%] rounded-full"></div>
+              </div>
+              
+              <div className="mt-10">
+                <h3 className="text-4xl font-black tracking-tight">System Health</h3>
+                <div className="flex items-center mt-2 space-x-3">
+                  <div className="w-3 h-3 bg-emerald-500 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.8)]"></div>
+                  <p className="text-xl font-bold text-slate-300">Stable & Secure</p>
                 </div>
-                <p className="text-xs font-bold text-slate-500">Capacity utilization at 85%</p>
-             </div>
+              </div>
+            </div>
+
+            <div className="mt-10 grid grid-cols-2 gap-4 relative z-10">
+              <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
+                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Uptime</p>
+                <p className="text-lg font-black text-white">99.98%</p>
+              </div>
+              <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
+                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Latency</p>
+                <p className="text-lg font-black text-white">24ms</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Active Staff Card - Modern Workforce View */}
+          <div className="bg-white p-10 rounded-[3.5rem] border border-slate-100 shadow-2xl shadow-slate-200/40 flex flex-col justify-between group">
+            <div className="flex justify-between items-start">
+              <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
+                <Users className="w-8 h-8" />
+              </div>
+              <div className="flex -space-x-3">
+                {[1,2,3,4].map(i => (
+                  <div key={i} className="w-10 h-10 rounded-full border-4 border-white bg-slate-100 overflow-hidden shadow-sm">
+                    <img src={`https://i.pravatar.cc/150?u=${i+20}`} alt="staff" className="w-full h-full object-cover" />
+                  </div>
+                ))}
+                <div className="w-10 h-10 rounded-full border-4 border-white bg-indigo-600 flex items-center justify-center text-[10px] font-black text-white shadow-sm">
+                  +38
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Staff</p>
+              <div className="flex items-baseline space-x-3">
+                <h3 className="text-5xl font-black text-slate-900 tracking-tighter">42</h3>
+                <span className="text-sm font-black text-emerald-500">8 Online Now</span>
+              </div>
+            </div>
+
+            <div className="mt-8 space-y-4">
+              <div className="flex justify-between items-end">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">In-Field Efficiency</p>
+                <p className="text-xs font-black text-slate-900">85%</p>
+              </div>
+              <div className="h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-50">
+                <div className="h-full bg-indigo-600 w-[85%] rounded-full shadow-[0_0_10px_rgba(79,70,229,0.3)]"></div>
+              </div>
+              <p className="text-[9px] font-bold text-slate-400 text-center uppercase tracking-tighter">High capacity utilization detected</p>
+            </div>
           </div>
         </div>
       </div>
