@@ -3,7 +3,7 @@ import {
   Search, User, Shield, History, 
   FileText, MessageSquare, Phone, 
   Mail, MapPin, Calendar, ArrowUpRight, Plus,
-  ShieldCheck, ArrowLeft, Clock
+  ShieldCheck, ArrowLeft, Clock, ChevronRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
