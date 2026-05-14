@@ -161,7 +161,14 @@ const Policies = () => {
           <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Lifecycle Oversight</p>
         </div>
         <button
-          onClick={() => navigate('/plans')}
+          onClick={() => {
+            if (user?.role === 'user') {
+              navigate('/plans');
+            } else {
+              const rolePrefix = user?.role === 'super_admin' ? '/super-admin' : user?.role === 'admin' ? '/admin' : '/dashboard';
+              navigate(`${rolePrefix}/policies/new`);
+            }
+          }}
           className="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20"
         >
           <Plus className="w-4 h-4 inline mr-2" />

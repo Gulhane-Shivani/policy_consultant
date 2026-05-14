@@ -11,8 +11,10 @@ import {
   FileCheck, Clock, AlertCircle, DollarSign, ArrowUpRight
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const SuperAdminDashboard = () => {
+  const navigate = useNavigate();
   const revenueData = [
     { name: 'Jan', revenue: 45000 },
     { name: 'Feb', revenue: 52000 },
@@ -53,6 +55,13 @@ const SuperAdminDashboard = () => {
           <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Policy Consultant • Executive Dashboard</p>
         </div>
         <div className="flex items-center space-x-3">
+          <button 
+            onClick={() => navigate('/super-admin/policies/new')}
+            className="flex items-center space-x-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-slate-50 transition-all shadow-xl shadow-slate-200/50"
+          >
+            <Shield className="w-4 h-4 text-emerald-500" />
+            <span>Add New Policy</span>
+          </button>
           <button className="flex items-center space-x-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl font-black text-xs uppercase tracking-tighter hover:bg-slate-50 transition-all shadow-xl shadow-slate-200/50">
             <Database className="w-4 h-4 text-slate-400" />
             <span>Audit Logs</span>
