@@ -3,7 +3,7 @@ import {
   Users, UserPlus, Search, Filter, 
   MoreVertical, Mail, Phone, Calendar,
   ArrowUpRight, Clock, Target, CheckCircle2,
-  AlertCircle, Star, MessageSquare
+  AlertCircle, Star, MessageSquare, X, Plus
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -11,14 +11,50 @@ const Leads = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [selectedLead, setSelectedLead] = useState(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  const leadsData = [
-    { id: 1, name: 'Robert Fox', email: 'robert.fox@example.com', phone: '+91 98765 43210', type: 'Life Insurance', status: 'Hot', lastContact: '2h ago', priority: 'High', source: 'Website' },
-    { id: 2, name: 'Jane Cooper', email: 'jane.c@gmail.com', phone: '+91 91234 56789', type: 'Health Insurance', status: 'Warm', lastContact: '1d ago', priority: 'Medium', source: 'Referral' },
-    { id: 3, name: 'Wade Warren', email: 'wade.w@outlook.com', phone: '+91 88888 77777', type: 'Car Insurance', status: 'Cold', lastContact: '3d ago', priority: 'Low', source: 'Cold Call' },
-    { id: 4, name: 'Guy Hawkins', email: 'guy.h@yahoo.com', phone: '+91 77777 66666', type: 'Business Insurance', status: 'Hot', lastContact: 'Just now', priority: 'High', source: 'Direct' },
-    { id: 5, name: 'Esther Howard', email: 'esther.h@example.com', phone: '+91 99999 00000', type: 'Life Insurance', status: 'New', lastContact: '5h ago', priority: 'Medium', source: 'Website' },
-  ];
+  const [leadsData, setLeadsData] = useState(() => {
+    const saved = localStorage.getItem('agent_leads');
+    return saved ? JSON.parse(saved) : [
+      { id: 1, name: 'Robert Fox', email: 'robert.fox@example.com', phone: '+91 98765 43210', type: 'Life Insurance', status: 'Hot', lastContact: '2h ago', priority: 'High', source: 'Website' },
+      { id: 2, name: 'Jane Cooper', email: 'jane.c@gmail.com', phone: '+91 91234 56789', type: 'Health Insurance', status: 'Warm', lastContact: '1d ago', priority: 'Medium', source: 'Referral' },
+      { id: 3, name: 'Wade Warren', email: 'wade.w@outlook.com', phone: '+91 88888 77777', type: 'Car Insurance', status: 'Cold', lastContact: '3d ago', priority: 'Low', source: 'Cold Call' },
+      { id: 4, name: 'Guy Hawkins', email: 'guy.h@yahoo.com', phone: '+91 77777 66666', type: 'Business Insurance', status: 'Hot', lastContact: 'Just now', priority: 'High', source: 'Direct' },
+      { id: 5, name: 'Esther Howard', email: 'esther.h@example.com', phone: '+91 99999 00000', type: 'Life Insurance', status: 'New', lastContact: '5h ago', priority: 'Medium', source: 'Website' },
+    ];
+  });
+
+  const [newLead, setNewLead] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    type: 'Health Insurance',
+    status: 'New',
+    priority: 'Medium',
+    source: 'Direct'
+  });
+
+  const handleAddLead = (e) => {
+    e.preventDefault();
+    const leadToAdd = {
+      ...newLead,
+      id: Date.now(),
+      lastContact: 'Just now'
+    };
+    const updatedLeads = [leadToAdd, ...leadsData];
+    setLeadsData(updatedLeads);
+    localStorage.setItem('agent_leads', JSON.stringify(updatedLeads));
+    setIsAddModalOpen(false);
+    setNewLead({
+      name: '',
+      email: '',
+      phone: '',
+      type: 'Health Insurance',
+      status: 'New',
+      priority: 'Medium',
+      source: 'Direct'
+    });
+  };
 
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
@@ -30,11 +66,12 @@ const Leads = () => {
     }
   };
 
-  const filteredLeads = leadsData.filter(lead => 
-    (lead.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-     lead.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (filterStatus === 'all' || lead.status.toLowerCase() === filterStatus.toLowerCase())
-  );
+  const filteredLeads = leadsData.filter(lead => {
+    const nameMatch = lead.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const emailMatch = lead.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const statusMatch = filterStatus === 'all' || lead.status.toLowerCase() === filterStatus.toLowerCase();
+    return (nameMatch || emailMatch) && statusMatch;
+  });
 
   return (
     <div className="space-y-8 pb-12">
@@ -43,7 +80,10 @@ const Leads = () => {
           <h1 className="text-3xl font-black text-slate-900 tracking-tighter">My Leads</h1>
           <p className="text-slate-500 font-bold uppercase text-xs tracking-widest mt-1">Manage and Track Your Sales Pipeline</p>
         </div>
-        <button className="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-200 flex items-center space-x-2">
+        <button 
+          onClick={() => setIsAddModalOpen(true)}
+          className="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-200 flex items-center space-x-2"
+        >
           <UserPlus className="w-4 h-4" />
           <span>Add New Lead</span>
         </button>
@@ -191,6 +231,135 @@ const Leads = () => {
           </div>
         </div>
       </div>
+
+      {/* Add Lead Modal */}
+      <AnimatePresence>
+        {isAddModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsAddModalOpen(false)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden"
+            >
+              <div className="p-8">
+                <div className="flex justify-between items-center mb-8">
+                  <div>
+                    <h2 className="text-2xl font-black text-slate-900 tracking-tighter">Add New Lead</h2>
+                    <p className="text-slate-500 font-bold uppercase text-[10px] tracking-widest mt-1">Register a potential customer in your pipeline</p>
+                  </div>
+                  <button 
+                    onClick={() => setIsAddModalOpen(false)}
+                    className="p-3 hover:bg-slate-100 rounded-2xl transition-colors text-slate-400 hover:text-slate-900"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+
+                <form onSubmit={handleAddLead} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Lead Full Name</label>
+                      <input 
+                        required
+                        type="text" 
+                        placeholder="e.g. John Doe"
+                        value={newLead.name}
+                        onChange={(e) => setNewLead({...newLead, name: e.target.value})}
+                        className="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl font-bold text-slate-900 outline-none focus:bg-white focus:border-emerald-500 transition-all"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Email Address</label>
+                      <input 
+                        required
+                        type="email" 
+                        placeholder="john@example.com"
+                        value={newLead.email}
+                        onChange={(e) => setNewLead({...newLead, email: e.target.value})}
+                        className="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl font-bold text-slate-900 outline-none focus:bg-white focus:border-emerald-500 transition-all"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Phone Number</label>
+                      <input 
+                        required
+                        type="tel" 
+                        placeholder="+91 98765 43210"
+                        value={newLead.phone}
+                        onChange={(e) => setNewLead({...newLead, phone: e.target.value})}
+                        className="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl font-bold text-slate-900 outline-none focus:bg-white focus:border-emerald-500 transition-all"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Insurance Interest</label>
+                      <select 
+                        value={newLead.type}
+                        onChange={(e) => setNewLead({...newLead, type: e.target.value})}
+                        className="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl font-bold text-slate-900 outline-none focus:bg-white focus:border-emerald-500 transition-all appearance-none cursor-pointer"
+                      >
+                        <option>Health Insurance</option>
+                        <option>Life Insurance</option>
+                        <option>Car Insurance</option>
+                        <option>Business Insurance</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Lead Status</label>
+                      <select 
+                        value={newLead.status}
+                        onChange={(e) => setNewLead({...newLead, status: e.target.value})}
+                        className="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl font-bold text-slate-900 outline-none focus:bg-white focus:border-emerald-500 transition-all appearance-none cursor-pointer"
+                      >
+                        <option>New</option>
+                        <option>Hot</option>
+                        <option>Warm</option>
+                        <option>Cold</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1">Source</label>
+                      <select 
+                        value={newLead.source}
+                        onChange={(e) => setNewLead({...newLead, source: e.target.value})}
+                        className="w-full px-6 py-4 bg-slate-50 border border-transparent rounded-2xl font-bold text-slate-900 outline-none focus:bg-white focus:border-emerald-500 transition-all appearance-none cursor-pointer"
+                      >
+                        <option>Direct</option>
+                        <option>Website</option>
+                        <option>Referral</option>
+                        <option>Cold Call</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="pt-6 flex gap-4">
+                    <button 
+                      type="button"
+                      onClick={() => setIsAddModalOpen(false)}
+                      className="flex-1 px-8 py-4 bg-slate-100 text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-200 transition-all"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit"
+                      className="flex-1 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-200"
+                    >
+                      Create Lead
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
