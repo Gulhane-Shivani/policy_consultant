@@ -1,9 +1,11 @@
 const getApiUrl = () => {
   // Try to get from env first, then fallback to local
-  
-  
+
+
   // Local fallback (Uvicorn defaults to 8000)
-  return "http://127.0.0.1:8000";
+  // return "http://127.0.0.1:8000";
+  return "https://policy-consultant-backend-1.onrender.com"
+
 };
 const API_URL = getApiUrl();
 console.log('[API] Base URL:', API_URL);
@@ -17,7 +19,7 @@ console.log('[API] Base URL:', API_URL);
  */
 export const apiRequest = async (endpoint, options = {}) => {
   const token = localStorage.getItem('access_token');
-  
+
   const headers = {
     'Content-Type': 'application/json',
     ...options.headers,
@@ -63,7 +65,7 @@ export const apiRequest = async (endpoint, options = {}) => {
       } else if (data.message) {
         errorMessage = data.message;
       }
-      
+
       throw new Error(errorMessage);
     }
 
